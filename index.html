@@ -26,16 +26,12 @@
       --green-bg: #f0faf5;
       --orange: #f59e0b;
       --orange-bg: #fffbeb;
-      --step-active: #3182f6;
-      --step-done: #00a661;
-      --step-wait: #e8ebed;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: "Pretendard", -apple-system, BlinkMacSystemFont,
         "Apple SD Gothic Neo", "Malgun Gothic", "Segoe UI", sans-serif;
       -webkit-font-smoothing: subpixel-antialiased;
-      -moz-osx-font-smoothing: auto;
       font-synthesis: none;
       background: var(--bg);
       color: var(--ink);
@@ -43,25 +39,21 @@
       line-height: 1.5;
     }
     @media (max-resolution: 1dppx) {
-      body { font-family: "맑은 고딕", "Malgun Gothic", "Dotum", sans-serif; font-weight: 400; letter-spacing: -0.01em; }
+      body { font-family: "맑은 고딕","Malgun Gothic","Dotum",sans-serif; font-weight: 400; letter-spacing: -0.01em; }
     }
-    @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 2dppx) {
+    @media (-webkit-min-device-pixel-ratio: 2),(min-resolution: 2dppx) {
       body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
     }
 
-    /* ── Login Screen ── */
+    /* ── Login ── */
     #loginScreen {
       position: fixed; inset: 0; background: var(--bg);
-      display: flex; align-items: center; justify-content: center;
-      z-index: 1000;
+      display: flex; align-items: center; justify-content: center; z-index: 1000;
     }
-    .login-card {
-      width: 360px; text-align: center;
-    }
+    .login-card { width: 360px; text-align: center; }
     .login-icon {
       width: 52px; height: 52px; background: #eef6ff; border-radius: 14px;
-      display: flex; align-items: center; justify-content: center;
-      margin: 0 auto 20px;
+      display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;
     }
     .login-card h1 { font-size: 22px; font-weight: 800; margin-bottom: 6px; letter-spacing: -0.03em; }
     .login-card p { font-size: 14px; color: var(--muted); margin-bottom: 32px; }
@@ -69,8 +61,8 @@
     .login-fields input {
       padding: 14px 18px; border: 1.5px solid var(--line2);
       border-radius: 12px; font-size: 16px; font-family: inherit;
-      color: var(--ink); background: var(--white); transition: border-color .15s;
-      outline: none; text-align: left; width: 100%;
+      color: var(--ink); background: var(--white); outline: none;
+      transition: border-color .15s; width: 100%;
     }
     .login-fields input:focus { border-color: var(--primary); }
     .login-fields input[type="password"] { letter-spacing: 0.2em; text-align: center; }
@@ -91,15 +83,12 @@
     }
     .header-left { display: flex; align-items: center; }
     .logo-img { height: 34px; width: auto; display: block; }
-    .header-sep { width: 1px; height: 30px; background: var(--line2); margin: 0 20px; flex-shrink: 0; }
-    .header-title-area { display: flex; flex-direction: column; justify-content: center; gap: 2px; }
+    .header-sep { width: 1px; height: 30px; background: var(--line2); margin: 0 20px; }
+    .header-title-area { display: flex; flex-direction: column; gap: 2px; }
     .header-org { font-size: 10px; font-weight: 600; color: var(--muted); letter-spacing: .06em; text-transform: uppercase; }
     .header-system { font-size: 17px; font-weight: 800; color: var(--ink); letter-spacing: -.02em; }
     .header-right { display: flex; align-items: center; gap: 8px; }
-    .user-badge {
-      display: flex; align-items: center; gap: 8px;
-      padding: 6px 12px; background: var(--line); border-radius: 20px;
-    }
+    .user-badge { display: flex; align-items: center; gap: 8px; padding: 6px 12px; background: var(--line); border-radius: 20px; }
     .user-badge span { font-size: 13px; font-weight: 600; color: var(--ink2); }
     .btn-sm {
       display: inline-flex; align-items: center; gap: 5px;
@@ -115,49 +104,78 @@
     .btn-sm.primary { background: var(--primary); color: white; border-color: var(--primary); }
     .btn-sm.primary:hover { background: var(--primary-dark); }
 
-    /* ── Wizard Progress ── */
+    /* ── Step Trail ── */
     .wizard-bar {
       background: var(--white); border-bottom: 1px solid var(--line2);
-      padding: 0 28px; display: flex; align-items: center; gap: 0;
+      box-shadow: 0 1px 4px rgba(0,0,0,.04);
+      position: sticky; top: 60px; z-index: 150;
     }
-    .wizard-steps {
-      display: flex; align-items: center; gap: 0; padding: 16px 0;
-      width: 100%; max-width: 700px;
+    .step-trail {
+      display: flex; align-items: center; gap: 4px;
+      padding: 16px 28px 8px; overflow-x: auto; scrollbar-width: none;
     }
-    .wizard-step {
-      display: flex; align-items: center; gap: 10px; cursor: pointer;
-      padding: 8px 14px; border-radius: 10px; transition: background .15s;
-      flex-shrink: 0;
+    .step-trail::-webkit-scrollbar { display: none; }
+    .trail-item {
+      display: flex; align-items: center;
+      cursor: pointer; flex-shrink: 0; border: none; background: none;
+      padding: 4px 0; -webkit-tap-highlight-color: transparent;
     }
-    .wizard-step:hover { background: var(--line); }
-    .step-num {
+    .trail-connector {
+      flex: 1; height: 2px; border-radius: 1px; background: var(--line2);
+      min-width: 16px; flex-shrink: 1; max-width: 56px; transition: background .3s;
+    }
+    .trail-connector.done { background: linear-gradient(90deg, #3182f6, #63a6f8); }
+    .trail-dot {
       width: 28px; height: 28px; border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
-      font-size: 13px; font-weight: 700; flex-shrink: 0;
-      background: var(--step-wait); color: var(--muted);
-      transition: all .2s;
+      font-size: 12px; font-weight: 700; transition: all 0.25s; position: relative;
     }
-    .step-num.active { background: var(--step-active); color: white; }
-    .step-num.done { background: var(--step-done); color: white; }
-    .step-label { font-size: 13px; font-weight: 600; color: var(--muted2); transition: color .2s; }
-    .step-label.active { color: var(--primary); }
-    .step-label.done { color: var(--green); }
-    .step-connector {
-      flex: 1; height: 2px; background: var(--line2); margin: 0 8px;
-      transition: background .2s; min-width: 20px;
+    .trail-item.future .trail-dot { background: #f0f2f5; color: #c9cdd2; }
+    .trail-item.done .trail-dot { background: #dbeeff; color: var(--primary); }
+    .trail-item.current .trail-dot {
+      background: linear-gradient(135deg, #3182f6, #6ea8fe);
+      color: #fff; box-shadow: 0 4px 12px rgba(49,130,246,0.4);
     }
-    .step-connector.done { background: var(--step-done); }
+    .trail-item.current .trail-dot::after {
+      content: ''; position: absolute; inset: -4px; border-radius: 50%;
+      background: rgba(49,130,246,0.15); z-index: -1;
+    }
+    .trail-current-info {
+      padding: 2px 28px 12px; font-size: 12px; font-weight: 700;
+      color: var(--primary); letter-spacing: -0.02em;
+    }
 
     /* ── Main Layout ── */
     #mainApp { display: none; min-height: 100vh; }
     .wizard-content { padding: 32px 28px; max-width: 860px; margin: 0 auto; }
 
+    /* ── Question Card (09-style) ── */
+    .question-card { text-align: center; padding: 40px 28px 32px; }
+    .question-heading {
+      font-size: 28px; font-weight: 800; color: var(--ink);
+      letter-spacing: -0.03em; line-height: 1.35; margin-bottom: 8px;
+    }
+    .question-desc { font-size: 15px; color: var(--muted); margin-bottom: 32px; }
+    .option-cards { display: flex; flex-direction: column; gap: 12px; max-width: 480px; margin: 0 auto; }
+    .option-card {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 20px; background: var(--white);
+      border: 2px solid var(--line2); border-radius: 16px;
+      cursor: pointer; transition: all .15s; font-family: inherit;
+      text-align: left; width: 100%;
+    }
+    .option-card:hover { border-color: var(--primary); background: var(--primary-light); }
+    .option-card.selected { border-color: var(--primary); background: var(--primary-light); }
+    .option-card-content { flex: 1; }
+    .option-card-title { font-size: 16px; font-weight: 700; color: var(--ink); }
+    .option-card-desc { font-size: 13px; color: var(--muted); margin-top: 3px; }
+    .option-card-chevron { color: var(--muted2); flex-shrink: 0; margin-left: 12px; }
+
     /* ── Card ── */
     .card {
       background: var(--white); border-radius: 16px;
       border: 1px solid var(--line2); padding: 28px;
-      box-shadow: 0 2px 10px rgba(25,31,40,.05);
-      margin-bottom: 20px;
+      box-shadow: 0 2px 10px rgba(25,31,40,.05); margin-bottom: 20px;
     }
     .card-title {
       font-size: 16px; font-weight: 800; color: var(--ink);
@@ -169,10 +187,9 @@
       background: var(--primary-light); flex-shrink: 0;
     }
 
-    /* ── Step Action Bar ── */
+    /* ── Step Actions ── */
     .step-actions {
-      display: flex; justify-content: space-between; align-items: center;
-      margin-top: 8px;
+      display: flex; justify-content: space-between; align-items: center; margin-top: 8px;
     }
     .btn-prev, .btn-next {
       display: inline-flex; align-items: center; gap: 7px;
@@ -187,7 +204,7 @@
     .btn-next.green { background: var(--green); }
     .btn-next.green:hover { background: #008f54; }
 
-    /* ── Form Elements ── */
+    /* ── Form ── */
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
     .form-row.three { grid-template-columns: 1fr 1fr 1fr; }
     .form-row.one { grid-template-columns: 1fr; }
@@ -197,23 +214,23 @@
     .form-col input, .form-col select {
       padding: 10px 12px; border: 1.5px solid var(--line2);
       border-radius: 9px; font-size: 14px; font-family: inherit;
-      color: var(--ink); background: var(--white); transition: border-color .15s;
-      outline: none;
+      color: var(--ink); background: var(--white); outline: none; transition: border-color .15s;
     }
     .form-col input:focus, .form-col select:focus { border-color: var(--primary); }
     .form-hint { font-size: 12px; color: var(--muted); margin-top: 2px; }
 
-    /* ── Car Profile Banner ── */
-    .car-banner {
+    /* ── Car Banner ── */
+    .car-profile-preview {
       background: var(--primary-light); border: 1.5px solid #c5d9fb;
       border-radius: 12px; padding: 14px 18px;
-      display: flex; align-items: center; justify-content: space-between; gap: 12px;
-      margin-bottom: 20px;
+      display: flex; align-items: center; gap: 12px; margin-bottom: 24px;
     }
-    .car-banner-info { display: flex; align-items: center; gap: 12px; }
-    .car-banner-icon { width: 38px; height: 38px; border-radius: 10px; background: var(--primary); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-    .car-banner-text p { font-size: 12px; color: var(--primary); font-weight: 600; }
-    .car-banner-text span { font-size: 15px; font-weight: 800; color: var(--ink); }
+    .car-preview-icon {
+      width: 40px; height: 40px; border-radius: 10px; background: var(--primary);
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .car-preview-text p { font-size: 12px; color: var(--primary); font-weight: 600; }
+    .car-preview-text strong { font-size: 15px; font-weight: 800; color: var(--ink); display: block; }
 
     /* ── Fuel Card ── */
     .fuel-display {
@@ -233,11 +250,9 @@
     .opinet-status.fail { color: var(--warn); }
 
     /* ── Trip Table ── */
-    .trip-section { }
     .table-wrap { overflow-x: auto; }
     table.trip-tbl {
-      width: 100%; border-collapse: collapse; font-size: 13px;
-      min-width: 640px;
+      width: 100%; border-collapse: collapse; font-size: 13px; min-width: 660px;
     }
     table.trip-tbl th {
       padding: 10px 10px; background: var(--line); color: var(--ink2);
@@ -245,23 +260,23 @@
       white-space: nowrap;
     }
     table.trip-tbl td {
-      padding: 8px 6px; border-bottom: 1px solid var(--line); text-align: center;
-      vertical-align: middle;
+      padding: 8px 6px; border-bottom: 1px solid var(--line);
+      text-align: center; vertical-align: middle;
     }
     table.trip-tbl tbody tr:hover { background: #fafbfc; }
+    .trip-tbl.toll-hidden .toll-col { display: none; }
     .trip-place-btn {
-      max-width: 140px; width: 100%;
+      max-width: 170px; width: 100%;
       padding: 6px 10px; border: 1.5px solid var(--line2);
       border-radius: 7px; font-size: 12px; font-family: inherit;
       background: var(--white); cursor: pointer; text-align: left;
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+      overflow: hidden; line-height: 1.3; min-height: 30px;
       color: var(--muted); transition: border-color .15s;
     }
     .trip-place-btn.set { color: var(--ink); border-color: var(--primary); }
     .trip-place-btn:hover { border-color: var(--primary); }
-    .transport-toggle {
-      display: flex; gap: 4px;
-    }
+    .transport-toggle { display: flex; gap: 4px; }
     .tt-btn {
       padding: 4px 8px; border-radius: 6px; border: 1px solid var(--line2);
       font-size: 11px; font-weight: 600; cursor: pointer; font-family: inherit;
@@ -295,39 +310,30 @@
     }
     .add-row-btn:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-light); }
 
-    /* ── Summary Cards (Preview) ── */
+    /* ── Summary ── */
     .summary-top {
       background: linear-gradient(135deg, #1a56db 0%, #3182f6 100%);
       border-radius: 16px; padding: 28px; color: white; margin-bottom: 20px;
     }
     .summary-top h2 { font-size: 18px; font-weight: 800; margin-bottom: 6px; opacity: .9; }
     .summary-top .summary-name { font-size: 26px; font-weight: 900; letter-spacing: -.03em; }
-    .summary-grid {
-      display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-top: 20px;
-    }
+    .summary-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-top: 20px; }
     .summary-item { background: rgba(255,255,255,.15); border-radius: 12px; padding: 14px 16px; }
     .summary-item label { font-size: 11px; font-weight: 600; opacity: .8; letter-spacing: .04em; }
     .summary-item .val { font-size: 22px; font-weight: 900; letter-spacing: -.03em; }
     .summary-item .unit { font-size: 13px; font-weight: 600; opacity: .8; }
 
-    /* ── Preview print table ── */
-    .preview-section { }
-    table.preview-tbl {
-      width: 100%; border-collapse: collapse; font-size: 13px;
-    }
+    /* ── Preview Table ── */
+    table.preview-tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
     table.preview-tbl th {
       padding: 10px 12px; background: var(--line); color: var(--ink2);
-      font-weight: 700; border-bottom: 2px solid var(--line2); text-align: center;
-      white-space: nowrap;
+      font-weight: 700; border-bottom: 2px solid var(--line2); text-align: center; white-space: nowrap;
     }
-    table.preview-tbl td {
-      padding: 9px 12px; border-bottom: 1px solid var(--line); text-align: center;
-    }
-    table.preview-tbl tfoot td {
-      font-weight: 700; background: var(--line); border-top: 2px solid var(--line2);
-    }
+    table.preview-tbl td { padding: 9px 12px; border-bottom: 1px solid var(--line); text-align: center; }
+    table.preview-tbl tfoot td { font-weight: 700; background: var(--line); border-top: 2px solid var(--line2); }
+    .preview-tbl.toll-hidden .toll-col { display: none; }
 
-    /* ── Info Grid (preview) ── */
+    /* ── Info Grid ── */
     .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
     .info-item { display: flex; flex-direction: column; gap: 2px; }
     .info-item label { font-size: 11px; font-weight: 600; color: var(--muted); letter-spacing: .04em; }
@@ -344,9 +350,7 @@
       box-shadow: 0 20px 60px rgba(0,0,0,.2);
     }
     .modal-title { font-size: 17px; font-weight: 800; color: var(--ink); margin-bottom: 16px; }
-    .search-row {
-      display: flex; gap: 8px; margin-bottom: 12px;
-    }
+    .search-row { display: flex; gap: 8px; margin-bottom: 12px; }
     .search-row input {
       flex: 1; padding: 11px 14px; border: 1.5px solid var(--line2);
       border-radius: 9px; font-size: 14px; font-family: inherit; outline: none;
@@ -369,18 +373,8 @@
     .place-result-item .paddr { font-size: 12px; color: var(--muted); }
     .place-placeholder { text-align: center; padding: 24px; color: var(--muted); font-size: 14px; }
 
-    /* ── Hipass Modal ── */
-    .hipass-info { font-size: 14px; color: var(--ink2); line-height: 1.8; }
-    .hipass-link {
-      display: inline-flex; align-items: center; gap: 6px;
-      padding: 10px 16px; background: var(--primary); color: white;
-      border-radius: 9px; text-decoration: none; font-size: 14px; font-weight: 700;
-      margin-top: 16px; cursor: pointer; border: none; font-family: inherit;
-    }
-    .hipass-link:hover { background: var(--primary-dark); }
-
-    /* ── Admin Panel ── */
-    #adminPanel {
+    /* ── Admin / Account Panel ── */
+    #adminPanel, #accountPanel {
       position: fixed; inset: 0; background: var(--bg);
       z-index: 300; overflow-y: auto; display: none;
     }
@@ -395,40 +389,29 @@
     .user-table th { padding: 10px 14px; background: var(--line); font-weight: 700; font-size: 13px; text-align: left; border-bottom: 2px solid var(--line2); }
     .user-table td { padding: 12px 14px; border-bottom: 1px solid var(--line); font-size: 14px; vertical-align: middle; }
     .user-table tr:hover td { background: #fafbfc; }
-    .role-badge {
-      display: inline-block; padding: 3px 9px; border-radius: 20px; font-size: 11px; font-weight: 700;
-    }
+    .role-badge { display: inline-block; padding: 3px 9px; border-radius: 20px; font-size: 11px; font-weight: 700; }
     .role-badge.admin { background: #fef3c7; color: #b45309; }
     .role-badge.user { background: var(--primary-light); color: var(--primary); }
 
-    /* ── Print ── */
+    /* ── Utils ── */
+    .hidden { display: none !important; }
+    .divider { height: 1px; background: var(--line2); margin: 20px 0; }
+
     @media print {
       #loginScreen, .header, .wizard-bar, .step-actions, .add-row-btn,
-      #adminPanel, .del-btn, .trip-place-btn, .transport-toggle,
-      .btn-prev, .btn-next, .btn-sm, #modalSearch, #modalHipass { display: none !important; }
+      #adminPanel, #accountPanel, .del-btn, .trip-place-btn, .transport-toggle,
+      .btn-prev, .btn-next, .btn-sm, #modalSearch { display: none !important; }
       body { background: white; }
       .wizard-content { padding: 16px 0; max-width: 100%; }
       .card { box-shadow: none; border: 1px solid #ddd; page-break-inside: avoid; }
       .summary-top { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
-      #step4 { display: block !important; }
+      #step6 { display: block !important; }
     }
-
-    /* ── Utils ── */
-    .hidden { display: none !important; }
-    .flex-center { display: flex; align-items: center; justify-content: center; }
-    .gap8 { gap: 8px; }
-    .mt12 { margin-top: 12px; }
-    .text-right { text-align: right; }
-    .text-muted { color: var(--muted); }
-    .font-bold { font-weight: 700; }
-    .divider { height: 1px; background: var(--line2); margin: 20px 0; }
   </style>
 </head>
 <body>
 
-<!-- ═══════════════════════════════════════════════════════
-     LOGIN SCREEN
-════════════════════════════════════════════════════════ -->
+<!-- LOGIN -->
 <div id="loginScreen">
   <div class="login-card">
     <div class="login-icon">
@@ -449,16 +432,12 @@
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════════
-     MAIN APP
-════════════════════════════════════════════════════════ -->
+<!-- MAIN APP -->
 <div id="mainApp">
   <!-- Header -->
   <div class="header">
     <div class="header-left">
-      <div class="smc-logo">
-        <img src="smc-logo.png" class="logo-img" alt="SMC" onerror="this.style.display='none'">
-      </div>
+      <img src="smc-logo.png" class="logo-img" alt="SMC" onerror="this.style.display='none'">
       <div class="header-sep"></div>
       <div class="header-title-area">
         <div class="header-org">재무관리파트 · 경영지원팀</div>
@@ -472,143 +451,156 @@
         </svg>
         <span id="headerUserName">사용자</span>
       </div>
-      <button class="btn-sm" id="btnMyCarMgmt" onclick="openMyCar()">나의 자동차</button>
+      <button class="btn-sm" onclick="openAccount()">계정관리</button>
       <button class="btn-sm" id="btnAdmin" onclick="openAdmin()" style="display:none">관리자</button>
       <button class="btn-sm warn" onclick="doLogout()">로그아웃</button>
     </div>
   </div>
 
-  <!-- Wizard Progress Bar -->
+  <!-- Step Trail -->
   <div class="wizard-bar">
-    <div class="wizard-steps">
-      <div class="wizard-step" onclick="gotoStep(1)">
-        <div class="step-num" id="sn1">1</div>
-        <div class="step-label" id="sl1">차량정보</div>
-      </div>
-      <div class="step-connector" id="sc12"></div>
-      <div class="wizard-step" onclick="gotoStep(2)">
-        <div class="step-num" id="sn2">2</div>
-        <div class="step-label" id="sl2">유류단가</div>
-      </div>
-      <div class="step-connector" id="sc23"></div>
-      <div class="wizard-step" onclick="gotoStep(3)">
-        <div class="step-num" id="sn3">3</div>
-        <div class="step-label" id="sl3">이동내역</div>
-      </div>
-      <div class="step-connector" id="sc34"></div>
-      <div class="wizard-step" onclick="gotoStep(4)">
-        <div class="step-num" id="sn4">4</div>
-        <div class="step-label" id="sl4">정산신청</div>
+    <div class="step-trail" id="stepTrail"></div>
+    <div class="trail-current-info" id="trailInfo"></div>
+  </div>
+
+  <!-- ── STEP 1: 이동수단 선택 ── -->
+  <div id="step1" class="wizard-content">
+    <div class="card question-card">
+      <div class="question-heading">어떤 이동수단을<br>이용하셨나요?</div>
+      <div class="question-desc">이동수단에 따라 계산 방식이 달라집니다</div>
+      <div class="option-cards">
+        <button class="option-card" id="optCar" onclick="selectMode('car')">
+          <div class="option-card-content">
+            <div class="option-card-title">자차 이용</div>
+            <div class="option-card-desc">차량 연비와 유류단가로 교통비를 자동 계산합니다</div>
+          </div>
+          <svg class="option-card-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+        <button class="option-card" id="optTaxi" onclick="selectMode('taxi')">
+          <div class="option-card-content">
+            <div class="option-card-title">택시 / 대중교통 이용</div>
+            <div class="option-card-desc">실제 지출 금액을 직접 입력합니다</div>
+          </div>
+          <svg class="option-card-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
       </div>
     </div>
   </div>
 
-  <!-- ── STEP 1: 차량정보 ── -->
-  <div id="step1" class="wizard-content">
-    <div class="card" id="carFirstBanner" style="background: linear-gradient(135deg, #e8f0fe, #f0faf5); border: none; display:none">
-      <div style="display:flex; align-items:center; gap:14px;">
-        <div style="width:44px;height:44px;border-radius:12px;background:var(--primary);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
-          </svg>
-        </div>
-        <div>
-          <div style="font-size:11px;font-weight:600;color:var(--primary);letter-spacing:.04em;margin-bottom:2px;">처음 이용하시나요?</div>
-          <div style="font-size:16px;font-weight:800;color:var(--ink);">나의 자동차 정보를 입력해 주세요</div>
-          <div style="font-size:13px;color:var(--muted);margin-top:2px;">한 번 저장하면 다음부터 자동으로 불러옵니다.</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="car-banner" id="carLoadedBanner" style="display:none">
-      <div class="car-banner-info">
-        <div class="car-banner-icon">
+  <!-- ── STEP 2: 차량정보 (자차만) ── -->
+  <div id="step2" class="wizard-content hidden">
+    <!-- 저장된 차량정보 불러오기 질문 -->
+    <div class="card question-card" id="loadCarQuestion">
+      <div class="question-heading">저장된 차량 정보를<br>불러올까요?</div>
+      <div class="question-desc" id="loadCarDesc">이전에 저장한 차량 정보가 있습니다</div>
+      <div id="savedCarPreview" class="car-profile-preview" style="max-width:480px;margin:0 auto 24px;">
+        <div class="car-preview-icon">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
           </svg>
         </div>
-        <div class="car-banner-text">
-          <p>내 차량 정보 불러옴</p>
-          <span id="carBannerText">-</span>
+        <div class="car-preview-text">
+          <p>저장된 차량</p>
+          <strong id="savedCarText">-</strong>
         </div>
       </div>
-      <button class="btn-sm" onclick="openMyCar()">수정</button>
+      <div class="option-cards">
+        <button class="option-card" id="optLoadYes" onclick="useSavedCar()">
+          <div class="option-card-content">
+            <div class="option-card-title">네, 불러옵니다</div>
+            <div class="option-card-desc">저장된 차량 정보로 바로 진행합니다</div>
+          </div>
+          <svg class="option-card-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+        <button class="option-card" id="optLoadNo" onclick="enterNewCar()">
+          <div class="option-card-content">
+            <div class="option-card-title">아니요, 새로 입력</div>
+            <div class="option-card-desc">차량 정보를 직접 입력합니다</div>
+          </div>
+          <svg class="option-card-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
     </div>
 
-    <div class="card">
-      <div class="card-title">
-        <div class="card-title-icon">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3182f6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+    <!-- 차량정보 + 기본정보 입력폼 -->
+    <div id="carInputForm" class="hidden">
+      <div class="card">
+        <div class="card-title">
+          <div class="card-title-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3182f6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+            </svg>
+          </div>
+          기본정보
+        </div>
+        <div class="form-row">
+          <div class="form-col">
+            <label>작성일 <span class="req">*</span></label>
+            <input type="date" id="f_date">
+          </div>
+          <div class="form-col">
+            <label>신청자 <span class="req">*</span></label>
+            <input type="text" id="f_name" placeholder="홍길동">
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <div class="card-title-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3182f6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
+            </svg>
+          </div>
+          차량정보
+        </div>
+        <div class="form-row three">
+          <div class="form-col">
+            <label>차량번호 <span class="req">*</span></label>
+            <input type="text" id="f_plate" placeholder="12가 3456">
+          </div>
+          <div class="form-col">
+            <label>연료 구분 <span class="req">*</span></label>
+            <select id="f_fuel" onchange="updateEfficiency()">
+              <option value="휘발유">휘발유</option>
+              <option value="경유">경유</option>
+              <option value="LPG">LPG</option>
+            </select>
+          </div>
+          <div class="form-col" id="dispCol">
+            <label>배기량 <span class="req">*</span></label>
+            <select id="f_disp" onchange="updateEfficiency()">
+              <option value="1000cc 미만">1000cc 미만</option>
+              <option value="1500cc 이하">1500cc 이하</option>
+              <option value="1500cc 초과">1500cc 초과</option>
+            </select>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--line);border-radius:9px;margin-top:4px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8b95a1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
           </svg>
-        </div>
-        기본정보
-      </div>
-      <div class="form-row">
-        <div class="form-col">
-          <label>작성일 <span class="req">*</span></label>
-          <input type="date" id="f_date">
-        </div>
-        <div class="form-col">
-          <label>신청자 <span class="req">*</span></label>
-          <input type="text" id="f_name" placeholder="홍길동">
+          <span style="font-size:13px;color:var(--muted);">적용 연비: <strong id="effDisplay" style="color:var(--ink)">8 km/L</strong></span>
+          <label style="margin-left:auto;display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--ink2);cursor:pointer;">
+            <input type="checkbox" id="saveCarCheck" checked style="width:14px;height:14px;accent-color:var(--primary);">
+            차량정보 저장
+          </label>
         </div>
       </div>
-    </div>
-
-    <div class="card">
-      <div class="card-title">
-        <div class="card-title-icon">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3182f6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
-          </svg>
-        </div>
-        차량정보
+      <div class="step-actions">
+        <button class="btn-prev" onclick="gotoStep(1)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          이전
+        </button>
+        <button class="btn-next" onclick="step2Next()">
+          다음: 유류단가
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
       </div>
-      <div class="form-row three">
-        <div class="form-col">
-          <label>차량번호 <span class="req">*</span></label>
-          <input type="text" id="f_plate" placeholder="12가 3456">
-        </div>
-        <div class="form-col">
-          <label>연료 구분 <span class="req">*</span></label>
-          <select id="f_fuel" onchange="updateEfficiency()">
-            <option value="휘발유">휘발유</option>
-            <option value="경유">경유</option>
-            <option value="LPG">LPG</option>
-          </select>
-        </div>
-        <div class="form-col" id="dispCol">
-          <label>배기량 <span class="req">*</span></label>
-          <select id="f_disp" onchange="updateEfficiency()">
-            <option value="1000cc 미만">1000cc 미만</option>
-            <option value="1500cc 이하">1500cc 이하</option>
-            <option value="1500cc 초과">1500cc 초과</option>
-          </select>
-        </div>
-      </div>
-      <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--line);border-radius:9px;margin-top:4px;">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8b95a1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
-        </svg>
-        <span style="font-size:13px;color:var(--muted);">적용 연비: <strong id="effDisplay" style="color:var(--ink)">8 km/L</strong></span>
-        <button class="btn-sm" onclick="saveCarProfile()" style="margin-left:auto;">차량정보 저장</button>
-      </div>
-    </div>
-
-    <div class="step-actions">
-      <div></div>
-      <button class="btn-next" onclick="goStep2()">
-        다음: 유류단가
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="9 18 15 12 9 6"/>
-        </svg>
-      </button>
     </div>
   </div>
 
-  <!-- ── STEP 2: 유류단가 ── -->
-  <div id="step2" class="wizard-content hidden">
+  <!-- ── STEP 3: 유류단가 (자차만) ── -->
+  <div id="step3" class="wizard-content hidden">
     <div class="card">
       <div class="card-title">
         <div class="card-title-icon">
@@ -619,7 +611,7 @@
         유류단가 조회
       </div>
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap;">
-        <select id="fuelTypeSelect" style="padding:10px 12px;border:1.5px solid var(--line2);border-radius:9px;font-size:14px;font-family:inherit;outline:none;" onchange="onFuelTypeChange()">
+        <select id="fuelTypeSelect" style="padding:10px 12px;border:1.5px solid var(--line2);border-radius:9px;font-size:14px;font-family:inherit;outline:none;">
           <option value="B027">휘발유</option>
           <option value="D047">경유</option>
           <option value="L007">LPG</option>
@@ -632,7 +624,6 @@
         </button>
         <span id="opinetStatus" class="opinet-status">자동조회를 눌러주세요</span>
       </div>
-
       <div class="fuel-display">
         <div class="fuel-main">
           <label>현재 유류단가 (원/L)</label>
@@ -655,58 +646,60 @@
       </div>
     </div>
     <div class="step-actions">
-      <button class="btn-prev" onclick="gotoStep(1)">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="15 18 9 12 15 6"/>
-        </svg>
+      <button class="btn-prev" onclick="gotoStep(2)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
         이전
       </button>
-      <button class="btn-next" onclick="gotoStep(3)">
+      <button class="btn-next" onclick="gotoStep(4)">
         다음: 이동내역
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="9 18 15 12 9 6"/>
-        </svg>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
       </button>
     </div>
   </div>
 
-  <!-- ── STEP 3: 이동내역 ── -->
-  <div id="step3" class="wizard-content hidden">
+  <!-- ── STEP 4: 이동내역 ── -->
+  <div id="step4" class="wizard-content hidden">
+    <!-- 택시 모드: 기본정보 입력 -->
+    <div id="taxiBasicInfo" class="card hidden">
+      <div class="card-title">기본정보</div>
+      <div class="form-row">
+        <div class="form-col">
+          <label>작성일 <span class="req">*</span></label>
+          <input type="date" id="f_date2">
+        </div>
+        <div class="form-col">
+          <label>신청자 <span class="req">*</span></label>
+          <input type="text" id="f_name2" placeholder="홍길동">
+        </div>
+      </div>
+    </div>
+
     <div class="card">
       <div class="card-title">
         <div class="card-title-icon">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3182f6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+            <line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/>
           </svg>
         </div>
         이동내역
-        <div style="margin-left:auto;display:flex;gap:8px;">
-          <button class="btn-sm" onclick="openHipassModal()">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
-            </svg>
-            하이패스 조회
-          </button>
-        </div>
+        <span id="modeTag" style="margin-left:auto;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;background:var(--primary-light);color:var(--primary);">자차</span>
       </div>
-
       <div class="table-wrap">
-        <table class="trip-tbl">
+        <table class="trip-tbl" id="tripTable">
           <thead>
             <tr>
               <th style="width:80px">월/일</th>
               <th style="width:90px">이동수단</th>
-              <th style="width:130px">출발지</th>
-              <th style="width:130px">도착지</th>
+              <th style="width:150px">출발지</th>
+              <th style="width:150px">도착지</th>
               <th style="width:80px">거리(km)</th>
-              <th style="width:80px">유류비</th>
-              <th style="width:80px">통행료 등</th>
+              <th style="width:85px">교통비(유류비)</th>
+              <th class="toll-col" style="width:90px">하이패스/주차비</th>
               <th style="width:80px">합계</th>
               <th style="width:32px"></th>
             </tr>
           </thead>
-          <tbody id="tripBody">
-          </tbody>
+          <tbody id="tripBody"></tbody>
         </table>
       </div>
       <button class="add-row-btn" onclick="addTrip()">
@@ -717,25 +710,66 @@
       </button>
     </div>
     <div class="step-actions">
-      <button class="btn-prev" onclick="gotoStep(2)">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="15 18 9 12 15 6"/>
-        </svg>
+      <button class="btn-prev" id="btnStep4Prev" onclick="step4Prev()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
         이전
       </button>
-      <button class="btn-next green" onclick="goStep4()">
-        정산신청 미리보기
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="9 18 15 12 9 6"/>
-        </svg>
+      <button class="btn-next" onclick="step4Next()">
+        다음: 통행료 확인
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
       </button>
     </div>
   </div>
 
-  <!-- ── STEP 4: 정산신청 미리보기 ── -->
-  <div id="step4" class="wizard-content hidden">
-    <!-- 정산신청 합계 -->
-    <div class="summary-top" id="previewSummary">
+  <!-- ── STEP 5: 하이패스/주차비 ── -->
+  <div id="step5" class="wizard-content hidden">
+    <div class="card question-card">
+      <div class="question-heading">하이패스 또는<br>주차비가 발생했나요?</div>
+      <div class="question-desc">고속도로 통행료, 주차비 등이 있으면 선택해 주세요</div>
+      <div class="option-cards">
+        <button class="option-card" id="optTollYes" onclick="setHasToll(true)">
+          <div class="option-card-content">
+            <div class="option-card-title">네, 있습니다</div>
+            <div class="option-card-desc">각 구간의 통행료/주차비를 이동내역에서 입력합니다</div>
+          </div>
+          <svg class="option-card-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+        <button class="option-card" id="optTollNo" onclick="setHasToll(false)">
+          <div class="option-card-content">
+            <div class="option-card-title">아니요, 없습니다</div>
+            <div class="option-card-desc">통행료/주차비 없이 유류비만 정산합니다</div>
+          </div>
+          <svg class="option-card-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+    </div>
+    <!-- 하이패스 있음 선택 시: 이동내역으로 돌아가 입력 안내 -->
+    <div id="tollInputGuide" class="card hidden" style="text-align:center;padding:20px;">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#3182f6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin:0 auto 12px;">
+        <rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
+      </svg>
+      <div style="font-size:16px;font-weight:700;color:var(--ink);margin-bottom:6px;">이동내역에서 금액을 입력해 주세요</div>
+      <div style="font-size:13px;color:var(--muted);margin-bottom:16px;">
+        <a href="https://www.hipass.co.kr" target="_blank" style="color:var(--primary);text-decoration:none;font-weight:600;">하이패스 통행료 조회 →</a>
+        &nbsp;에서 확인 후 각 구간에 입력하세요
+      </div>
+      <button class="btn-sm primary" onclick="gotoStep(4)">이동내역으로 이동</button>
+    </div>
+    <div class="step-actions">
+      <button class="btn-prev" onclick="gotoStep(4)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        이전
+      </button>
+      <button class="btn-next green" id="btnToReport" onclick="step5Next()" style="display:none">
+        최종 정산서 보기
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- ── STEP 6: 최종 정산서 ── -->
+  <div id="step6" class="wizard-content hidden">
+    <div class="summary-top">
       <h2>정산신청</h2>
       <div class="summary-name" id="pvName">-</div>
       <div style="font-size:13px;opacity:.8;margin-top:2px;" id="pvDate">-</div>
@@ -758,7 +792,6 @@
       </div>
     </div>
 
-    <!-- 이동내역 -->
     <div class="card">
       <div class="card-title">
         <div class="card-title-icon">
@@ -777,8 +810,8 @@
               <th>출발지</th>
               <th>도착지</th>
               <th>거리(km)</th>
-              <th>유류비</th>
-              <th>통행료 등</th>
+              <th>교통비(유류비)</th>
+              <th class="toll-col">하이패스/주차비</th>
               <th>합계</th>
             </tr>
           </thead>
@@ -788,7 +821,6 @@
       </div>
     </div>
 
-    <!-- 기본정보 & 유류단가 -->
     <div class="card">
       <div class="card-title">
         <div class="card-title-icon">
@@ -801,12 +833,9 @@
       <div class="info-grid" id="pvInfo"></div>
     </div>
 
-    <!-- Actions -->
     <div class="step-actions" style="margin-bottom:32px;">
-      <button class="btn-prev" onclick="gotoStep(3)">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="15 18 9 12 15 6"/>
-        </svg>
+      <button class="btn-prev" onclick="gotoStep(5)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
         수정
       </button>
       <div style="display:flex;gap:10px;">
@@ -835,9 +864,7 @@
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════════
-     ADMIN PANEL
-════════════════════════════════════════════════════════ -->
+<!-- ADMIN PANEL -->
 <div id="adminPanel">
   <div class="admin-header">
     <h1>관리자 페이지</h1>
@@ -850,19 +877,10 @@
         <button class="btn-sm primary" onclick="openAddUser()">+ 사용자 추가</button>
       </div>
       <div id="addUserForm" style="display:none;background:var(--line);border-radius:12px;padding:16px;margin-bottom:16px;">
-        <div class="form-row">
-          <div class="form-col">
-            <label>아이디</label>
-            <input type="text" id="newUserId" placeholder="아이디">
-          </div>
-          <div class="form-col">
-            <label>이름</label>
-            <input type="text" id="newUserName" placeholder="이름">
-          </div>
-          <div class="form-col">
-            <label>PIN</label>
-            <input type="text" id="newUserPin" placeholder="4자리" maxlength="4">
-          </div>
+        <div class="form-row three">
+          <div class="form-col"><label>아이디</label><input type="text" id="newUserId" placeholder="아이디"></div>
+          <div class="form-col"><label>이름</label><input type="text" id="newUserName" placeholder="이름"></div>
+          <div class="form-col"><label>PIN</label><input type="text" id="newUserPin" placeholder="4자리" maxlength="4"></div>
         </div>
         <div style="display:flex;gap:8px;margin-top:4px;">
           <button class="btn-sm primary" onclick="addUser()">추가</button>
@@ -870,63 +888,84 @@
         </div>
       </div>
       <table class="user-table" id="userTable">
-        <thead>
-          <tr>
-            <th>아이디</th>
-            <th>이름</th>
-            <th>권한</th>
-            <th>차량번호</th>
-            <th>연료</th>
-            <th>배기량</th>
-            <th>작업</th>
-          </tr>
-        </thead>
+        <thead><tr><th>아이디</th><th>이름</th><th>권한</th><th>차량번호</th><th>연료</th><th>배기량</th><th>작업</th></tr></thead>
         <tbody id="userTableBody"></tbody>
       </table>
     </div>
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════════
-     MY CAR MODAL
-════════════════════════════════════════════════════════ -->
-<div id="modalMyCar" class="modal-bg hidden">
-  <div class="modal-box">
-    <div class="modal-title">나의 자동차 관리</div>
-    <div class="form-row">
-      <div class="form-col">
-        <label>차량번호</label>
-        <input type="text" id="mc_plate" placeholder="12가 3456">
+<!-- ACCOUNT PANEL -->
+<div id="accountPanel">
+  <div class="admin-header">
+    <h1>계정관리</h1>
+    <button class="btn-sm warn" onclick="closeAccount()">닫기</button>
+  </div>
+  <div class="admin-content">
+    <!-- 내 프로필 -->
+    <div class="card">
+      <div class="card-title">내 프로필</div>
+      <div class="info-grid" style="margin-bottom:20px;">
+        <div class="info-item"><label>아이디</label><span id="acId">-</span></div>
+        <div class="info-item"><label>이름</label><span id="acName">-</span></div>
       </div>
-      <div class="form-col">
-        <label>연료 구분</label>
-        <select id="mc_fuel" onchange="mcFuelChange()">
-          <option value="휘발유">휘발유</option>
-          <option value="경유">경유</option>
-          <option value="LPG">LPG</option>
-        </select>
+      <div class="divider"></div>
+      <div style="font-size:15px;font-weight:800;color:var(--ink);margin:16px 0;">PIN 변경</div>
+      <div class="form-row">
+        <div class="form-col">
+          <label>현재 PIN</label>
+          <input type="password" id="acOldPin" maxlength="4" placeholder="현재 PIN" style="letter-spacing:0.2em;text-align:center;">
+        </div>
+        <div class="form-col">
+          <label>새 PIN</label>
+          <input type="password" id="acNewPin" maxlength="4" placeholder="새 PIN 4자리" style="letter-spacing:0.2em;text-align:center;">
+        </div>
       </div>
+      <div id="pinChangeMsg" style="font-size:13px;min-height:18px;margin-bottom:8px;"></div>
+      <button class="btn-sm primary" onclick="changePin()">PIN 변경</button>
     </div>
-    <div class="form-row one" id="mcDispRow">
-      <div class="form-col">
-        <label>배기량</label>
-        <select id="mc_disp">
-          <option value="1000cc 미만">1000cc 미만</option>
-          <option value="1500cc 이하">1500cc 이하</option>
-          <option value="1500cc 초과">1500cc 초과</option>
-        </select>
+    <!-- 나의 자동차 -->
+    <div class="card">
+      <div class="card-title">
+        <div class="card-title-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3182f6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
+          </svg>
+        </div>
+        나의 자동차
       </div>
-    </div>
-    <div style="display:flex;gap:8px;margin-top:16px;">
-      <button class="btn-sm primary" onclick="saveMyCar()">저장</button>
-      <button class="btn-sm" onclick="closeMyCar()">닫기</button>
+      <div class="form-row">
+        <div class="form-col">
+          <label>차량번호</label>
+          <input type="text" id="ac_plate" placeholder="12가 3456">
+        </div>
+        <div class="form-col">
+          <label>연료 구분</label>
+          <select id="ac_fuel" onchange="acFuelChange()">
+            <option value="휘발유">휘발유</option>
+            <option value="경유">경유</option>
+            <option value="LPG">LPG</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row one" id="acDispRow">
+        <div class="form-col">
+          <label>배기량</label>
+          <select id="ac_disp">
+            <option value="1000cc 미만">1000cc 미만</option>
+            <option value="1500cc 이하">1500cc 이하</option>
+            <option value="1500cc 초과">1500cc 초과</option>
+          </select>
+        </div>
+      </div>
+      <div style="margin-top:8px;">
+        <button class="btn-sm primary" onclick="saveAccountCar()">저장</button>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════════
-     SEARCH MODAL
-════════════════════════════════════════════════════════ -->
+<!-- SEARCH MODAL -->
 <div id="modalSearch" class="modal-bg hidden">
   <div class="modal-box">
     <div class="modal-title" id="searchModalTitle">장소 검색</div>
@@ -944,87 +983,54 @@
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════════
-     HIPASS MODAL
-════════════════════════════════════════════════════════ -->
-<div id="modalHipass" class="modal-bg hidden">
-  <div class="modal-box">
-    <div class="modal-title">하이패스 이용내역 조회 안내</div>
-    <div class="hipass-info">
-      <p>하이패스 이용내역은 <strong>한국도로공사 고속도로 통행료 조회 서비스</strong>에서 확인할 수 있습니다.</p>
-      <br>
-      <p><strong>조회 방법:</strong></p>
-      <p>① 한국도로공사 고속도로 통행료 조회 서비스 접속</p>
-      <p>② 차량번호 입력 후 이용내역 확인</p>
-      <p>③ 통행료를 각 이동 구간의 <strong>통행료 등</strong> 란에 직접 입력</p>
-      <br>
-      <p style="font-size:12px;color:var(--muted);">※ 보안상 브라우저에서 직접 연동이 불가하여 수동 입력 방식을 안내드립니다.</p>
-    </div>
-    <a href="https://www.hipass.co.kr" target="_blank" class="hipass-link">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
-        <polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>
-      </svg>
-      하이패스 통행료 조회 사이트
-    </a>
-    <div style="display:flex;justify-content:flex-end;margin-top:16px;">
-      <button class="btn-sm" onclick="closeHipass()">닫기</button>
-    </div>
-  </div>
-</div>
-
 <script>
 /* ══════════════════════════════════════════
-   CONSTANTS & STATE
+   CONSTANTS
 ══════════════════════════════════════════ */
 const KAKAO_KEY = '995bceb54093798d160d753693a9c98e'
 const OPINET_KEY = 'F260811056'
 const OPINET_CODES = { '휘발유': 'B027', '경유': 'D047', 'LPG': 'L007' }
-
 const EFFICIENCY = {
   '휘발유': { '1000cc 미만': 9, '1500cc 이하': 8, '1500cc 초과': 7 },
   '경유': 7,
   'LPG': 5
 }
+const STEP_NAMES_CAR = ['이동수단', '차량정보', '유류단가', '이동내역', '통행료', '정산서']
+const STEP_NAMES_TAXI = ['이동수단', '이동내역', '통행료', '정산서']
 
+/* ══════════════════════════════════════════
+   STATE
+══════════════════════════════════════════ */
 let SMC = { name: '성균관대학교 삼성창원병원', x: '128.5726', y: '35.2286' }
-
 const KEY_USERS = 'te_users'
 const KEY_SESSION = 'te_session'
-
 let currentUser = null
 let trips = []
 let tripIdSeq = 0
 let searchResults = []
-let searchCallback = null
 let currentStep = 1
+let tripMode = null    // 'car' | 'taxi'
+let hasToll = null     // true | false
+let activeSearchTripId = null
+let activeSearchField = null
 
 /* ══════════════════════════════════════════
-   STORAGE HELPERS
+   STORAGE
 ══════════════════════════════════════════ */
 function loadUsers() {
   const raw = localStorage.getItem(KEY_USERS)
   if (raw) {
     const users = JSON.parse(raw)
     const adminIdx = users.findIndex(u => u.id === 'admin' && u.role === 'admin')
-    if (adminIdx !== -1) {
-      users[adminIdx].id = '관리자'
-      saveUsers(users)
-    }
+    if (adminIdx !== -1) { users[adminIdx].id = '관리자'; saveUsers(users) }
     return users
   }
-  const defaults = [
-    { id: '관리자', pin: '0000', name: '관리자', role: 'admin', car: null }
-  ]
+  const defaults = [{ id: '관리자', pin: '0000', name: '관리자', role: 'admin', car: null }]
   localStorage.setItem(KEY_USERS, JSON.stringify(defaults))
   return defaults
 }
-function saveUsers(users) {
-  localStorage.setItem(KEY_USERS, JSON.stringify(users))
-}
-function getUser(id) {
-  return loadUsers().find(u => u.id === id)
-}
+function saveUsers(u) { localStorage.setItem(KEY_USERS, JSON.stringify(u)) }
+function getUser(id) { return loadUsers().find(u => u.id === id) }
 function updateUser(id, patch) {
   const users = loadUsers()
   const idx = users.findIndex(u => u.id === id)
@@ -1034,7 +1040,7 @@ function updateUser(id, patch) {
 }
 
 /* ══════════════════════════════════════════
-   LOGIN / LOGOUT
+   AUTH
 ══════════════════════════════════════════ */
 function doLogin() {
   const id = document.getElementById('loginId').value.trim()
@@ -1046,22 +1052,13 @@ function doLogin() {
   currentUser = user
   localStorage.setItem(KEY_SESSION, JSON.stringify({ userId: user.id, loginTime: Date.now() }))
   err.textContent = ''
-  document.getElementById('loginScreen').style.display = 'none'
-  document.getElementById('mainApp').style.display = 'block'
-  document.getElementById('headerUserName').textContent = user.name
-  if (user.role === 'admin') document.getElementById('btnAdmin').style.display = ''
-  loadCarProfile()
-  setDefaultDate()
-  initSMCLocation()
-  updateFuelSelect()
-  gotoStep(1)
+  startApp()
 }
 
 function doLogout() {
   currentUser = null
   localStorage.removeItem(KEY_SESSION)
-  trips = []
-  tripIdSeq = 0
+  trips = []; tripIdSeq = 0; tripMode = null; hasToll = null
   document.getElementById('mainApp').style.display = 'none'
   document.getElementById('loginScreen').style.display = 'flex'
   document.getElementById('loginId').value = ''
@@ -1078,59 +1075,220 @@ function autoLogin() {
   const user = getUser(s.userId)
   if (!user) return
   currentUser = user
+  startApp()
+}
+
+function startApp() {
   document.getElementById('loginScreen').style.display = 'none'
   document.getElementById('mainApp').style.display = 'block'
-  document.getElementById('headerUserName').textContent = user.name
-  if (user.role === 'admin') document.getElementById('btnAdmin').style.display = ''
-  loadCarProfile()
+  document.getElementById('headerUserName').textContent = currentUser.name
+  if (currentUser.role === 'admin') document.getElementById('btnAdmin').style.display = ''
   setDefaultDate()
   initSMCLocation()
-  updateFuelSelect()
+  trips = []; tripIdSeq = 0; tripMode = null; hasToll = null
   gotoStep(1)
 }
 
 /* ══════════════════════════════════════════
-   CAR PROFILE
+   WIZARD NAVIGATION
 ══════════════════════════════════════════ */
-function loadCarProfile() {
-  if (!currentUser || !currentUser.car) {
-    document.getElementById('carFirstBanner').style.display = ''
-    document.getElementById('carLoadedBanner').style.display = 'none'
-    return
+function gotoStep(n) {
+  for (let i = 1; i <= 6; i++)
+    document.getElementById('step' + i).classList.toggle('hidden', i !== n)
+  currentStep = n
+  updateStepUI()
+  if (n === 6) buildPreview()
+  window.scrollTo(0, 0)
+}
+
+function getTrailSteps() {
+  if (!tripMode || tripMode === 'car') return STEP_NAMES_CAR
+  return STEP_NAMES_TAXI
+}
+
+function getTrailStepIds() {
+  if (!tripMode || tripMode === 'car') return [1, 2, 3, 4, 5, 6]
+  return [1, 4, 5, 6]
+}
+
+function trailPosition() {
+  const ids = getTrailStepIds()
+  const names = getTrailSteps()
+  const pos = ids.indexOf(currentStep)
+  return { ids, names, pos }
+}
+
+function updateStepUI() {
+  const { ids, names, pos } = trailPosition()
+  const trail = document.getElementById('stepTrail')
+  let html = ''
+  ids.forEach((id, i) => {
+    const state = i < pos ? 'done' : i === pos ? 'current' : 'future'
+    const dotContent = i < pos
+      ? `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`
+      : (i + 1)
+    html += `<button class="trail-item ${state}" onclick="trailClick(${id})" aria-label="${names[i]}">
+      <div class="trail-dot">${dotContent}</div>
+    </button>`
+    if (i < ids.length - 1) {
+      html += `<div class="trail-connector${i < pos ? ' done' : ''}"></div>`
+    }
+  })
+  trail.innerHTML = html
+  const total = ids.length
+  const cur = pos + 1
+  document.getElementById('trailInfo').textContent = `${cur}/${total}단계 · ${names[pos]}`
+}
+
+function trailClick(stepId) {
+  if (stepId >= currentStep) return
+  gotoStep(stepId)
+}
+
+function selectMode(mode) {
+  tripMode = mode
+  document.getElementById('optCar').classList.toggle('selected', mode === 'car')
+  document.getElementById('optTaxi').classList.toggle('selected', mode === 'taxi')
+  document.getElementById('modeTag').textContent = mode === 'car' ? '자차' : '택시'
+  document.getElementById('modeTag').style.background = mode === 'car' ? 'var(--primary-light)' : 'var(--orange-bg)'
+  document.getElementById('modeTag').style.color = mode === 'car' ? 'var(--primary)' : '#b45309'
+
+  if (mode === 'car') {
+    // Check for saved car profile
+    setTimeout(() => {
+      gotoStep(2)
+      const car = currentUser?.car
+      if (car && car.plate) {
+        document.getElementById('savedCarPreview').style.display = ''
+        document.getElementById('savedCarText').textContent = `${car.plate} · ${car.fuel} · ${car.displacement}`
+        document.getElementById('loadCarQuestion').classList.remove('hidden')
+        document.getElementById('carInputForm').classList.add('hidden')
+      } else {
+        // No saved car: go straight to form
+        document.getElementById('loadCarQuestion').classList.add('hidden')
+        document.getElementById('carInputForm').classList.remove('hidden')
+        prefillCarForm({})
+      }
+      updateStepUI()
+    }, 200)
+  } else {
+    // Taxi: skip to step 4
+    setTimeout(() => {
+      document.getElementById('taxiBasicInfo').classList.remove('hidden')
+      gotoStep(4)
+    }, 200)
   }
+}
+
+function useSavedCar() {
   const car = currentUser.car
+  document.getElementById('optLoadYes').classList.add('selected')
+  setTimeout(() => {
+    prefillCarForm(car)
+    document.getElementById('loadCarQuestion').classList.add('hidden')
+    document.getElementById('carInputForm').classList.remove('hidden')
+    // Immediately auto-fill and go to step 3
+    gotoStep(3)
+    const fuelCode = OPINET_CODES[car.fuel] || 'B027'
+    document.getElementById('fuelTypeSelect').value = fuelCode
+    updateFuelDisplay()
+    fetchOpinet()
+  }, 250)
+}
+
+function enterNewCar() {
+  document.getElementById('optLoadNo').classList.add('selected')
+  setTimeout(() => {
+    document.getElementById('loadCarQuestion').classList.add('hidden')
+    document.getElementById('carInputForm').classList.remove('hidden')
+    prefillCarForm({})
+    updateStepUI()
+  }, 200)
+}
+
+function prefillCarForm(car) {
   document.getElementById('f_plate').value = car.plate || ''
   document.getElementById('f_fuel').value = car.fuel || '휘발유'
   document.getElementById('f_disp').value = car.displacement || '1500cc 이하'
   document.getElementById('f_name').value = currentUser.name || ''
+  setDefaultDate()
   updateEfficiency()
-  showCarBanner()
 }
 
-function showCarBanner() {
-  if (!currentUser || !currentUser.car) return
-  const c = currentUser.car
-  const effLabel = getEfficiency()
-  document.getElementById('carBannerText').textContent =
-    `${c.plate || '-'} · ${c.fuel || '-'} · ${c.displacement || '-'} · 연비 ${effLabel} km/L`
-  document.getElementById('carFirstBanner').style.display = 'none'
-  document.getElementById('carLoadedBanner').style.display = ''
-}
-
-function saveCarProfile() {
-  if (!currentUser) return
+function step2Next() {
+  const name = document.getElementById('f_name').value.trim()
   const plate = document.getElementById('f_plate').value.trim()
-  const fuel = document.getElementById('f_fuel').value
-  const displacement = document.getElementById('f_disp').value
+  if (!name) { alert('신청자 이름을 입력하세요.'); return }
   if (!plate) { alert('차량번호를 입력하세요.'); return }
-  const car = { plate, fuel, displacement }
-  updateUser(currentUser.id, { car })
-  currentUser = getUser(currentUser.id)
-  showCarBanner()
-  updateFuelSelect()
-  alert('차량 정보가 저장되었습니다.')
+  if (document.getElementById('saveCarCheck').checked) {
+    const car = {
+      plate,
+      fuel: document.getElementById('f_fuel').value,
+      displacement: document.getElementById('f_disp').value
+    }
+    updateUser(currentUser.id, { car })
+    currentUser = getUser(currentUser.id)
+  }
+  const fuelCode = OPINET_CODES[document.getElementById('f_fuel').value] || 'B027'
+  document.getElementById('fuelTypeSelect').value = fuelCode
+  updateFuelDisplay()
+  gotoStep(3)
+  fetchOpinet()
 }
 
+function step4Prev() {
+  if (tripMode === 'car') gotoStep(3)
+  else gotoStep(1)
+}
+
+function step4Next() {
+  if (tripMode === 'taxi') {
+    const name = document.getElementById('f_name2').value.trim()
+    const date = document.getElementById('f_date2').value
+    if (!name) { alert('신청자 이름을 입력하세요.'); return }
+    if (!date) { alert('작성일을 선택하세요.'); return }
+    document.getElementById('f_name') && (document.getElementById('f_name').value = name)
+    document.getElementById('f_date') && (document.getElementById('f_date').value = date)
+  }
+  if (!trips.length) { alert('구간을 하나 이상 추가해 주세요.'); return }
+  const incomplete = trips.filter(t => t.type === 'car').some(t => !t.fromName || !t.toName)
+  if (incomplete) { alert('자차 구간의 출발지·도착지를 모두 입력해 주세요.'); return }
+  gotoStep(5)
+}
+
+function setHasToll(val) {
+  hasToll = val
+  document.getElementById('optTollYes').classList.toggle('selected', val === true)
+  document.getElementById('optTollNo').classList.toggle('selected', val === false)
+  // Show toll column in trip table
+  const tbl = document.getElementById('tripTable')
+  const pvTbl = document.getElementById('pvTable')
+  tbl.classList.toggle('toll-hidden', val === false)
+  pvTbl.classList.toggle('toll-hidden', val === false)
+  // Guide
+  document.getElementById('tollInputGuide').classList.toggle('hidden', val !== true)
+  // Show proceed button only when answered
+  document.getElementById('btnToReport').style.display = val === false ? '' : 'none'
+}
+
+function step5Next() {
+  gotoStep(6)
+}
+
+function resetWizard() {
+  if (!confirm('새 정산서를 작성하시겠습니까?')) return
+  trips = []; tripIdSeq = 0; tripMode = null; hasToll = null
+  document.getElementById('tripBody').innerHTML = ''
+  document.getElementById('taxiBasicInfo').classList.add('hidden')
+  document.getElementById('tripTable').classList.remove('toll-hidden')
+  document.getElementById('pvTable').classList.remove('toll-hidden')
+  setDefaultDate()
+  gotoStep(1)
+}
+
+/* ══════════════════════════════════════════
+   CAR FORM
+══════════════════════════════════════════ */
 function getEfficiency() {
   const fuel = document.getElementById('f_fuel').value
   const disp = document.getElementById('f_disp').value
@@ -1140,105 +1298,56 @@ function getEfficiency() {
 
 function updateEfficiency() {
   const fuel = document.getElementById('f_fuel').value
-  const dispCol = document.getElementById('dispCol')
-  dispCol.style.opacity = (fuel === '경유' || fuel === 'LPG') ? '0.4' : '1'
+  document.getElementById('dispCol').style.opacity = (fuel === '경유' || fuel === 'LPG') ? '0.4' : '1'
   document.getElementById('effDisplay').textContent = getEfficiency() + ' km/L'
   updateFuelDisplay()
   recalcAll()
 }
 
 function setDefaultDate() {
-  const today = new Date()
-  const iso = today.toISOString().split('T')[0]
-  document.getElementById('f_date').value = iso
-}
-
-function updateFuelSelect() {
-  const fuel = currentUser?.car?.fuel || '휘발유'
-  const fuelCode = OPINET_CODES[fuel] || 'B027'
-  document.getElementById('fuelTypeSelect').value = fuelCode
+  const iso = new Date().toISOString().split('T')[0]
+  const d1 = document.getElementById('f_date')
+  const d2 = document.getElementById('f_date2')
+  if (d1) d1.value = iso
+  if (d2) d2.value = iso
 }
 
 /* ══════════════════════════════════════════
-   MY CAR MODAL
-══════════════════════════════════════════ */
-function openMyCar() {
-  const car = currentUser?.car || {}
-  document.getElementById('mc_plate').value = car.plate || ''
-  document.getElementById('mc_fuel').value = car.fuel || '휘발유'
-  document.getElementById('mc_disp').value = car.displacement || '1500cc 이하'
-  mcFuelChange()
-  document.getElementById('modalMyCar').classList.remove('hidden')
-}
-function closeMyCar() {
-  document.getElementById('modalMyCar').classList.add('hidden')
-}
-function mcFuelChange() {
-  const fuel = document.getElementById('mc_fuel').value
-  document.getElementById('mcDispRow').style.opacity = (fuel === '경유' || fuel === 'LPG') ? '0.4' : '1'
-}
-function saveMyCar() {
-  const plate = document.getElementById('mc_plate').value.trim()
-  if (!plate) { alert('차량번호를 입력하세요.'); return }
-  const car = {
-    plate,
-    fuel: document.getElementById('mc_fuel').value,
-    displacement: document.getElementById('mc_disp').value
-  }
-  updateUser(currentUser.id, { car })
-  currentUser = getUser(currentUser.id)
-  document.getElementById('f_plate').value = car.plate
-  document.getElementById('f_fuel').value = car.fuel
-  document.getElementById('f_disp').value = car.displacement
-  updateEfficiency()
-  showCarBanner()
-  updateFuelSelect()
-  closeMyCar()
-}
-
-/* ══════════════════════════════════════════
-   SMC LOCATION INIT
+   SMC LOCATION
 ══════════════════════════════════════════ */
 async function initSMCLocation() {
   try {
-    const res = await fetch(`https://dapi.kakao.com/v2/local/search/keyword.json?query=성균관대학교+삼성창원병원&size=1`, {
-      headers: { Authorization: `KakaoAK ${KAKAO_KEY}` }
-    })
+    const res = await fetch(`https://dapi.kakao.com/v2/local/search/keyword.json?query=성균관대학교+삼성창원병원&size=1`,
+      { headers: { Authorization: `KakaoAK ${KAKAO_KEY}` } })
     const data = await res.json()
     if (data.documents?.[0]) {
       const d = data.documents[0]
       SMC = { name: d.place_name, x: d.x, y: d.y }
     }
-  } catch (e) { /* fallback to default */ }
+  } catch (e) {}
 }
 
 /* ══════════════════════════════════════════
    OPINET
 ══════════════════════════════════════════ */
-function onFuelTypeChange() { /* allow manual selection */ }
-
 async function fetchOpinet() {
   const status = document.getElementById('opinetStatus')
   const src = document.getElementById('fuelSource')
   const code = document.getElementById('fuelTypeSelect').value
-  status.textContent = '조회 중...'
-  status.className = 'opinet-status'
-
+  status.textContent = '조회 중...'; status.className = 'opinet-status'
   const targetUrl = `https://www.opinet.co.kr/api/avgAllPrice.do?code=${OPINET_KEY}&out=json`
   const proxies = [
-    `https://corsproxy.io/?${encodeURIComponent(targetUrl)}`,
-    `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`
+    `https://proxy.cors.sh/${targetUrl}`,
+    `https://cors.sh/${targetUrl}`
   ]
-
   for (const proxy of proxies) {
     try {
-      const controller = new AbortController()
-      const tid = setTimeout(() => controller.abort(), 8000)
-      const res = await fetch(proxy, { signal: controller.signal })
+      const ctrl = new AbortController()
+      const tid = setTimeout(() => ctrl.abort(), 8000)
+      const res = await fetch(proxy, { signal: ctrl.signal })
       clearTimeout(tid)
-      const text = await res.text()
       let json
-      try { json = JSON.parse(text) } catch { continue }
+      try { json = JSON.parse(await res.text()) } catch { continue }
       const items = json?.RESULT?.OIL
       if (!items) continue
       const item = items.find(o => o.PRODCD === code)
@@ -1246,84 +1355,20 @@ async function fetchOpinet() {
       const price = parseFloat(item.PRICE)
       document.getElementById('f_fuelPrice').value = Math.round(price)
       updateFuelDisplay()
-      status.textContent = `조회 성공 (${new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })})`
+      status.textContent = `조회 성공 (${new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'})})`
       status.className = 'opinet-status ok'
-      src.textContent = '오피넷 자동조회'
-      src.className = 'opinet-status ok'
+      src.textContent = '오피넷 자동조회'; src.className = 'opinet-status ok'
       return
     } catch (e) { continue }
   }
-  status.textContent = '자동조회 실패 — 직접 입력해 주세요'
-  status.className = 'opinet-status fail'
+  status.textContent = '자동조회 실패 — 직접 입력해 주세요'; status.className = 'opinet-status fail'
 }
 
 function updateFuelDisplay() {
   const price = parseFloat(document.getElementById('f_fuelPrice').value) || 0
   const eff = getEfficiency()
-  const perKm = eff > 0 ? (price / eff).toFixed(1) : '-'
-  document.getElementById('perKmDisplay').textContent = perKm !== '-' ? Math.round(perKm).toLocaleString() : '-'
+  document.getElementById('perKmDisplay').textContent = eff > 0 ? Math.round(price / eff).toLocaleString() : '-'
   recalcAll()
-}
-
-/* ══════════════════════════════════════════
-   WIZARD NAVIGATION
-══════════════════════════════════════════ */
-function gotoStep(n) {
-  for (let i = 1; i <= 4; i++) {
-    document.getElementById('step' + i).classList.toggle('hidden', i !== n)
-  }
-  currentStep = n
-  updateStepUI()
-  if (n === 4) buildPreview()
-}
-
-function updateStepUI() {
-  for (let i = 1; i <= 4; i++) {
-    const numEl = document.getElementById('sn' + i)
-    const lblEl = document.getElementById('sl' + i)
-    if (i < currentStep) {
-      numEl.className = 'step-num done'
-      numEl.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`
-      lblEl.className = 'step-label done'
-    } else if (i === currentStep) {
-      numEl.className = 'step-num active'
-      numEl.textContent = i
-      lblEl.className = 'step-label active'
-    } else {
-      numEl.className = 'step-num'
-      numEl.textContent = i
-      lblEl.className = 'step-label'
-    }
-    if (i < 4) {
-      const con = document.getElementById('sc' + i + (i + 1))
-      if (con) con.className = 'step-connector' + (i < currentStep ? ' done' : '')
-    }
-  }
-}
-
-function goStep2() {
-  const name = document.getElementById('f_name').value.trim()
-  const plate = document.getElementById('f_plate').value.trim()
-  if (!name) { alert('신청자 이름을 입력하세요.'); return }
-  if (!plate) { alert('차량번호를 입력하세요.'); return }
-  gotoStep(2)
-  if (!document.getElementById('f_fuelPrice').dataset.fetched) fetchOpinet()
-}
-
-function goStep4() {
-  const carTrips = trips.filter(t => t.type === 'car')
-  const incomplete = carTrips.some(t => !t.fromName || !t.toName)
-  if (incomplete) { alert('모든 구간의 출발지·도착지를 입력해 주세요.'); return }
-  gotoStep(4)
-}
-
-function resetWizard() {
-  if (!confirm('새 정산서를 작성하시겠습니까? 현재 입력 내용이 초기화됩니다.')) return
-  trips = []
-  tripIdSeq = 0
-  document.getElementById('tripBody').innerHTML = ''
-  setDefaultDate()
-  gotoStep(1)
 }
 
 /* ══════════════════════════════════════════
@@ -1331,66 +1376,51 @@ function resetWizard() {
 ══════════════════════════════════════════ */
 function addTrip() {
   const id = ++tripIdSeq
-  const today = document.getElementById('f_date').value || new Date().toISOString().split('T')[0]
-  const parts = today.split('-')
+  const baseDate = document.getElementById('f_date')?.value || document.getElementById('f_date2')?.value || new Date().toISOString().split('T')[0]
+  const parts = baseDate.split('-')
   const defaultDate = parts.length === 3 ? `${parts[1]}/${parts[2]}` : ''
   trips.push({
-    id,
-    date: defaultDate,
-    type: 'car',
-    fromName: SMC.name,
-    fromX: SMC.x,
-    fromY: SMC.y,
-    toName: '',
-    toX: '',
-    toY: '',
-    dist: null,
-    toll: 0
+    id, date: defaultDate,
+    type: tripMode === 'taxi' ? 'taxi' : 'car',
+    fromName: tripMode === 'car' ? SMC.name : '',
+    fromX: tripMode === 'car' ? SMC.x : '',
+    fromY: tripMode === 'car' ? SMC.y : '',
+    toName: '', toX: '', toY: '',
+    dist: null, toll: 0
   })
   renderTrips()
-  calcDist(id)
+  if (tripMode === 'car') calcDist(id)
 }
 
-function removeTrip(id) {
-  trips = trips.filter(t => t.id !== id)
-  renderTrips()
-}
+function removeTrip(id) { trips = trips.filter(t => t.id !== id); renderTrips() }
 
 function renderTrips() {
-  const tbody = document.getElementById('tripBody')
-  tbody.innerHTML = trips.map(t => tripRowHTML(t)).join('')
+  document.getElementById('tripBody').innerHTML = trips.map(t => tripRowHTML(t)).join('')
   recalcAll()
 }
 
 function tripRowHTML(t) {
   const distHtml = t.type === 'car'
     ? (t.dist === null ? `<span class="dist-loading">계산중</span>` : `<span class="dist-display">${t.dist.toFixed(1)}</span>`)
-    : `<span class="text-muted">-</span>`
+    : `<span style="color:var(--muted)">-</span>`
   const fuelCost = calcFuelCost(t)
   const fuelHtml = t.type === 'car'
     ? `<span class="cost-display">${fuelCost !== null ? fuelCost.toLocaleString() : '-'}</span>`
-    : `<span class="text-muted">실비</span>`
-  const tollHtml = t.type === 'car'
-    ? `<input type="number" class="trip-num-input" value="${t.toll || 0}" min="0" step="100" onchange="trips.find(x=>x.id===${t.id}).toll=+this.value;recalcAll()">`
-    : `<input type="number" class="trip-num-input" value="${t.toll || 0}" min="0" step="100" placeholder="실비" onchange="trips.find(x=>x.id===${t.id}).toll=+this.value;recalcAll()">`
+    : `<span style="color:var(--muted)">실비</span>`
+  const tollHtml = `<input type="number" class="trip-num-input" value="${t.toll || 0}" min="0" step="100" onchange="trips.find(x=>x.id===${t.id}).toll=+this.value;recalcAll()">`
   const total = calcTotal(t)
   const totalHtml = `<span class="total-display">${total !== null ? total.toLocaleString() : '-'}</span>`
-  const fromBtnClass = t.fromName ? 'set' : ''
-  const toBtnClass = t.toName ? 'set' : ''
-
   return `<tr>
-    <td><input type="text" class="trip-num-input" value="${t.date || ''}" placeholder="MM/DD" style="width:60px;text-align:center;" onchange="trips.find(x=>x.id===${t.id}).date=this.value"></td>
-    <td>
-      <div class="transport-toggle">
-        <button class="tt-btn ${t.type==='car'?'active car':''}" onclick="setType(${t.id},'car')">자차</button>
-        <button class="tt-btn ${t.type==='taxi'?'active taxi':''}" onclick="setType(${t.id},'taxi')">택시</button>
-      </div>
-    </td>
-    <td><button class="trip-place-btn ${fromBtnClass}" onclick="openSearch(${t.id},'from')">${t.fromName || '출발지 선택'}</button></td>
-    <td><button class="trip-place-btn ${toBtnClass}" onclick="openSearch(${t.id},'to')">${t.toName || '도착지 선택'}</button></td>
+    <td><input type="text" class="trip-num-input" value="${t.date||''}" placeholder="MM/DD" style="width:60px;text-align:center;" onchange="trips.find(x=>x.id===${t.id}).date=this.value"></td>
+    <td><div class="transport-toggle">
+      <button class="tt-btn ${t.type==='car'?'active car':''}" onclick="setType(${t.id},'car')">자차</button>
+      <button class="tt-btn ${t.type==='taxi'?'active taxi':''}" onclick="setType(${t.id},'taxi')">택시</button>
+    </div></td>
+    <td><button class="trip-place-btn ${t.fromName?'set':''}" onclick="openSearch(${t.id},'from')">${t.fromName||'출발지 선택'}</button></td>
+    <td><button class="trip-place-btn ${t.toName?'set':''}" onclick="openSearch(${t.id},'to')">${t.toName||'도착지 선택'}</button></td>
     <td>${distHtml}</td>
     <td>${fuelHtml}</td>
-    <td>${tollHtml}</td>
+    <td class="toll-col">${tollHtml}</td>
     <td>${totalHtml}</td>
     <td><button class="del-btn" onclick="removeTrip(${t.id})">×</button></td>
   </tr>`
@@ -1400,9 +1430,7 @@ function setType(id, type) {
   const t = trips.find(x => x.id === id)
   if (!t) return
   t.type = type
-  if (type === 'car') {
-    if (!t.fromName) { t.fromName = SMC.name; t.fromX = SMC.x; t.fromY = SMC.y }
-  }
+  if (type === 'car' && !t.fromName) { t.fromName = SMC.name; t.fromX = SMC.x; t.fromY = SMC.y }
   renderTrips()
   if (type === 'car') calcDist(id)
 }
@@ -1416,7 +1444,7 @@ function calcFuelCost(t) {
 }
 
 function calcTotal(t) {
-  const toll = parseFloat(t.toll) || 0
+  const toll = hasToll === false ? 0 : (parseFloat(t.toll) || 0)
   if (t.type === 'taxi') return toll
   const fuel = calcFuelCost(t)
   if (fuel === null) return null
@@ -1426,8 +1454,7 @@ function calcTotal(t) {
 function recalcAll() {
   const rows = document.getElementById('tripBody').querySelectorAll('tr')
   trips.forEach((t, i) => {
-    const row = rows[i]
-    if (!row) return
+    const row = rows[i]; if (!row) return
     const cells = row.querySelectorAll('td')
     const fuel = calcFuelCost(t)
     const total = calcTotal(t)
@@ -1435,7 +1462,7 @@ function recalcAll() {
       cells[5].innerHTML = `<span class="cost-display">${fuel !== null ? fuel.toLocaleString() : '-'}</span>`
       cells[7].innerHTML = `<span class="total-display">${total !== null ? total.toLocaleString() : '-'}</span>`
     } else {
-      const toll = parseFloat(t.toll) || 0
+      const toll = hasToll === false ? 0 : (parseFloat(t.toll) || 0)
       cells[7].innerHTML = `<span class="total-display">${toll.toLocaleString()}</span>`
     }
   })
@@ -1444,23 +1471,15 @@ function recalcAll() {
 /* ══════════════════════════════════════════
    PLACE SEARCH
 ══════════════════════════════════════════ */
-let activeSearchTripId = null
-let activeSearchField = null
-
 function openSearch(tripId, field) {
-  activeSearchTripId = tripId
-  activeSearchField = field
-  const label = field === 'from' ? '출발지' : '도착지'
-  document.getElementById('searchModalTitle').textContent = label + ' 검색'
+  activeSearchTripId = tripId; activeSearchField = field
+  document.getElementById('searchModalTitle').textContent = (field === 'from' ? '출발지' : '도착지') + ' 검색'
   document.getElementById('searchInput').value = ''
   document.getElementById('placeList').innerHTML = '<div class="place-placeholder">검색어를 입력하세요</div>'
   document.getElementById('modalSearch').classList.remove('hidden')
   setTimeout(() => document.getElementById('searchInput').focus(), 100)
 }
-
-function closeSearch() {
-  document.getElementById('modalSearch').classList.add('hidden')
-}
+function closeSearch() { document.getElementById('modalSearch').classList.add('hidden') }
 
 async function doSearch() {
   const q = document.getElementById('searchInput').value.trim()
@@ -1468,239 +1487,196 @@ async function doSearch() {
   const list = document.getElementById('placeList')
   list.innerHTML = '<div class="place-placeholder">검색 중...</div>'
   try {
-    const res = await fetch(`https://dapi.kakao.com/v2/local/search/keyword.json?query=${encodeURIComponent(q)}&size=10`, {
-      headers: { Authorization: `KakaoAK ${KAKAO_KEY}` }
-    })
+    const res = await fetch(`https://dapi.kakao.com/v2/local/search/keyword.json?query=${encodeURIComponent(q)}&size=10`,
+      { headers: { Authorization: `KakaoAK ${KAKAO_KEY}` } })
     const data = await res.json()
     searchResults = data.documents || []
-    if (!searchResults.length) {
-      list.innerHTML = '<div class="place-placeholder">결과가 없습니다.</div>'
-      return
-    }
+    if (!searchResults.length) { list.innerHTML = '<div class="place-placeholder">결과가 없습니다.</div>'; return }
     list.innerHTML = searchResults.map((d, i) => `
       <button class="place-result-item" onclick="pickResult(${i})">
         <span class="pname">${d.place_name}</span>
         <span class="paddr">${d.road_address_name || d.address_name || ''}</span>
       </button>`).join('')
-  } catch (e) {
-    list.innerHTML = '<div class="place-placeholder">검색 실패. 다시 시도해 주세요.</div>'
-  }
+  } catch (e) { list.innerHTML = '<div class="place-placeholder">검색 실패. 다시 시도해 주세요.</div>' }
 }
 
 function pickResult(i) {
-  const d = searchResults[i]
-  if (!d) return
-  const t = trips.find(x => x.id === activeSearchTripId)
-  if (!t) return
-  if (activeSearchField === 'from') {
-    t.fromName = d.place_name
-    t.fromX = d.x
-    t.fromY = d.y
-  } else {
-    t.toName = d.place_name
-    t.toX = d.x
-    t.toY = d.y
-  }
-  closeSearch()
-  renderTrips()
+  const d = searchResults[i]; if (!d) return
+  const t = trips.find(x => x.id === activeSearchTripId); if (!t) return
+  if (activeSearchField === 'from') { t.fromName = d.place_name; t.fromX = d.x; t.fromY = d.y }
+  else { t.toName = d.place_name; t.toX = d.x; t.toY = d.y }
+  closeSearch(); renderTrips()
   if (t.type === 'car') calcDist(t.id)
 }
 
 /* ══════════════════════════════════════════
-   DISTANCE CALCULATION
+   DISTANCE
 ══════════════════════════════════════════ */
 async function calcDist(tripId) {
   const t = trips.find(x => x.id === tripId)
-  if (!t || !t.fromX || !t.fromY || !t.toX || !t.toY) return
-  t.dist = null
-  renderTrips()
+  if (!t || !t.fromX || !t.toX) return
+  t.dist = null; renderTrips()
   try {
     const res = await fetch(
       `https://apis-navi.kakaomobility.com/v1/directions?origin=${t.fromX},${t.fromY}&destination=${t.toX},${t.toY}`,
-      { headers: { Authorization: `KakaoAK ${KAKAO_KEY}` } }
-    )
+      { headers: { Authorization: `KakaoAK ${KAKAO_KEY}` } })
     const data = await res.json()
     const section = data.routes?.[0]?.sections?.[0]
-    if (section) {
-      t.dist = section.distance / 1000
-      renderTrips()
-      return
-    }
+    if (section) { t.dist = section.distance / 1000; renderTrips(); return }
   } catch (e) {}
-  // Haversine × 1.3 fallback
   t.dist = haversine(parseFloat(t.fromY), parseFloat(t.fromX), parseFloat(t.toY), parseFloat(t.toX)) * 1.3
   renderTrips()
 }
 
 function haversine(lat1, lon1, lat2, lon2) {
-  const R = 6371
-  const dLat = (lat2 - lat1) * Math.PI / 180
-  const dLon = (lon2 - lon1) * Math.PI / 180
-  const a = Math.sin(dLat / 2) ** 2 + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon / 2) ** 2
-  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+  const R = 6371, dLat = (lat2-lat1)*Math.PI/180, dLon = (lon2-lon1)*Math.PI/180
+  const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)**2
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))
 }
 
 /* ══════════════════════════════════════════
-   HIPASS MODAL
+   PREVIEW (STEP 6)
 ══════════════════════════════════════════ */
-function openHipassModal() { document.getElementById('modalHipass').classList.remove('hidden') }
-function closeHipass() { document.getElementById('modalHipass').classList.add('hidden') }
+function getName() {
+  return tripMode === 'taxi'
+    ? (document.getElementById('f_name2')?.value.trim() || '-')
+    : (document.getElementById('f_name')?.value.trim() || '-')
+}
+function getDate() {
+  return tripMode === 'taxi'
+    ? (document.getElementById('f_date2')?.value || '-')
+    : (document.getElementById('f_date')?.value || '-')
+}
 
-/* ══════════════════════════════════════════
-   PREVIEW (STEP 4)
-══════════════════════════════════════════ */
 function buildPreview() {
-  const name = document.getElementById('f_name').value.trim() || '-'
-  const date = document.getElementById('f_date').value || '-'
-  const plate = document.getElementById('f_plate').value.trim() || '-'
-  const fuel = document.getElementById('f_fuel').value
-  const disp = document.getElementById('f_disp').value
+  const name = getName(), date = getDate()
+  const plate = document.getElementById('f_plate')?.value.trim() || '-'
+  const fuel = document.getElementById('f_fuel')?.value || '-'
+  const disp = document.getElementById('f_disp')?.value || '-'
   const eff = getEfficiency()
-  const fuelPrice = parseFloat(document.getElementById('f_fuelPrice').value) || 0
+  const fuelPrice = parseFloat(document.getElementById('f_fuelPrice')?.value) || 0
 
-  // Summary
-  let totalDist = 0, totalFuel = 0, totalToll = 0, tripCount = 0
+  let totalDist = 0, totalFuel = 0, totalToll = 0
   trips.forEach(t => {
-    tripCount++
     if (t.dist) totalDist += t.dist
-    const fuel = calcFuelCost(t) || 0
-    totalFuel += fuel
-    totalToll += parseFloat(t.toll) || 0
+    totalFuel += calcFuelCost(t) || 0
+    totalToll += hasToll === false ? 0 : (parseFloat(t.toll) || 0)
   })
   const grandTotal = totalFuel + totalToll
 
   document.getElementById('pvName').textContent = name
   document.getElementById('pvDate').textContent = date + ' 작성'
-  document.getElementById('pvTrips').textContent = tripCount
+  document.getElementById('pvTrips').textContent = trips.length
   document.getElementById('pvDist').textContent = totalDist.toFixed(1)
   document.getElementById('pvTotal').textContent = grandTotal.toLocaleString()
 
-  // Trip table
-  const tbody = document.getElementById('pvBody')
-  tbody.innerHTML = trips.map(t => {
-    const fuelCost = calcFuelCost(t)
-    const toll = parseFloat(t.toll) || 0
+  document.getElementById('pvBody').innerHTML = trips.map(t => {
+    const fc = calcFuelCost(t)
+    const toll = hasToll === false ? 0 : (parseFloat(t.toll) || 0)
     const total = calcTotal(t)
     return `<tr>
-      <td>${t.date || '-'}</td>
-      <td>${t.type === 'car' ? '자차' : '택시'}</td>
-      <td>${t.fromName || '-'}</td>
-      <td>${t.toName || '-'}</td>
-      <td>${t.dist !== null && t.type === 'car' ? t.dist.toFixed(1) : '-'}</td>
-      <td>${fuelCost !== null ? fuelCost.toLocaleString() + '원' : '-'}</td>
-      <td>${toll > 0 ? toll.toLocaleString() + '원' : '-'}</td>
-      <td style="font-weight:700;">${total !== null ? total.toLocaleString() + '원' : '-'}</td>
+      <td>${t.date||'-'}</td>
+      <td>${t.type==='car'?'자차':'택시'}</td>
+      <td>${t.fromName||'-'}</td>
+      <td>${t.toName||'-'}</td>
+      <td>${t.dist!==null&&t.type==='car'?t.dist.toFixed(1):'-'}</td>
+      <td>${fc!==null?fc.toLocaleString()+'원':'-'}</td>
+      <td class="toll-col">${toll>0?toll.toLocaleString()+'원':'-'}</td>
+      <td style="font-weight:700;">${total!==null?total.toLocaleString()+'원':'-'}</td>
     </tr>`
   }).join('')
 
-  // Footer
   document.getElementById('pvFoot').innerHTML = `<tr>
     <td colspan="4" style="text-align:right;">합계</td>
     <td>${totalDist.toFixed(1)} km</td>
     <td>${totalFuel.toLocaleString()}원</td>
-    <td>${totalToll.toLocaleString()}원</td>
+    <td class="toll-col">${totalToll.toLocaleString()}원</td>
     <td style="font-weight:700;">${grandTotal.toLocaleString()}원</td>
   </tr>`
 
-  // Info
-  document.getElementById('pvInfo').innerHTML = `
-    <div class="info-item"><label>신청자</label><span>${name}</span></div>
-    <div class="info-item"><label>작성일</label><span>${date}</span></div>
-    <div class="info-item"><label>차량번호</label><span>${plate}</span></div>
-    <div class="info-item"><label>연료 구분</label><span>${fuel}</span></div>
-    <div class="info-item"><label>배기량</label><span>${fuel === '휘발유' ? disp : '-'}</span></div>
-    <div class="info-item"><label>연비</label><span>${eff} km/L</span></div>
-    <div class="info-item"><label>유류단가</label><span>${fuelPrice.toLocaleString()}원/L</span></div>
-    <div class="info-item"><label>km당 단가</label><span>${eff > 0 ? Math.round(fuelPrice / eff).toLocaleString() : '-'}원/km</span></div>
-  `
+  if (tripMode === 'car') {
+    document.getElementById('pvInfo').innerHTML = `
+      <div class="info-item"><label>신청자</label><span>${name}</span></div>
+      <div class="info-item"><label>작성일</label><span>${date}</span></div>
+      <div class="info-item"><label>차량번호</label><span>${plate}</span></div>
+      <div class="info-item"><label>연료 구분</label><span>${fuel}</span></div>
+      <div class="info-item"><label>배기량</label><span>${fuel==='휘발유'?disp:'-'}</span></div>
+      <div class="info-item"><label>연비</label><span>${eff} km/L</span></div>
+      <div class="info-item"><label>유류단가</label><span>${fuelPrice.toLocaleString()}원/L</span></div>
+      <div class="info-item"><label>km당 단가</label><span>${eff>0?Math.round(fuelPrice/eff).toLocaleString():'-'}원/km</span></div>`
+  } else {
+    document.getElementById('pvInfo').innerHTML = `
+      <div class="info-item"><label>신청자</label><span>${name}</span></div>
+      <div class="info-item"><label>작성일</label><span>${date}</span></div>
+      <div class="info-item"><label>이동수단</label><span>택시/대중교통</span></div>`
+  }
 }
 
 /* ══════════════════════════════════════════
    EXCEL EXPORT
 ══════════════════════════════════════════ */
 function downloadExcel() {
-  if (typeof XLSX === 'undefined') { alert('Excel 라이브러리 로드 중입니다. 잠시 후 다시 시도해 주세요.'); return }
-
-  const name = document.getElementById('f_name').value.trim() || '교통비정산서'
-  const date = document.getElementById('f_date').value || ''
-  const plate = document.getElementById('f_plate').value.trim()
-  const fuel = document.getElementById('f_fuel').value
-  const disp = document.getElementById('f_disp').value
+  if (typeof XLSX === 'undefined') { alert('라이브러리 로드 중입니다. 잠시 후 다시 시도해 주세요.'); return }
+  const name = getName(), date = getDate()
+  const plate = document.getElementById('f_plate')?.value.trim() || ''
+  const fuel = document.getElementById('f_fuel')?.value || ''
   const eff = getEfficiency()
-  const fuelPrice = parseFloat(document.getElementById('f_fuelPrice').value) || 0
+  const fuelPrice = parseFloat(document.getElementById('f_fuelPrice')?.value) || 0
 
-  const wb = XLSX.utils.book_new()
-  const ws = {}
+  const wb = XLSX.utils.book_new(); const ws = {}
+  const hdrStyle = { font:{bold:true}, fill:{fgColor:{rgb:'EBF3FF'}}, alignment:{horizontal:'center'} }
+  const titleStyle = { font:{bold:true,sz:14}, alignment:{horizontal:'center'} }
+  const numStyle = { numFmt:'#,##0', alignment:{horizontal:'right'} }
+  const sumStyle = { font:{bold:true}, numFmt:'#,##0', fill:{fgColor:{rgb:'EBF3FF'}}, alignment:{horizontal:'right'} }
+  const ctr = { alignment:{horizontal:'center'} }
 
-  function SN(addr, val, formula, style) {
-    ws[addr] = style
-      ? { v: val, f: formula, t: 'n', s: style }
-      : formula
-        ? { v: val, f: formula, t: 'n' }
-        : { v: val }
+  function SN(a,v,f,s) { ws[a] = s?{v,f,t:'n',s}:f?{v,f,t:'n'}:{v} }
+  function SS(a,v,s) { ws[a] = s?{v,t:'s',s}:{v,t:'s'} }
+
+  SS('A1','교통비 정산서',titleStyle)
+  ws['!merges'] = [{s:{r:0,c:0},e:{r:0,c:7}}]
+  SS('A3','신청자',{font:{bold:true}}); SS('B3',name)
+  SS('D3','작성일',{font:{bold:true}}); SS('E3',date)
+  if (tripMode === 'car') {
+    SS('G3','유류단가',{font:{bold:true}}); SN('H3',fuelPrice,undefined,numStyle)
+    SS('A5','차량번호',{font:{bold:true}}); SS('B5',plate)
+    SS('D5','연료구분',{font:{bold:true}}); SS('E5',fuel)
+    SS('G5','연비',{font:{bold:true}}); SN('H5',eff,undefined,numStyle)
   }
-  function SS(addr, val, style) {
-    ws[addr] = style ? { v: val, t: 's', s: style } : { v: val, t: 's' }
-  }
 
-  const hdrStyle = { font: { bold: true }, fill: { fgColor: { rgb: 'EBF3FF' } }, alignment: { horizontal: 'center' } }
-  const titleStyle = { font: { bold: true, sz: 14 }, alignment: { horizontal: 'center' } }
-  const numStyle = { numFmt: '#,##0', alignment: { horizontal: 'right' } }
-  const sumStyle = { font: { bold: true }, numFmt: '#,##0', fill: { fgColor: { rgb: 'EBF3FF' } }, alignment: { horizontal: 'right' } }
-  const centerStyle = { alignment: { horizontal: 'center' } }
-
-  SS('A1', '교통비 정산서', titleStyle)
-  ws['!merges'] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: 7 } }]
-
-  SS('A3', '신청자', { font: { bold: true } }); SS('B3', name)
-  SS('D3', '작성일', { font: { bold: true } }); SS('E3', date)
-  SS('G3', '유류단가', { font: { bold: true } })
-  SN('H3', fuelPrice, undefined, numStyle)
-
-  SS('A5', '차량번호', { font: { bold: true } }); SS('B5', plate)
-  SS('D5', '연료구분', { font: { bold: true } }); SS('E5', fuel)
-  SS('G5', '연비', { font: { bold: true } })
-  SN('H5', eff, undefined, numStyle)
-
-  const headers = ['월/일', '이동수단', '출발지', '도착지', '거리(km)', '유류비', '통행료 등', '합계']
+  const headers = ['월/일','이동수단','출발지','도착지','거리(km)','교통비(유류비)','하이패스/주차비','합계']
   const hdrRow = 7
-  'ABCDEFGH'.split('').forEach((col, i) => SS(col + hdrRow, headers[i], hdrStyle))
+  'ABCDEFGH'.split('').forEach((col,i) => SS(col+hdrRow, headers[i], hdrStyle))
 
-  let firstDataRow = hdrRow + 1
+  const firstDataRow = hdrRow + 1
   trips.forEach((t, idx) => {
     const row = firstDataRow + idx
-    SS('A' + row, t.date || '')
-    SS('B' + row, t.type === 'car' ? '자차' : '택시', centerStyle)
-    SS('C' + row, t.fromName || '')
-    SS('D' + row, t.toName || '')
+    SS('A'+row, t.date||'')
+    SS('B'+row, t.type==='car'?'자차':'택시', ctr)
+    SS('C'+row, t.fromName||'')
+    SS('D'+row, t.toName||'')
     if (t.type === 'car' && t.dist !== null) {
-      SN('E' + row, t.dist, undefined, { numFmt: '0.0' })
-      SN('F' + row, calcFuelCost(t), `ROUND(E${row}*$H$3/$H$5/10,0)*10`, numStyle)
+      SN('E'+row, t.dist, undefined, {numFmt:'0.0'})
+      SN('F'+row, calcFuelCost(t), `ROUND(E${row}*$H$3/$H$5/10,0)*10`, numStyle)
     } else {
-      SS('E' + row, '-', centerStyle)
-      SS('F' + row, '-', centerStyle)
+      SS('E'+row, '-', ctr); SS('F'+row, '-', ctr)
     }
-    const toll = parseFloat(t.toll) || 0
-    SN('G' + row, toll, undefined, numStyle)
-    SN('H' + row, calcTotal(t), `F${row}+G${row}`, numStyle)
+    const toll = hasToll === false ? 0 : (parseFloat(t.toll)||0)
+    SN('G'+row, toll, undefined, numStyle)
+    SN('H'+row, calcTotal(t), `F${row}+G${row}`, numStyle)
   })
 
   const lastDataRow = firstDataRow + trips.length - 1
   const sumRow = lastDataRow + 1
-  SS('A' + sumRow, '합계', { font: { bold: true }, fill: { fgColor: { rgb: 'EBF3FF' } } })
-  ws['!merges'].push({ s: { r: sumRow - 1, c: 0 }, e: { r: sumRow - 1, c: 3 } })
-  SN('E' + sumRow, undefined, `SUM(E${firstDataRow}:E${lastDataRow})`, { ...sumStyle, numFmt: '0.0' })
-  SN('F' + sumRow, undefined, `SUM(F${firstDataRow}:F${lastDataRow})`, sumStyle)
-  SN('G' + sumRow, undefined, `SUM(G${firstDataRow}:G${lastDataRow})`, sumStyle)
-  SN('H' + sumRow, undefined, `SUM(H${firstDataRow}:H${lastDataRow})`, sumStyle)
+  SS('A'+sumRow,'합계',{font:{bold:true},fill:{fgColor:{rgb:'EBF3FF'}}})
+  ws['!merges'].push({s:{r:sumRow-1,c:0},e:{r:sumRow-1,c:3}})
+  SN('E'+sumRow,undefined,`SUM(E${firstDataRow}:E${lastDataRow})`,{...sumStyle,numFmt:'0.0'})
+  SN('F'+sumRow,undefined,`SUM(F${firstDataRow}:F${lastDataRow})`,sumStyle)
+  SN('G'+sumRow,undefined,`SUM(G${firstDataRow}:G${lastDataRow})`,sumStyle)
+  SN('H'+sumRow,undefined,`SUM(H${firstDataRow}:H${lastDataRow})`,sumStyle)
 
-  const maxRow = sumRow
-  ws['!ref'] = `A1:H${maxRow}`
-  ws['!cols'] = [
-    { wch: 8 }, { wch: 8 }, { wch: 20 }, { wch: 20 },
-    { wch: 9 }, { wch: 11 }, { wch: 11 }, { wch: 11 }
-  ]
-
+  ws['!ref'] = `A1:H${sumRow}`
+  ws['!cols'] = [{wch:8},{wch:8},{wch:20},{wch:20},{wch:9},{wch:12},{wch:13},{wch:11}]
   XLSX.utils.book_append_sheet(wb, ws, '정산서')
   XLSX.writeFile(wb, `교통비정산서_${name}_${date}.xlsx`)
 }
@@ -1713,21 +1689,16 @@ function openAdmin() {
   renderUserTable()
   document.getElementById('adminPanel').style.display = 'block'
 }
-function closeAdmin() {
-  document.getElementById('adminPanel').style.display = 'none'
-}
+function closeAdmin() { document.getElementById('adminPanel').style.display = 'none' }
 function renderUserTable() {
   const users = loadUsers()
   document.getElementById('userTableBody').innerHTML = users.map(u => `
     <tr>
-      <td>${u.id}</td>
-      <td>${u.name}</td>
-      <td><span class="role-badge ${u.role}">${u.role === 'admin' ? '관리자' : '사용자'}</span></td>
-      <td>${u.car?.plate || '-'}</td>
-      <td>${u.car?.fuel || '-'}</td>
-      <td>${u.car?.displacement || '-'}</td>
+      <td>${u.id}</td><td>${u.name}</td>
+      <td><span class="role-badge ${u.role}">${u.role==='admin'?'관리자':'사용자'}</span></td>
+      <td>${u.car?.plate||'-'}</td><td>${u.car?.fuel||'-'}</td><td>${u.car?.displacement||'-'}</td>
       <td style="display:flex;gap:6px;flex-wrap:wrap;">
-        ${u.id !== 'admin' ? `
+        ${u.role !== 'admin' ? `
           <button class="btn-sm" onclick="resetPin('${u.id}')">PIN 초기화</button>
           <button class="btn-sm warn" onclick="deleteUser('${u.id}')">삭제</button>
         ` : '<span style="color:var(--muted);font-size:12px;">시스템계정</span>'}
@@ -1744,27 +1715,68 @@ function addUser() {
   const id = document.getElementById('newUserId').value.trim()
   const uname = document.getElementById('newUserName').value.trim()
   const pin = document.getElementById('newUserPin').value.trim()
-  if (!id || !uname || !pin) { alert('아이디, 이름, PIN을 모두 입력하세요.'); return }
-  if (pin.length !== 4 || isNaN(pin)) { alert('PIN은 숫자 4자리여야 합니다.'); return }
+  if (!id||!uname||!pin) { alert('아이디, 이름, PIN을 모두 입력하세요.'); return }
+  if (pin.length!==4||isNaN(pin)) { alert('PIN은 숫자 4자리여야 합니다.'); return }
   const users = loadUsers()
-  if (users.find(u => u.id === id)) { alert('이미 존재하는 아이디입니다.'); return }
-  users.push({ id, pin, name: uname, role: 'user', car: null })
+  if (users.find(u=>u.id===id)) { alert('이미 존재하는 아이디입니다.'); return }
+  users.push({id,pin,name:uname,role:'user',car:null})
   saveUsers(users)
   document.getElementById('addUserForm').style.display = 'none'
   renderUserTable()
 }
 function resetPin(id) {
-  const newPin = prompt(`${id} 사용자의 새 PIN을 입력하세요 (4자리 숫자):`)
-  if (!newPin) return
-  if (newPin.length !== 4 || isNaN(newPin)) { alert('PIN은 4자리 숫자여야 합니다.'); return }
-  updateUser(id, { pin: newPin })
-  alert('PIN이 초기화되었습니다.')
+  const p = prompt(`${id} 사용자의 새 PIN을 입력하세요 (4자리):`)
+  if (!p) return
+  if (p.length!==4||isNaN(p)) { alert('PIN은 4자리 숫자여야 합니다.'); return }
+  updateUser(id,{pin:p}); alert('PIN이 초기화되었습니다.')
 }
 function deleteUser(id) {
   if (!confirm(`${id} 사용자를 삭제하시겠습니까?`)) return
-  const users = loadUsers().filter(u => u.id !== id)
-  saveUsers(users)
-  renderUserTable()
+  saveUsers(loadUsers().filter(u=>u.id!==id)); renderUserTable()
+}
+
+/* ══════════════════════════════════════════
+   ACCOUNT MANAGEMENT
+══════════════════════════════════════════ */
+function openAccount() {
+  document.getElementById('acId').textContent = currentUser.id
+  document.getElementById('acName').textContent = currentUser.name
+  const car = currentUser.car || {}
+  document.getElementById('ac_plate').value = car.plate || ''
+  document.getElementById('ac_fuel').value = car.fuel || '휘발유'
+  document.getElementById('ac_disp').value = car.displacement || '1500cc 이하'
+  document.getElementById('acOldPin').value = ''
+  document.getElementById('acNewPin').value = ''
+  document.getElementById('pinChangeMsg').textContent = ''
+  acFuelChange()
+  document.getElementById('accountPanel').style.display = 'block'
+}
+function closeAccount() { document.getElementById('accountPanel').style.display = 'none' }
+function acFuelChange() {
+  const fuel = document.getElementById('ac_fuel').value
+  document.getElementById('acDispRow').style.opacity = (fuel==='경유'||fuel==='LPG') ? '0.4' : '1'
+}
+function changePin() {
+  const old = document.getElementById('acOldPin').value.trim()
+  const newPin = document.getElementById('acNewPin').value.trim()
+  const msg = document.getElementById('pinChangeMsg')
+  if (!old||!newPin) { msg.textContent='현재 PIN과 새 PIN을 입력하세요.'; msg.style.color='var(--warn)'; return }
+  if (newPin.length!==4||isNaN(newPin)) { msg.textContent='새 PIN은 숫자 4자리여야 합니다.'; msg.style.color='var(--warn)'; return }
+  if (currentUser.pin!==old) { msg.textContent='현재 PIN이 올바르지 않습니다.'; msg.style.color='var(--warn)'; return }
+  updateUser(currentUser.id,{pin:newPin})
+  currentUser = getUser(currentUser.id)
+  msg.textContent='PIN이 변경되었습니다.'; msg.style.color='var(--green)'
+  document.getElementById('acOldPin').value=''
+  document.getElementById('acNewPin').value=''
+}
+function saveAccountCar() {
+  const plate = document.getElementById('ac_plate').value.trim()
+  if (!plate) { alert('차량번호를 입력하세요.'); return }
+  const car = { plate, fuel: document.getElementById('ac_fuel').value, displacement: document.getElementById('ac_disp').value }
+  updateUser(currentUser.id,{car})
+  currentUser = getUser(currentUser.id)
+  alert('차량 정보가 저장되었습니다.')
+  closeAccount()
 }
 
 /* ══════════════════════════════════════════
@@ -1772,7 +1784,9 @@ function deleteUser(id) {
 ══════════════════════════════════════════ */
 document.addEventListener('DOMContentLoaded', () => {
   autoLogin()
-  updateStepUI()
+  if (!document.getElementById('mainApp').style.display || document.getElementById('mainApp').style.display === 'none') {
+    updateStepUI()
+  }
 })
 </script>
 </body>
