@@ -35,8 +35,8 @@
       font-synthesis: none;
       background: var(--bg);
       color: var(--ink);
-      font-size: 14px;
-      line-height: 1.5;
+      font-size: 16px;
+      line-height: 1.6;
     }
     @media (max-resolution: 1dppx) {
       body { font-family: "맑은 고딕","Malgun Gothic","Dotum",sans-serif; font-weight: 400; letter-spacing: -0.01em; }
@@ -45,51 +45,74 @@
       body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
     }
 
-    /* ── Login ── */
-    #loginScreen {
+    /* ── Login / Change PIN ── */
+    #loginScreen, #changePinScreen {
       position: fixed; inset: 0; background: var(--bg);
-      display: flex; align-items: center; justify-content: center; z-index: 1000;
+      display: flex; align-items: center; justify-content: center;
+      padding: 24px; z-index: 1000;
     }
-    .login-card { width: 360px; text-align: center; }
-    .login-icon {
-      width: 52px; height: 52px; background: #eef6ff; border-radius: 14px;
-      display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;
+    #changePinScreen { display: none; }
+    .login-card, .change-pin-card {
+      background: var(--white); border-radius: 16px; padding: 32px;
+      width: 100%; max-width: 360px;
+      box-shadow: 0 4px 24px rgba(0,0,0,.06);
+      display: flex; flex-direction: column; gap: 14px;
     }
-    .login-card h1 { font-size: 22px; font-weight: 800; margin-bottom: 6px; letter-spacing: -0.03em; }
-    .login-card p { font-size: 14px; color: var(--muted); margin-bottom: 32px; }
-    .login-fields { display: flex; flex-direction: column; gap: 10px; margin-bottom: 10px; }
-    .login-fields input {
-      padding: 14px 18px; border: 1.5px solid var(--line2);
-      border-radius: 12px; font-size: 16px; font-family: inherit;
-      color: var(--ink); background: var(--white); outline: none;
-      transition: border-color .15s; width: 100%;
+    .login-card h2, .change-pin-card h2 { font-size: 20px; font-weight: 700; letter-spacing: -0.02em; }
+    .login-desc, .cp-desc {
+      margin: -8px 0 4px; font-size: 13px; color: var(--muted); line-height: 1.6;
     }
-    .login-fields input:focus { border-color: var(--primary); }
-    .login-fields input[type="password"] { letter-spacing: 0.2em; text-align: center; }
-    .login-err { font-size: 13px; color: var(--warn); text-align: center; min-height: 18px; margin-bottom: 4px; }
-    .btn-login {
-      width: 100%; padding: 14px; background: var(--primary); color: white;
-      border: none; border-radius: 12px; font-size: 15px; font-weight: 700;
+    .cp-desc strong { color: var(--warn); font-weight: 700; }
+    .login-card label, .change-pin-card label {
+      display: flex; flex-direction: column; gap: 6px;
+      font-size: 13px; color: var(--muted); font-weight: 600;
+    }
+    .login-card label input, .change-pin-card label input {
+      border: 1px solid var(--line2); border-radius: 10px;
+      padding: 12px; font-size: 15px; color: var(--ink);
+      font-family: inherit; outline: none; transition: border-color .15s;
+    }
+    .login-card label input:focus, .change-pin-card label input:focus { border-color: var(--primary); }
+    .login-card label input[type="password"], .change-pin-card label input[type="password"] {
+      letter-spacing: 0.15em;
+    }
+    .form-error {
+      color: var(--warn); font-size: 13px;
+      background: var(--warn-bg); padding: 8px 12px; border-radius: 8px;
+    }
+    .btn-login, .btn-cp {
+      width: 100%; padding: 12px 16px; background: var(--primary); color: white;
+      border: none; border-radius: 10px; font-size: 15px; font-weight: 700;
       cursor: pointer; font-family: inherit; transition: background .15s;
     }
-    .btn-login:hover { background: var(--primary-dark); }
+    .btn-login:hover, .btn-cp:hover { background: var(--primary-dark); }
 
     /* ── Header ── */
     .header {
       background: var(--white); border-bottom: 1px solid var(--line2);
-      height: 60px; display: flex; align-items: center; justify-content: space-between;
-      padding: 0 28px; box-shadow: 0 1px 4px rgba(0,0,0,.06);
       position: sticky; top: 0; z-index: 200;
+      box-shadow: 0 1px 4px rgba(0,0,0,.06);
     }
-    .header-left { display: flex; align-items: center; }
-    .logo-img { height: 34px; width: auto; display: block; }
-    .header-sep { width: 1px; height: 30px; background: var(--line2); margin: 0 20px; }
-    .header-title-area { display: flex; flex-direction: column; gap: 2px; }
-    .header-org { font-size: 10px; font-weight: 600; color: var(--muted); letter-spacing: .06em; text-transform: uppercase; }
-    .header-system { font-size: 17px; font-weight: 800; color: var(--ink); letter-spacing: -.02em; }
-    .header-right { display: flex; align-items: center; gap: 8px; }
-    .user-badge { display: flex; align-items: center; gap: 8px; padding: 6px 12px; background: var(--line); border-radius: 20px; }
-    .user-badge span { font-size: 13px; font-weight: 600; color: var(--ink2); }
+    .header-inner {
+      max-width: 1280px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 80px; padding: 0 28px;
+    }
+    .header-brand { display: flex; align-items: center; gap: 16px; }
+    .header-logo { width: 140px; height: 40px; object-fit: contain; flex-shrink: 0; }
+    .header-text { display: flex; flex-direction: column; }
+    .header-sub { font-size: 10px; font-weight: 400; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; line-height: 1; }
+    .header-title { font-size: 22px; font-weight: 700; color: var(--ink); letter-spacing: -0.03em; line-height: 1; }
+    .header-actions { display: flex; align-items: center; gap: 8px; }
+    .whoami { font-size: 13px; color: var(--muted); margin: 0 4px; white-space: nowrap; }
+    .icon-btn {
+      background: transparent; border: none; font-size: 13px; font-weight: 600;
+      padding: 8px 10px; border-radius: 8px; color: var(--muted);
+      cursor: pointer; font-family: inherit; white-space: nowrap; transition: background .12s;
+    }
+    .icon-btn:hover { background: var(--line); }
+    .icon-btn.warn { color: var(--warn); }
+    .icon-btn.warn:hover { background: var(--warn-bg); }
     .btn-sm {
       display: inline-flex; align-items: center; gap: 5px;
       padding: 7px 12px; border-radius: 8px; border: 1px solid var(--line2);
@@ -108,10 +131,10 @@
     .wizard-bar {
       background: var(--white); border-bottom: 1px solid var(--line2);
       box-shadow: 0 1px 4px rgba(0,0,0,.04);
-      position: sticky; top: 60px; z-index: 150;
+      position: sticky; top: 80px; z-index: 150;
     }
     .step-trail {
-      display: flex; align-items: center; gap: 4px;
+      display: flex; align-items: center; justify-content: center; gap: 4px;
       padding: 16px 28px 8px; overflow-x: auto; scrollbar-width: none;
     }
     .step-trail::-webkit-scrollbar { display: none; }
@@ -148,6 +171,7 @@
     /* ── Main Layout ── */
     #mainApp { display: none; min-height: 100vh; }
     .wizard-content { padding: 32px 28px; max-width: 860px; margin: 0 auto; }
+    #step4.wizard-content { max-width: 1080px; }
 
     /* ── Question Card (09-style) ── */
     .question-card { text-align: center; padding: 40px 28px 32px; }
@@ -252,7 +276,7 @@
     /* ── Trip Table ── */
     .table-wrap { overflow-x: auto; }
     table.trip-tbl {
-      width: 100%; border-collapse: collapse; font-size: 13px; min-width: 660px;
+      width: 100%; border-collapse: collapse; font-size: 13px; min-width: 900px;
     }
     table.trip-tbl th {
       padding: 10px 10px; background: var(--line); color: var(--ink2);
@@ -266,7 +290,7 @@
     table.trip-tbl tbody tr:hover { background: #fafbfc; }
     .trip-tbl.toll-hidden .toll-col { display: none; }
     .trip-place-btn {
-      max-width: 170px; width: 100%;
+      max-width: 220px; width: 100%;
       padding: 6px 10px; border: 1.5px solid var(--line2);
       border-radius: 7px; font-size: 12px; font-family: inherit;
       background: var(--white); cursor: pointer; text-align: left;
@@ -393,6 +417,7 @@
     .role-badge.admin { background: #fef3c7; color: #b45309; }
     .role-badge.user { background: var(--primary-light); color: var(--primary); }
 
+
     /* ── Utils ── */
     .hidden { display: none !important; }
     .divider { height: 1px; background: var(--line2); margin: 20px 0; }
@@ -414,21 +439,36 @@
 <!-- LOGIN -->
 <div id="loginScreen">
   <div class="login-card">
-    <div class="login-icon">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3182f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-      </svg>
-    </div>
-    <h1>교통비 정산서</h1>
-    <p>아이디와 PIN을 입력해주세요</p>
-    <div class="login-fields">
-      <input type="text" id="loginId" placeholder="아이디" autocomplete="username"
+    <h2>로그인</h2>
+    <p class="login-desc">아이디와 PIN을 입력하세요.</p>
+    <label>아이디
+      <input type="text" id="loginId" placeholder="예: 홍길동 또는 관리자" autocomplete="username"
         onkeydown="if(event.key==='Enter')document.getElementById('loginPin').focus()">
-      <input type="password" id="loginPin" placeholder="PIN" maxlength="4" autocomplete="current-password"
-        onkeydown="if(event.key==='Enter')doLogin()">
-    </div>
-    <div class="login-err" id="loginErr"></div>
+    </label>
+    <label>PIN
+      <input type="password" id="loginPin" placeholder="PIN 번호" maxlength="8" inputmode="numeric"
+        autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
+    </label>
+    <div class="form-error" id="loginErr" style="display:none"></div>
     <button class="btn-login" onclick="doLogin()">로그인</button>
+  </div>
+</div>
+
+<!-- CHANGE PIN SCREEN -->
+<div id="changePinScreen">
+  <div class="change-pin-card">
+    <h2>PIN 변경 필요</h2>
+    <p class="cp-desc">초기 PIN(<strong>0000</strong>)을 사용 중입니다.<br>새 PIN을 설정해야 로그인할 수 있습니다.</p>
+    <label>새 PIN <span style="font-size:12px;color:var(--muted2);font-weight:400">(4~8자리 숫자)</span>
+      <input type="password" id="cpNewPin" placeholder="새 PIN 입력" maxlength="8" inputmode="numeric"
+        onkeydown="if(event.key==='Enter')document.getElementById('cpConfirmPin').focus()">
+    </label>
+    <label>PIN 확인
+      <input type="password" id="cpConfirmPin" placeholder="PIN 재입력" maxlength="8" inputmode="numeric"
+        onkeydown="if(event.key==='Enter')doChangePin()">
+    </label>
+    <div class="form-error" id="cpErr" style="display:none"></div>
+    <button class="btn-cp" onclick="doChangePin()">PIN 변경 후 로그인</button>
   </div>
 </div>
 
@@ -436,24 +476,26 @@
 <div id="mainApp">
   <!-- Header -->
   <div class="header">
-    <div class="header-left">
-      <img src="smc-logo.png" class="logo-img" alt="SMC" onerror="this.style.display='none'">
-      <div class="header-sep"></div>
-      <div class="header-title-area">
-        <div class="header-org">재무관리파트 · 경영지원팀</div>
-        <div class="header-system">교통비 정산서</div>
+    <div class="header-inner">
+      <div class="header-brand">
+        <img src="smc-logo.png" class="header-logo" alt="SMC" onerror="this.style.display='none'">
+        <div class="header-text">
+          <span class="header-sub">Samsung Medical Center · 재무관리파트</span>
+          <span class="header-title">교통비 정산서</span>
+        </div>
       </div>
-    </div>
-    <div class="header-right">
-      <div class="user-badge">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8b95a1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
-        </svg>
-        <span id="headerUserName">사용자</span>
+      <div class="header-actions">
+        <span class="whoami" id="headerUserName"></span>
+        <button class="icon-btn" onclick="openAccount()">계정관리</button>
+        <button class="icon-btn" id="btnAdmin" onclick="openAdmin()" style="display:none">관리자</button>
+        <button class="icon-btn warn" onclick="doLogout()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+            <polyline points="16 17 21 12 16 7"/>
+            <line x1="21" y1="12" x2="9" y2="12"/>
+          </svg>
+        </button>
       </div>
-      <button class="btn-sm" onclick="openAccount()">계정관리</button>
-      <button class="btn-sm" id="btnAdmin" onclick="openAdmin()" style="display:none">관리자</button>
-      <button class="btn-sm warn" onclick="doLogout()">로그아웃</button>
     </div>
   </div>
 
@@ -614,7 +656,7 @@
         <select id="fuelTypeSelect" style="padding:10px 12px;border:1.5px solid var(--line2);border-radius:9px;font-size:14px;font-family:inherit;outline:none;">
           <option value="B027">휘발유</option>
           <option value="D047">경유</option>
-          <option value="L007">LPG</option>
+          <option value="K015">LPG</option>
         </select>
         <button class="btn-sm primary" onclick="fetchOpinet()">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -688,13 +730,13 @@
         <table class="trip-tbl" id="tripTable">
           <thead>
             <tr>
-              <th style="width:80px">월/일</th>
-              <th style="width:90px">이동수단</th>
-              <th style="width:150px">출발지</th>
-              <th style="width:150px">도착지</th>
-              <th style="width:80px">거리(km)</th>
-              <th style="width:85px">교통비(유류비)</th>
-              <th class="toll-col" style="width:90px">하이패스/주차비</th>
+              <th style="width:76px">월/일</th>
+              <th style="width:88px">이동수단</th>
+              <th style="width:210px">출발지</th>
+              <th style="width:210px">도착지</th>
+              <th style="width:76px">거리(km)</th>
+              <th style="width:90px">교통비(유류비)</th>
+              <th class="toll-col" style="width:96px">하이패스/주차비</th>
               <th style="width:80px">합계</th>
               <th style="width:32px"></th>
             </tr>
@@ -989,7 +1031,7 @@
 ══════════════════════════════════════════ */
 const KAKAO_KEY = '995bceb54093798d160d753693a9c98e'
 const OPINET_KEY = 'F260811056'
-const OPINET_CODES = { '휘발유': 'B027', '경유': 'D047', 'LPG': 'L007' }
+const OPINET_CODES = { '휘발유': 'B027', '경유': 'D047', 'LPG': 'K015' }
 const EFFICIENCY = {
   '휘발유': { '1000cc 미만': 9, '1500cc 이하': 8, '1500cc 초과': 7 },
   '경유': 7,
@@ -1042,16 +1084,42 @@ function updateUser(id, patch) {
 /* ══════════════════════════════════════════
    AUTH
 ══════════════════════════════════════════ */
+function showErr(el, msg) { el.textContent = msg; el.style.display = msg ? 'block' : 'none'; }
+
 function doLogin() {
   const id = document.getElementById('loginId').value.trim()
   const pin = document.getElementById('loginPin').value.trim()
   const err = document.getElementById('loginErr')
-  if (!id || !pin) { err.textContent = '아이디와 PIN을 입력하세요.'; return }
+  if (!id || !pin) { showErr(err, '아이디와 PIN을 입력하세요.'); return }
   const user = getUser(id)
-  if (!user || user.pin !== pin) { err.textContent = '아이디 또는 PIN이 올바르지 않습니다.'; return }
+  if (!user || user.pin !== pin) { showErr(err, '아이디 또는 PIN이 올바르지 않습니다.'); return }
   currentUser = user
+  showErr(err, '')
+  if (pin === '0000') {
+    document.getElementById('loginScreen').style.display = 'none'
+    document.getElementById('changePinScreen').style.display = 'flex'
+    document.getElementById('cpNewPin').value = ''
+    document.getElementById('cpConfirmPin').value = ''
+    showErr(document.getElementById('cpErr'), '')
+    setTimeout(() => document.getElementById('cpNewPin').focus(), 100)
+    return
+  }
   localStorage.setItem(KEY_SESSION, JSON.stringify({ userId: user.id, loginTime: Date.now() }))
-  err.textContent = ''
+  startApp()
+}
+
+function doChangePin() {
+  const newPin = document.getElementById('cpNewPin').value.trim()
+  const confirm = document.getElementById('cpConfirmPin').value.trim()
+  const err = document.getElementById('cpErr')
+  if (!newPin || !confirm) { showErr(err, '새 PIN과 확인을 모두 입력하세요.'); return }
+  if (!/^\d{4,8}$/.test(newPin)) { showErr(err, 'PIN은 4~8자리 숫자여야 합니다.'); return }
+  if (newPin === '0000') { showErr(err, '초기 PIN(0000)은 사용할 수 없습니다.'); return }
+  if (newPin !== confirm) { showErr(err, 'PIN이 일치하지 않습니다.'); return }
+  updateUser(currentUser.id, { pin: newPin })
+  currentUser = getUser(currentUser.id)
+  document.getElementById('changePinScreen').style.display = 'none'
+  localStorage.setItem(KEY_SESSION, JSON.stringify({ userId: currentUser.id, loginTime: Date.now() }))
   startApp()
 }
 
@@ -1060,10 +1128,11 @@ function doLogout() {
   localStorage.removeItem(KEY_SESSION)
   trips = []; tripIdSeq = 0; tripMode = null; hasToll = null
   document.getElementById('mainApp').style.display = 'none'
+  document.getElementById('changePinScreen').style.display = 'none'
   document.getElementById('loginScreen').style.display = 'flex'
   document.getElementById('loginId').value = ''
   document.getElementById('loginPin').value = ''
-  document.getElementById('loginErr').textContent = ''
+  showErr(document.getElementById('loginErr'), '')
   document.getElementById('tripBody').innerHTML = ''
 }
 
@@ -1075,6 +1144,14 @@ function autoLogin() {
   const user = getUser(s.userId)
   if (!user) return
   currentUser = user
+  if (user.pin === '0000') {
+    document.getElementById('loginScreen').style.display = 'none'
+    document.getElementById('changePinScreen').style.display = 'flex'
+    document.getElementById('cpNewPin').value = ''
+    document.getElementById('cpConfirmPin').value = ''
+    showErr(document.getElementById('cpErr'), '')
+    return
+  }
   startApp()
 }
 
