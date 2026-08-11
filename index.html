@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>교통비 정산서 — 삼성의료원 재무관리파트</title>
+  <title>교통비 정산서 — 재무관리파트</title>
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin="anonymous" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.min.css" />
   <script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
@@ -36,7 +36,7 @@
       font-synthesis: none;
       background: var(--bg);
       color: var(--ink);
-      font-size: 13px;
+      font-size: 14px;
       line-height: 1.5;
     }
     @media (max-resolution: 1dppx) {
@@ -50,118 +50,142 @@
     .header {
       background: var(--white);
       border-bottom: 1px solid var(--line2);
-      height: 58px;
+      height: 60px;
       display: flex; align-items: center; justify-content: space-between;
-      padding: 0 24px;
+      padding: 0 28px;
       box-shadow: 0 1px 4px rgba(0,0,0,.06);
       position: sticky; top: 0; z-index: 200;
     }
-    .header-left { display: flex; align-items: center; gap: 0; }
-    .smc-logo { display: flex; align-items: center; padding-right: 20px; }
+    .header-left { display: flex; align-items: center; }
+    .smc-logo { display: flex; align-items: center; }
     .logo-img { height: 34px; width: auto; display: block; }
     .header-sep { width: 1px; height: 30px; background: var(--line2); margin: 0 20px; flex-shrink: 0; }
-    .header-title-area { display: flex; flex-direction: column; justify-content: center; gap: 1px; }
-    .header-org { font-size: 10px; font-weight: 600; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
+    .header-title-area { display: flex; flex-direction: column; justify-content: center; gap: 2px; }
+    .header-org { font-size: 10px; font-weight: 600; color: var(--muted); letter-spacing: .06em; text-transform: uppercase; }
     .header-system { font-size: 17px; font-weight: 800; color: var(--ink); letter-spacing: -.02em; }
     .header-right { display: flex; align-items: center; gap: 8px; }
 
     /* ── Buttons ── */
     .btn {
-      display: inline-flex; align-items: center; gap: 6px;
-      padding: 8px 14px; border-radius: 8px; border: 1px solid transparent;
-      cursor: pointer; font-size: 13px; font-weight: 600; transition: all .15s;
-      white-space: nowrap;
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+      padding: 9px 16px; border-radius: 9px; border: 1px solid transparent;
+      cursor: pointer; font-size: 14px; font-weight: 600; transition: all .15s;
+      white-space: nowrap; font-family: inherit; line-height: 1;
     }
     .btn-outline { background: var(--white); border-color: var(--line2); color: var(--ink2); }
     .btn-outline:hover { background: var(--line); }
     .btn-primary { background: var(--primary); color: white; border-color: var(--primary); }
     .btn-primary:hover { background: var(--primary-dark); }
-    .btn-green { background: var(--green); color: white; border-color: var(--green); }
-    .btn-green:hover { background: #008a52; }
-    .btn-sm { padding: 6px 10px; font-size: 12px; }
-    .btn-icon { padding: 7px 9px; }
+    .btn-excel {
+      background: var(--green); color: white; border: none;
+      border-radius: 10px; padding: 10px 16px;
+      font-size: 14px; font-weight: 600; cursor: pointer;
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+      font-family: inherit; line-height: 1; transition: background .15s;
+    }
+    .btn-excel:hover { background: #008a52; }
+    .btn-sm { padding: 7px 12px; font-size: 13px; }
 
     /* ── Main content ── */
-    .main { max-width: 1100px; margin: 0 auto; padding: 24px; display: flex; flex-direction: column; gap: 16px; }
+    .main { max-width: 1120px; margin: 0 auto; padding: 24px; display: flex; flex-direction: column; gap: 16px; }
 
     /* ── Card ── */
     .card { background: var(--white); border: 1px solid var(--line2); border-radius: 12px; overflow: hidden; }
+    .card-trip {
+      border: 1.5px solid var(--primary);
+      box-shadow: 0 2px 16px rgba(49,130,246,.08);
+    }
     .card-header {
       padding: 14px 20px; border-bottom: 1px solid var(--line);
       display: flex; align-items: center; justify-content: space-between; gap: 12px;
     }
-    .card-title { font-size: 13px; font-weight: 700; color: var(--ink); display: flex; align-items: center; gap: 8px; }
+    .card-trip .card-header { background: var(--primary-light); }
+    .card-title { font-size: 14px; font-weight: 700; color: var(--ink); display: flex; align-items: center; gap: 8px; }
+    .card-trip .card-title { color: var(--primary-dark); font-size: 15px; }
     .card-body { padding: 20px; }
+    .card-hint { font-size: 12px; color: var(--muted); }
 
     /* ── Badge ── */
     .badge {
       display: inline-flex; align-items: center; gap: 4px;
-      font-size: 11px; font-weight: 700; padding: 2px 8px;
+      font-size: 11px; font-weight: 700; padding: 3px 9px;
       border-radius: 20px;
     }
     .badge-blue  { background: var(--primary-light); color: var(--primary); }
     .badge-green { background: var(--green-bg); color: var(--green); }
-    .badge-orange{ background: var(--orange-bg); color: var(--orange); }
 
     /* ── Form grid ── */
     .form-grid { display: grid; gap: 14px; }
     .form-grid-4 { grid-template-columns: repeat(4, 1fr); }
     .form-grid-3 { grid-template-columns: repeat(3, 1fr); }
     .form-grid-2 { grid-template-columns: repeat(2, 1fr); }
-    .field-label { font-size: 11px; font-weight: 700; color: var(--muted); margin-bottom: 6px; letter-spacing: .02em; }
+    .field-label { font-size: 12px; font-weight: 700; color: var(--muted); margin-bottom: 6px; letter-spacing: .02em; }
     .field-input, .field-select {
-      width: 100%; padding: 9px 12px; border: 1px solid var(--line2); border-radius: 8px;
-      font-size: 13px; color: var(--ink); background: var(--bg);
+      width: 100%; padding: 10px 12px; border: 1px solid var(--line2); border-radius: 8px;
+      font-size: 14px; color: var(--ink); background: var(--bg);
       font-family: inherit; outline: none; transition: border-color .15s;
     }
     .field-input:focus, .field-select:focus { border-color: var(--primary); background: var(--white); }
-    .field-select { appearance: none; cursor: pointer;
+    .field-select {
+      appearance: none; cursor: pointer;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238b95a1' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
-      background-repeat: no-repeat; background-position: right 10px center; padding-right: 28px; }
+      background-repeat: no-repeat; background-position: right 10px center; padding-right: 30px;
+    }
 
     /* ── Fuel panel ── */
-    .fuel-panel {
-      background: var(--primary-light); border-radius: 10px;
-      padding: 16px 20px; display: flex; align-items: stretch; gap: 0;
+    .fuel-row { display: flex; align-items: flex-start; gap: 20px; flex-wrap: wrap; }
+    .fuel-input-group { flex-shrink: 0; }
+    .price-input-wrap { display: flex; align-items: center; }
+    .price-input-wrap .field-input {
+      border-radius: 8px 0 0 8px; text-align: right; font-weight: 700;
+      font-size: 16px; width: 140px;
     }
-    .fuel-item { flex: 1; text-align: center; padding: 0 12px; }
+    .price-input-unit {
+      padding: 10px 12px; background: var(--line2); border: 1px solid var(--line2);
+      border-left: none; border-radius: 0 8px 8px 0; font-size: 13px; color: var(--muted); white-space: nowrap;
+    }
+    .opinet-status {
+      font-size: 12px; color: var(--muted); margin-top: 6px;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .opinet-status.loading { color: var(--primary); }
+    .opinet-status.ok { color: var(--green); }
+    .opinet-status.fail { color: var(--warn); }
+
+    .fuel-panel {
+      flex: 1; min-width: 280px;
+      background: var(--primary-light); border-radius: 10px;
+      padding: 14px 20px; display: flex; align-items: stretch; gap: 0;
+    }
+    .fuel-item { flex: 1; text-align: center; padding: 0 10px; }
     .fuel-item + .fuel-item { border-left: 1px solid rgba(49,130,246,.2); }
     .fuel-label { font-size: 11px; font-weight: 700; color: var(--primary); margin-bottom: 4px; }
-    .fuel-price { font-size: 20px; font-weight: 900; color: var(--ink); letter-spacing: -.03em; }
+    .fuel-price { font-size: 22px; font-weight: 900; color: var(--ink); letter-spacing: -.03em; }
     .fuel-price-unit { font-size: 11px; font-weight: 500; color: var(--muted); }
-    .fuel-rate-box {
-      flex: 1.8; padding: 0 20px;
-      border-left: 1px solid rgba(49,130,246,.2);
-    }
+    .fuel-rate-box { flex: 1.8; padding: 0 16px; border-left: 1px solid rgba(49,130,246,.2); }
     .fuel-rate-label { font-size: 11px; font-weight: 700; color: var(--primary); margin-bottom: 4px; }
     .fuel-rate-formula { font-size: 11px; color: var(--muted); margin-bottom: 4px; }
     .fuel-rate-value { font-size: 22px; font-weight: 900; color: var(--ink); letter-spacing: -.03em; }
-    .fuel-input-row { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
-    .price-input-wrap { display: flex; align-items: center; gap: 0; flex: 1; max-width: 200px; }
-    .price-input-wrap .field-input { border-radius: 8px 0 0 8px; text-align: right; font-weight: 700; }
-    .price-input-unit {
-      padding: 9px 12px; background: var(--line2); border: 1px solid var(--line2);
-      border-left: none; border-radius: 0 8px 8px 0; font-size: 12px; color: var(--muted); white-space: nowrap;
-    }
 
     /* ── Trip table ── */
     .trip-wrap { overflow-x: auto; }
-    .trip-table { width: 100%; border-collapse: collapse; min-width: 820px; }
+    .trip-table { width: 100%; border-collapse: collapse; min-width: 860px; }
     .trip-table th {
-      font-size: 11px; font-weight: 700; color: var(--muted); letter-spacing: .02em;
-      padding: 9px 8px; text-align: left; border-bottom: 2px solid var(--line2);
+      font-size: 12px; font-weight: 700; color: var(--muted); letter-spacing: .02em;
+      padding: 10px 8px; text-align: left; border-bottom: 2px solid var(--line2);
       background: var(--bg); white-space: nowrap;
     }
     .trip-table th.center, .trip-table td.center { text-align: center; }
     .trip-table th.right, .trip-table td.right { text-align: right; }
     .trip-table td {
-      padding: 6px 4px; border-bottom: 1px solid var(--line);
+      padding: 7px 4px; border-bottom: 1px solid var(--line);
       vertical-align: middle;
     }
     .trip-table tr:last-of-type td { border-bottom: none; }
+    .trip-table tbody tr:hover td { background: #fafbff; }
     .cell-input {
       width: 100%; padding: 7px 8px; border: 1px solid transparent; border-radius: 6px;
-      font-size: 12px; color: var(--ink); background: transparent;
+      font-size: 13px; color: var(--ink); background: transparent;
       font-family: inherit; outline: none; transition: all .12s;
     }
     .cell-input:hover { border-color: var(--line2); background: var(--bg); }
@@ -169,65 +193,65 @@
     .cell-input.right { text-align: right; }
     .cell-input.center { text-align: center; }
 
-    /* place search field */
     .place-wrap { position: relative; display: flex; align-items: center; }
     .place-input {
       flex: 1; padding: 7px 28px 7px 8px;
       border: 1px solid transparent; border-radius: 6px;
-      font-size: 12px; color: var(--ink); background: transparent;
+      font-size: 13px; color: var(--ink); background: transparent;
       font-family: inherit; outline: none; cursor: default;
       transition: all .12s; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
     .place-input:hover { border-color: var(--line2); background: var(--bg); }
+    .place-input.empty { color: var(--muted2); font-style: italic; }
     .place-btn {
       position: absolute; right: 4px;
       background: none; border: none; cursor: pointer;
-      font-size: 14px; padding: 2px 3px; color: var(--primary);
-      line-height: 1; border-radius: 4px; transition: background .12s;
+      padding: 3px; color: var(--primary); line-height: 1;
+      border-radius: 4px; transition: background .12s; display: flex; align-items: center;
     }
     .place-btn:hover { background: var(--primary-light); }
 
-    .dist-cell { font-size: 12px; font-weight: 700; color: var(--primary); white-space: nowrap; text-align: center; }
+    .dist-cell { font-size: 13px; font-weight: 700; color: var(--primary); white-space: nowrap; text-align: center; }
     .dist-cell.auto { color: var(--green); }
-    .amount-cell { font-size: 12px; font-weight: 800; color: var(--ink); white-space: nowrap; text-align: right; }
-    .total-cell { font-size: 13px; font-weight: 900; color: var(--ink); white-space: nowrap; text-align: right; }
+    .amount-cell { font-size: 13px; font-weight: 700; color: var(--ink); white-space: nowrap; text-align: right; padding-right: 8px; }
+    .total-cell { font-size: 14px; font-weight: 900; color: var(--ink); white-space: nowrap; text-align: right; padding-right: 8px; }
     .del-btn {
       background: none; border: none; cursor: pointer; color: var(--muted2);
-      font-size: 14px; padding: 4px 6px; border-radius: 4px; transition: all .12s; line-height: 1;
+      padding: 5px 7px; border-radius: 4px; transition: all .12s;
+      display: flex; align-items: center;
     }
     .del-btn:hover { color: var(--warn); background: var(--warn-bg); }
-
     .add-row-btn {
-      width: 100%; margin-top: 12px; padding: 10px;
+      width: 100%; margin-top: 12px; padding: 11px;
       border: 1.5px dashed var(--line2); border-radius: 8px;
-      background: none; cursor: pointer; color: var(--muted); font-size: 13px; font-weight: 600;
+      background: none; cursor: pointer; color: var(--muted); font-size: 14px; font-weight: 600;
       font-family: inherit; transition: all .15s;
     }
     .add-row-btn:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-light); }
 
-    /* transport type tag */
     .transport-tag {
-      font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: 4px;
+      font-size: 12px; font-weight: 700; padding: 3px 8px; border-radius: 5px;
       cursor: pointer; border: none; background: none; font-family: inherit;
+      white-space: nowrap;
     }
-    .transport-car { background: var(--primary-light); color: var(--primary); }
+    .transport-car  { background: var(--primary-light); color: var(--primary); }
     .transport-taxi { background: var(--orange-bg); color: var(--orange); }
 
     /* ── Summary ── */
     .summary-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; }
-    .summary-item { padding: 20px; text-align: center; border-right: 1px solid var(--line2); }
+    .summary-item { padding: 22px; text-align: center; border-right: 1px solid var(--line2); }
     .summary-item:last-child { border-right: none; }
-    .summary-label { font-size: 11px; font-weight: 700; color: var(--muted); margin-bottom: 8px; }
-    .summary-value { font-size: 26px; font-weight: 900; letter-spacing: -.04em; }
+    .summary-label { font-size: 12px; font-weight: 700; color: var(--muted); margin-bottom: 8px; }
+    .summary-value { font-size: 28px; font-weight: 900; letter-spacing: -.04em; }
     .summary-value.blue  { color: var(--primary); }
     .summary-value.green { color: var(--green); }
     .summary-value.ink   { color: var(--ink); }
     .summary-unit { font-size: 14px; font-weight: 600; color: var(--muted); margin-left: 2px; }
 
     /* ── Notes ── */
-    .notes-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
-    .notes-list li { font-size: 12px; color: var(--ink2); padding-left: 12px; position: relative; }
-    .notes-list li::before { content: '·'; position: absolute; left: 0; color: var(--muted); }
+    .notes-list { list-style: none; display: flex; flex-direction: column; gap: 7px; }
+    .notes-list li { font-size: 13px; color: var(--ink2); padding-left: 14px; position: relative; }
+    .notes-list li::before { content: '·'; position: absolute; left: 0; color: var(--muted); font-weight: 700; }
 
     /* ── Place search modal ── */
     .modal-overlay {
@@ -236,63 +260,64 @@
     }
     .modal-overlay.hidden { display: none; }
     .modal-box {
-      background: var(--white); border-radius: 14px; width: 480px; max-width: 95vw;
+      background: var(--white); border-radius: 14px; width: 500px; max-width: 95vw;
       box-shadow: 0 20px 60px rgba(0,0,0,.2); overflow: hidden;
     }
     .modal-header {
-      padding: 16px 20px; border-bottom: 1px solid var(--line2);
+      padding: 18px 20px; border-bottom: 1px solid var(--line2);
       display: flex; align-items: center; justify-content: space-between;
     }
-    .modal-title { font-size: 14px; font-weight: 800; color: var(--ink); }
+    .modal-title { font-size: 15px; font-weight: 800; color: var(--ink); }
     .modal-close {
-      background: none; border: none; cursor: pointer; font-size: 18px;
-      color: var(--muted); padding: 4px; border-radius: 6px; line-height: 1;
+      background: none; border: none; cursor: pointer;
+      color: var(--muted); padding: 6px; border-radius: 6px; line-height: 1;
+      display: flex; align-items: center; transition: all .12s;
     }
     .modal-close:hover { background: var(--line); color: var(--ink); }
     .modal-search-wrap { padding: 14px 16px; border-bottom: 1px solid var(--line); }
     .modal-search-input {
-      width: 100%; padding: 10px 14px; border: 1.5px solid var(--line2); border-radius: 8px;
+      width: 100%; padding: 11px 14px; border: 1.5px solid var(--line2); border-radius: 8px;
       font-size: 14px; font-family: inherit; color: var(--ink); outline: none; background: var(--bg);
     }
     .modal-search-input:focus { border-color: var(--primary); background: var(--white); }
-    .modal-results { max-height: 320px; overflow-y: auto; }
+    .modal-results { max-height: 340px; overflow-y: auto; }
     .place-result-item {
-      width: 100%; padding: 12px 16px; border: none; border-bottom: 1px solid var(--line);
+      width: 100%; padding: 13px 16px; border: none; border-bottom: 1px solid var(--line);
       background: none; cursor: pointer; text-align: left; font-family: inherit;
-      display: flex; flex-direction: column; gap: 2px; transition: background .1s;
+      display: flex; flex-direction: column; gap: 3px; transition: background .1s;
     }
     .place-result-item:hover { background: var(--primary-light); }
     .place-result-item:last-child { border-bottom: none; }
-    .place-result-name { font-size: 13px; font-weight: 700; color: var(--ink); }
-    .place-result-cat { font-size: 11px; color: var(--primary); }
-    .place-result-addr { font-size: 11px; color: var(--muted); }
-    .place-result-loading { padding: 20px; text-align: center; color: var(--muted); font-size: 13px; }
-    .place-result-empty { padding: 20px; text-align: center; color: var(--muted); font-size: 13px; }
+    .place-result-name { font-size: 14px; font-weight: 700; color: var(--ink); }
+    .place-result-cat  { font-size: 11px; color: var(--primary); }
+    .place-result-addr { font-size: 12px; color: var(--muted); }
+    .place-msg { padding: 24px; text-align: center; color: var(--muted); font-size: 14px; }
 
-    /* ── 거리 계산 상태 표시 ── */
-    .dist-loading { animation: spin 1s linear infinite; display: inline-block; }
+    /* ── spinner ── */
     @keyframes spin { to { transform: rotate(360deg); } }
+    .spin { animation: spin .8s linear infinite; display: inline-block; }
 
     /* ── print ── */
     @media print {
       .header-right, .add-row-btn, .del-btn, .place-btn, .modal-overlay,
-      .card:last-child { display: none !important; }
+      .card:last-child, .opinet-status { display: none !important; }
       .header { position: relative; box-shadow: none; }
-      .main { padding: 12px; gap: 10px; }
-      .card { border: 1px solid #ccc; break-inside: avoid; }
+      .main { padding: 10px; gap: 10px; }
+      .card { border: 1px solid #ccc !important; break-inside: avoid; box-shadow: none !important; }
       .trip-table th, .trip-table td { font-size: 11px; padding: 5px 4px; }
-      .summary-value { font-size: 18px; }
+      .summary-value { font-size: 20px; }
     }
 
     /* ── responsive ── */
     @media (max-width: 768px) {
-      .header { padding: 0 14px; }
+      .header { padding: 0 16px; }
       .header-org { display: none; }
-      .header-sep { margin: 0 12px; }
+      .header-sep { margin: 0 14px; }
       .main { padding: 12px; }
       .form-grid-4 { grid-template-columns: repeat(2, 1fr); }
       .summary-grid { grid-template-columns: repeat(2, 1fr); }
       .summary-item:nth-child(2) { border-right: none; }
+      .fuel-row { flex-direction: column; }
     }
   </style>
 </head>
@@ -306,14 +331,31 @@
     </div>
     <div class="header-sep"></div>
     <div class="header-title-area">
-      <div class="header-org">SAMSUNG MEDICAL CENTER · 재무관리파트</div>
+      <div class="header-org">SAMSUNG MEDICAL CENTER &middot; 재무관리파트</div>
       <div class="header-system">교통비 정산서</div>
     </div>
   </div>
   <div class="header-right">
-    <button class="btn btn-outline" onclick="window.print()">🖨️ 인쇄</button>
-    <button class="btn btn-green" onclick="exportExcel()">📊 엑셀 저장</button>
-    <button class="btn btn-outline btn-sm" onclick="resetAll()" title="전체 초기화">↺ 초기화</button>
+    <button class="btn btn-outline" onclick="window.print()">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
+        <rect x="6" y="14" width="12" height="8"/>
+      </svg>
+      인쇄
+    </button>
+    <button class="btn-excel" onclick="exportExcel()">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+        <polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+      </svg>
+      Excel 저장
+    </button>
+    <button class="btn btn-outline btn-sm" onclick="resetAll()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/>
+      </svg>
+      초기화
+    </button>
   </div>
 </header>
 
@@ -323,11 +365,11 @@
   <!-- A: 기본 정보 -->
   <div class="card">
     <div class="card-header">
-      <div class="card-title">📋 기본 정보</div>
-      <span class="badge badge-blue">💾 자동저장</span>
+      <div class="card-title">기본 정보</div>
+      <span class="badge badge-blue">자동저장</span>
     </div>
     <div class="card-body">
-      <div class="form-grid form-grid-4" style="margin-bottom:14px;">
+      <div class="form-grid form-grid-3" style="margin-bottom:16px;">
         <div>
           <div class="field-label">작성일</div>
           <input class="field-input" type="date" id="f-date">
@@ -337,15 +379,11 @@
           <input class="field-input" type="text" id="f-name" placeholder="성명" oninput="saveProfile()">
         </div>
         <div>
-          <div class="field-label">차량명</div>
-          <input class="field-input" type="text" id="f-vehicle" placeholder="예) 카니발" oninput="saveProfile()">
-        </div>
-        <div>
           <div class="field-label">차량번호</div>
           <input class="field-input" type="text" id="f-plate" placeholder="예) 123가 4567" oninput="saveProfile()">
         </div>
       </div>
-      <div class="form-grid form-grid-4">
+      <div class="form-grid form-grid-3">
         <div>
           <div class="field-label">연료구분</div>
           <select class="field-select" id="f-fuel" onchange="onFuelChange(); saveProfile()">
@@ -363,13 +401,7 @@
           </select>
         </div>
         <div id="displacement-note" style="display:none; align-items:flex-end; padding-bottom:2px;">
-          <div style="font-size:12px; color:var(--muted); background:var(--line); border-radius:8px; padding:9px 12px; width:100%;">
-            배기량 무관 (연료만 적용)
-          </div>
-        </div>
-        <div>
-          <div class="field-label">정산 기간</div>
-          <input class="field-input" type="text" id="f-period" placeholder="예) 2026년 6월" oninput="saveProfile()">
+          <div style="font-size:13px; color:var(--muted); background:var(--line); border-radius:8px; padding:10px 12px; width:100%;">배기량 무관</div>
         </div>
       </div>
     </div>
@@ -378,75 +410,75 @@
   <!-- B: 유류단가 -->
   <div class="card">
     <div class="card-header">
-      <div class="card-title">⛽ 유류단가</div>
+      <div class="card-title">유류단가</div>
       <div style="display:flex; align-items:center; gap:8px;">
-        <a href="https://www.opinet.co.kr/user/main/main.do" target="_blank"
-           style="text-decoration:none;" title="오피넷에서 현재 단가 확인 후 입력하세요">
-          <button class="btn btn-outline btn-sm">🔗 오피넷 바로가기</button>
+        <button class="btn btn-outline btn-sm" onclick="fetchOpinetPrice()" id="btn-opinet-refetch">
+          다시 조회
+        </button>
+        <a href="https://www.opinet.co.kr/user/main/main.do" target="_blank" style="text-decoration:none;">
+          <button class="btn btn-outline btn-sm">오피넷 바로가기</button>
         </a>
       </div>
     </div>
     <div class="card-body">
-      <div class="fuel-input-row">
-        <div style="flex-shrink:0;">
-          <div class="field-label" style="margin-bottom:6px;">오피넷 현재 단가 입력</div>
+      <div class="fuel-row">
+        <div class="fuel-input-group">
+          <div class="field-label" style="margin-bottom:6px;">오피넷 현재 단가</div>
           <div class="price-input-wrap">
             <input class="field-input" type="number" id="f-fuel-price" placeholder="0"
-                   min="0" step="1" oninput="recalc(); saveFuelPrice()" style="font-weight:700; text-align:right;">
+                   min="0" step="1" oninput="recalc(); saveFuelPrice()">
             <div class="price-input-unit">원/L</div>
           </div>
+          <div class="opinet-status" id="opinet-status">단가를 직접 입력하거나 자동조회를 이용하세요</div>
         </div>
-        <div style="flex:1; padding-top:20px; padding-left:8px; font-size:11px; color:var(--muted);">
-          오피넷(www.opinet.co.kr) → 전국 평균 → 해당 연료 단가 확인 후 입력
-        </div>
-      </div>
-      <div class="fuel-panel" id="fuel-panel">
-        <div class="fuel-item">
-          <div class="fuel-label" id="fuel-panel-label">선택 연료</div>
-          <div class="fuel-price" id="fuel-panel-price">—</div>
-          <div class="fuel-price-unit">원/L</div>
-        </div>
-        <div class="fuel-item fuel-rate-box">
-          <div class="fuel-rate-label">내 차량 적용 단가</div>
-          <div class="fuel-rate-formula" id="fuel-rate-formula">단가 ÷ 연비</div>
-          <div class="fuel-rate-value" id="fuel-rate-value">— <span style="font-size:13px; color:var(--muted); font-weight:600;">원/km</span></div>
-        </div>
-        <div class="fuel-item" style="flex:1.2; text-align:left; padding-left:20px;">
-          <div class="fuel-rate-label">계산 공식</div>
-          <div style="font-size:12px; color:var(--ink2); line-height:1.8; margin-top:4px;">
-            유류비 = 거리 × 유류단가 ÷ 연비<br>
-            <span style="font-size:11px; color:var(--muted);">10원 단위 반올림 적용</span>
+        <div class="fuel-panel" id="fuel-panel">
+          <div class="fuel-item">
+            <div class="fuel-label" id="fuel-panel-label">선택 연료</div>
+            <div class="fuel-price" id="fuel-panel-price">—</div>
+            <div class="fuel-price-unit">원/L</div>
+          </div>
+          <div class="fuel-rate-box">
+            <div class="fuel-rate-label">내 차량 적용 단가</div>
+            <div class="fuel-rate-formula" id="fuel-rate-formula">단가 ÷ 연비</div>
+            <div class="fuel-rate-value" id="fuel-rate-value">— <span style="font-size:13px; color:var(--muted); font-weight:600;">원/km</span></div>
+          </div>
+          <div class="fuel-item" style="text-align:left; padding-left:16px; flex:1.2;">
+            <div class="fuel-rate-label">계산 공식</div>
+            <div style="font-size:12px; color:var(--ink2); line-height:1.9; margin-top:4px;">
+              유류비 = 거리 &times; 단가 &divide; 연비<br>
+              <span style="font-size:11px; color:var(--muted);">10원 단위 반올림 적용</span>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- C: 이동 내역 -->
-  <div class="card">
+  <!-- C: 이동 내역 (dominant) -->
+  <div class="card card-trip">
     <div class="card-header">
       <div class="card-title">
-        🗺️ 이동 내역
-        <span class="badge badge-green">📍 카카오맵 거리 자동계산</span>
+        이동 내역
+        <span class="badge badge-green">카카오맵 자동계산</span>
       </div>
-      <div style="font-size:11px; color:var(--muted);">📍 아이콘 클릭 → 장소 검색 → 도로거리 자동 계산</div>
+      <span class="card-hint">지도 아이콘 클릭 &rarr; 장소 검색 &rarr; 도로거리 자동계산</span>
     </div>
-    <div class="card-body" style="padding:14px 16px;">
+    <div class="card-body" style="padding:16px;">
       <div class="trip-wrap">
         <table class="trip-table" id="trip-table">
           <thead>
             <tr>
-              <th style="width:60px;">월/일</th>
-              <th style="width:30px;" class="center">이동</th>
-              <th style="min-width:140px;">출발지</th>
-              <th style="min-width:140px;">도착지</th>
-              <th style="width:64px;" class="center">거리(km)</th>
-              <th>목 적</th>
-              <th style="width:70px;">동승자</th>
-              <th style="width:80px;" class="right">유류비</th>
-              <th style="width:80px;" class="right">통행료 등</th>
-              <th style="width:80px;" class="right">합 계</th>
-              <th style="width:28px;"></th>
+              <th style="width:62px;">월/일</th>
+              <th style="width:36px;" class="center">이동</th>
+              <th style="min-width:150px;">출발지</th>
+              <th style="min-width:150px;">도착지</th>
+              <th style="width:68px;" class="center">거리(km)</th>
+              <th>목&nbsp;&nbsp;적</th>
+              <th style="width:72px;">동승자</th>
+              <th style="width:88px;" class="right">유류비</th>
+              <th style="width:88px;" class="right">통행료 등</th>
+              <th style="width:88px;" class="right">합&nbsp;&nbsp;계</th>
+              <th style="width:30px;"></th>
             </tr>
           </thead>
           <tbody id="trip-tbody"></tbody>
@@ -459,7 +491,7 @@
   <!-- D: 합계 -->
   <div class="card">
     <div class="card-header">
-      <div class="card-title">💰 정산 합계</div>
+      <div class="card-title">정산 합계</div>
       <span class="badge badge-blue">자동계산</span>
     </div>
     <div class="summary-grid">
@@ -472,7 +504,7 @@
         <div class="summary-value blue" id="sum-dist">0.0<span class="summary-unit">km</span></div>
       </div>
       <div class="summary-item">
-        <div class="summary-label">유류비 합계</div>
+        <div class="summary-label">유류비·택시비 합계</div>
         <div class="summary-value ink" id="sum-fuel">0<span class="summary-unit">원</span></div>
       </div>
       <div class="summary-item" style="background:var(--primary-light);">
@@ -485,15 +517,15 @@
   <!-- E: 작성 기준 -->
   <div class="card">
     <div class="card-header">
-      <div class="card-title">📌 작성 기준</div>
+      <div class="card-title">작성 기준</div>
     </div>
     <div class="card-body">
       <ul class="notes-list">
-        <li>프로세스: 출장신청서 작성 → 교통비정산서 작성</li>
-        <li>거리계산: 카카오맵 기준 출발지 ↔ 도착지 실도로 거리 (직접 수정 가능)</li>
-        <li>유류대 계산: 운행거리 × 유류단가 ÷ 리터당 주행거리 (10원 단위 반올림)</li>
-        <li>연비 기준: 휘발유 1000cc 미만 9km/L · 1500cc 이하 8km/L · 1500cc 초과 7km/L / 경유 7km/L / LPG 5km/L</li>
-        <li>실물 영수증 첨부 필요 항목: 통행료, 주차료, 택시이용료</li>
+        <li>프로세스: 출장신청서 작성 &rarr; 교통비정산서 작성 (본 양식)</li>
+        <li>거리 계산: 카카오맵 기준 출발지 &harr; 도착지 실도로 거리 (직접 수정 가능)</li>
+        <li>유류대 계산: 운행거리 &times; 유류단가 &divide; 리터당 주행거리 (10원 단위 반올림)</li>
+        <li>연비 기준: 휘발유 1000cc 미만 9km/L &middot; 1500cc 이하 8km/L &middot; 1500cc 초과 7km/L / 경유 7km/L / LPG 5km/L</li>
+        <li>실물 영수증 첨부 필요: 통행료, 주차료, 택시이용료</li>
       </ul>
     </div>
   </div>
@@ -504,8 +536,12 @@
 <div class="modal-overlay hidden" id="place-modal" onclick="onModalOverlayClick(event)">
   <div class="modal-box" onclick="event.stopPropagation()">
     <div class="modal-header">
-      <div class="modal-title" id="modal-title">📍 장소 검색</div>
-      <button class="modal-close" onclick="closeModal()">✕</button>
+      <div class="modal-title" id="modal-title">장소 검색</div>
+      <button class="modal-close" onclick="closeModal()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
     </div>
     <div class="modal-search-wrap">
       <input class="modal-search-input" type="text" id="place-search-input"
@@ -514,7 +550,7 @@
              onkeydown="if(event.key==='Escape') closeModal()">
     </div>
     <div class="modal-results" id="place-results">
-      <div class="place-result-loading">검색어를 입력하세요</div>
+      <div class="place-msg">검색어를 입력하세요</div>
     </div>
   </div>
 </div>
@@ -522,10 +558,10 @@
 <script>
   const KAKAO_KEY = '995bceb54093798d160d753693a9c98e'
 
-  // 삼성의료원 기본 좌표
-  const SMC = { name: '삼성의료원', x: '127.0849986', y: '37.4882579' }
+  // 기본 출발지: 성균관대학교 삼성창원병원 (Kakao API로 초기화, fallback 좌표 포함)
+  let SMC = { name: '성균관대학교 삼성창원병원', x: '128.5726', y: '35.2286' }
 
-  // 연비 테이블 (엑셀 수식 기준)
+  // 연비 테이블 (엑셀 수식 기반)
   const EFFICIENCY = {
     '휘발유': { '1000cc 미만': 9, '1500cc 이하': 8, '1500cc 초과': 7 },
     '경유': 7,
@@ -537,7 +573,6 @@
     return EFFICIENCY[fuel] || 7
   }
 
-  // 유류비 계산: ROUND(거리 × 단가 ÷ 연비, -1)
   function calcFuelCost(distKm, pricePerL, fuel, displacement) {
     if (!distKm || !pricePerL) return 0
     const eff = getEfficiency(fuel, displacement)
@@ -547,8 +582,9 @@
   // ── 행 데이터 ──────────────────────────────────────────────
   let rows = []
   let rowIdCounter = 1
-  let currentTarget = null   // { rowId, field: 'from'|'to' }
+  let currentTarget = null
   let placeDebounce = null
+  let searchResults = []  // place search results cache
 
   function addRow() {
     const id = rowIdCounter++
@@ -587,9 +623,9 @@
       row.distKm = parseFloat(value) || 0
       row.distAuto = false
     } else if (field === 'toll') {
-      row.toll = parseInt(value.replace(/[^0-9]/g, '')) || 0
+      row.toll = parseInt(String(value).replace(/[^0-9]/g, '')) || 0
     } else if (field === 'taxiCost') {
-      row.taxiCost = parseInt(value.replace(/[^0-9]/g, '')) || 0
+      row.taxiCost = parseInt(String(value).replace(/[^0-9]/g, '')) || 0
     } else {
       row[field] = value
     }
@@ -600,56 +636,67 @@
   function renderRows() {
     const tbody = document.getElementById('trip-tbody')
     if (!rows.length) {
-      tbody.innerHTML = `<tr><td colspan="11" style="text-align:center; padding:24px; color:var(--muted); font-size:13px;">
-        아래 "구간 추가" 버튼으로 이동 내역을 추가하세요
-      </td></tr>`
+      tbody.innerHTML = '<tr><td colspan="11" style="text-align:center; padding:28px; color:var(--muted); font-size:14px;">아래 &ldquo;구간 추가&rdquo; 버튼으로 이동 내역을 추가하세요</td></tr>'
       return
     }
 
+    const fuel = document.getElementById('f-fuel')?.value || '휘발유'
+    const disp = document.getElementById('f-displacement')?.value || '1500cc 초과'
+    const pricePerL = parseFloat(document.getElementById('f-fuel-price')?.value) || 0
+
     tbody.innerHTML = rows.map(row => {
-      const fuel = document.getElementById('f-fuel')?.value || '휘발유'
-      const disp = document.getElementById('f-displacement')?.value || '1500cc 초과'
-      const pricePerL = parseFloat(document.getElementById('f-fuel-price')?.value) || 0
       const fuelCost = row.transport === '자차' ? calcFuelCost(row.distKm, pricePerL, fuel, disp) : 0
       const rowTotal = row.transport === '자차'
-        ? fuelCost + row.toll
-        : row.taxiCost + row.toll
-
-      const distDisplay = row.distKm > 0
-        ? `<span class="dist-cell ${row.distAuto ? 'auto' : ''}">${row.distKm.toFixed(1)}</span>`
-        : `<span class="dist-cell" style="color:var(--muted2);">—</span>`
-
-      const fuelCostDisplay = row.transport === '자차'
-        ? `<div class="amount-cell">${fuelCost ? fuelCost.toLocaleString() : '—'}</div>`
-        : `<div class="cell-input right" style="background:var(--line); border-radius:6px; padding:7px 8px; color:var(--muted); font-size:11px;">실비</div>`
+        ? fuelCost + (row.toll || 0)
+        : (row.taxiCost || 0) + (row.toll || 0)
 
       const transportTag = row.transport === '자차'
         ? `<button class="transport-tag transport-car" onclick="toggleTransport(${row.id})" title="클릭하여 변경">자차</button>`
         : `<button class="transport-tag transport-taxi" onclick="toggleTransport(${row.id})" title="클릭하여 변경">택시</button>`
 
+      const fromDisplay = row.fromName
+        ? `<div class="place-input" title="${esc(row.fromName)}">${esc(row.fromName)}</div>`
+        : `<div class="place-input empty">출발지</div>`
+      const toDisplay = row.toName
+        ? `<div class="place-input" title="${esc(row.toName)}">${esc(row.toName)}</div>`
+        : `<div class="place-input empty">도착지</div>`
+
+      // 유류비 셀
+      let fuelCell
+      if (row.transport === '택시') {
+        fuelCell = `<input class="cell-input right" type="number" value="${row.taxiCost || ''}" placeholder="0" min="0"
+          onblur="updateField(${row.id},'taxiCost',this.value); updateSummary();" style="font-weight:700;">`
+      } else {
+        fuelCell = `<div class="amount-cell">${fuelCost ? fuelCost.toLocaleString() : (row.distKm && pricePerL ? '계산중' : '—')}</div>`
+      }
+
       return `<tr data-id="${row.id}">
         <td>
-          <input class="cell-input center" type="text" value="${esc(row.date)}" placeholder="예)6/21"
+          <input class="cell-input center" type="text" value="${esc(row.date)}" placeholder="6/21"
                  onblur="updateField(${row.id},'date',this.value)" style="width:56px;">
         </td>
         <td class="center">${transportTag}</td>
         <td>
           <div class="place-wrap">
-            <div class="place-input" title="${esc(row.fromName)}">${esc(row.fromName) || '<span style=&quot;color:var(--muted2)&quot;>출발지</span>'}</div>
-            <button class="place-btn" onclick="openPlaceSearch(${row.id},'from')" title="장소 검색">📍</button>
+            ${fromDisplay}
+            <button class="place-btn" onclick="openPlaceSearch(${row.id},'from')" title="장소 검색">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            </button>
           </div>
         </td>
         <td>
           <div class="place-wrap">
-            <div class="place-input" id="to-label-${row.id}" title="${esc(row.toName)}">${esc(row.toName) || '<span style=&quot;color:var(--muted2)&quot;>도착지</span>'}</div>
-            <button class="place-btn" onclick="openPlaceSearch(${row.id},'to')" title="장소 검색">📍</button>
+            ${toDisplay}
+            <button class="place-btn" onclick="openPlaceSearch(${row.id},'to')" title="장소 검색">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            </button>
           </div>
         </td>
         <td class="center" id="dist-cell-${row.id}">
           <input class="cell-input center" type="number" value="${row.distKm > 0 ? row.distKm : ''}" placeholder="0.0" min="0" step="0.1"
-                 style="width:56px; font-weight:700; color:var(--primary);"
+                 style="width:58px; font-weight:700; color:${row.distAuto ? 'var(--green)' : 'var(--primary)'};"
                  onblur="updateField(${row.id},'distKm',this.value); updateSummary();"
-                 title="${row.distAuto ? '자동계산' : '직접 입력'}">
+                 title="${row.distAuto ? '카카오맵 자동계산' : '직접 입력'}">
         </td>
         <td>
           <input class="cell-input" type="text" value="${esc(row.purpose)}" placeholder="방문 목적"
@@ -657,23 +704,20 @@
         </td>
         <td>
           <input class="cell-input" type="text" value="${esc(row.companion)}" placeholder=""
-                 onblur="updateField(${row.id},'companion',this.value)" style="width:64px;">
+                 onblur="updateField(${row.id},'companion',this.value)" style="width:66px;">
         </td>
-        <td>
-          ${row.transport === '택시'
-            ? `<input class="cell-input right" type="number" value="${row.taxiCost || ''}" placeholder="0" min="0"
-                   onblur="updateField(${row.id},'taxiCost',this.value); updateSummary();" style="font-weight:700;">`
-            : `<div class="amount-cell" style="padding-right:8px;">${fuelCost ? fuelCost.toLocaleString() : (row.distKm ? '<span style=color:var(--muted)>단가 입력</span>' : '—')}</div>`}
-        </td>
+        <td>${fuelCell}</td>
         <td>
           <input class="cell-input right" type="number" value="${row.toll || ''}" placeholder="0" min="0"
                  onblur="updateField(${row.id},'toll',this.value); updateSummary();" style="font-weight:700;">
         </td>
         <td>
-          <div class="total-cell" style="padding-right:8px;">${rowTotal ? rowTotal.toLocaleString() : '—'}</div>
+          <div class="total-cell">${rowTotal ? rowTotal.toLocaleString() : '—'}</div>
         </td>
         <td>
-          <button class="del-btn" onclick="deleteRow(${row.id})">✕</button>
+          <button class="del-btn" onclick="deleteRow(${row.id})" title="삭제">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
         </td>
       </tr>`
     }).join('')
@@ -687,11 +731,8 @@
     let totalDist = 0, totalFuel = 0, totalToll = 0, totalTaxi = 0
     for (const row of rows) {
       totalDist += row.distKm || 0
-      if (row.transport === '자차') {
-        totalFuel += calcFuelCost(row.distKm, pricePerL, fuel, disp)
-      } else {
-        totalTaxi += row.taxiCost || 0
-      }
+      if (row.transport === '자차') totalFuel += calcFuelCost(row.distKm, pricePerL, fuel, disp)
+      else totalTaxi += row.taxiCost || 0
       totalToll += row.toll || 0
     }
 
@@ -712,7 +753,6 @@
 
     document.getElementById('fuel-panel-label').textContent = fuel
     document.getElementById('fuel-panel-price').textContent = pricePerL ? pricePerL.toLocaleString() : '—'
-    const dispLabel = fuel === '휘발유' ? ` (${disp}, 연비 ${eff}km/L)` : ` (연비 ${eff}km/L)`
     document.getElementById('fuel-rate-formula').textContent = `${pricePerL || 'X'} ÷ ${eff} km/L`
     document.getElementById('fuel-rate-value').innerHTML = ratePerKm
       ? `${Math.round(ratePerKm * 10) / 10}<span style="font-size:13px; color:var(--muted); font-weight:600;"> 원/km</span>`
@@ -730,22 +770,82 @@
     recalc()
   }
 
+  // ── 오피넷 자동조회 ────────────────────────────────────────
+  async function fetchOpinetPrice() {
+    const statusEl = document.getElementById('opinet-status')
+    statusEl.className = 'opinet-status loading'
+    statusEl.textContent = '오피넷 조회 중...'
+
+    const targetUrl = 'https://www.opinet.co.kr/api/avgAllPrice.do?code=F100AJCK71302014&out=json'
+    const proxies = [
+      `https://corsproxy.io/?url=${encodeURIComponent(targetUrl)}`,
+      `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`
+    ]
+    const fuel = document.getElementById('f-fuel').value
+    const prodCode = { '휘발유': 'B027', '경유': 'D047', 'LPG': 'L007' }[fuel] || 'B027'
+
+    for (const url of proxies) {
+      try {
+        const controller = new AbortController()
+        const timer = setTimeout(() => controller.abort(), 8000)
+        const res = await fetch(url, { signal: controller.signal })
+        clearTimeout(timer)
+        if (!res.ok) continue
+        const text = await res.text()
+        let data
+        try { data = JSON.parse(text) } catch(e) { continue }
+        const oils = data?.result?.OIL || []
+        const item = oils.find(o => o.PRODCD === prodCode)
+        const price = item ? Math.round(parseFloat(item.PRICE)) : null
+        if (price && price > 0) {
+          document.getElementById('f-fuel-price').value = price
+          recalc()
+          saveFuelPrice()
+          statusEl.className = 'opinet-status ok'
+          statusEl.textContent = `오피넷 자동조회 완료 — ${fuel} ${price.toLocaleString()}원/L (전국 평균)`
+          return
+        }
+      } catch(e) { /* 다음 proxy 시도 */ }
+    }
+
+    statusEl.className = 'opinet-status fail'
+    statusEl.textContent = '자동조회 실패 — 오피넷에서 단가를 확인 후 직접 입력하세요'
+  }
+
+  // ── 성균관대학교 삼성창원병원 좌표 초기화 ─────────────────
+  async function initSMCLocation() {
+    try {
+      const res = await fetch(
+        `https://dapi.kakao.com/v2/local/search/keyword.json?query=${encodeURIComponent('성균관대학교 삼성창원병원')}&size=1`,
+        { headers: { Authorization: `KakaoAK ${KAKAO_KEY}` } }
+      )
+      if (res.ok) {
+        const data = await res.json()
+        const doc = data.documents?.[0]
+        if (doc) {
+          SMC = { name: doc.place_name, x: doc.x, y: doc.y }
+        }
+      }
+    } catch(e) { /* fallback 좌표 유지 */ }
+  }
+
   // ── 장소 검색 모달 ────────────────────────────────────────
   function openPlaceSearch(rowId, field) {
     currentTarget = { rowId, field }
-    const row = rows.find(r => r.id === rowId)
     const label = field === 'from' ? '출발지' : '도착지'
-    document.getElementById('modal-title').textContent = `📍 ${label} 검색`
+    document.getElementById('modal-title').textContent = `${label} 검색`
     document.getElementById('place-modal').classList.remove('hidden')
     const input = document.getElementById('place-search-input')
     input.value = ''
-    document.getElementById('place-results').innerHTML = '<div class="place-result-loading">검색어를 입력하세요</div>'
-    input.focus()
+    document.getElementById('place-results').innerHTML = '<div class="place-msg">검색어를 입력하세요</div>'
+    searchResults = []
+    setTimeout(() => input.focus(), 60)
   }
 
   function closeModal() {
     document.getElementById('place-modal').classList.add('hidden')
     currentTarget = null
+    searchResults = []
   }
 
   function onModalOverlayClick(e) {
@@ -756,10 +856,10 @@
     clearTimeout(placeDebounce)
     const results = document.getElementById('place-results')
     if (val.length < 2) {
-      results.innerHTML = '<div class="place-result-loading">2글자 이상 입력하세요</div>'
+      results.innerHTML = '<div class="place-msg">2글자 이상 입력하세요</div>'
       return
     }
-    results.innerHTML = '<div class="place-result-loading">⏳ 검색 중…</div>'
+    results.innerHTML = '<div class="place-msg">검색 중...</div>'
     placeDebounce = setTimeout(() => doSearch(val), 280)
   }
 
@@ -767,30 +867,37 @@
     const results = document.getElementById('place-results')
     try {
       const res = await fetch(
-        `https://dapi.kakao.com/v2/local/search/keyword.json?query=${encodeURIComponent(query)}&size=8`,
+        `https://dapi.kakao.com/v2/local/search/keyword.json?query=${encodeURIComponent(query)}&size=10`,
         { headers: { Authorization: `KakaoAK ${KAKAO_KEY}` } }
       )
       if (!res.ok) throw new Error(res.status)
       const data = await res.json()
       const docs = data.documents || []
+      searchResults = docs
 
       if (!docs.length) {
-        results.innerHTML = '<div class="place-result-empty">검색 결과가 없습니다</div>'
+        results.innerHTML = '<div class="place-msg">검색 결과가 없습니다</div>'
         return
       }
 
-      results.innerHTML = docs.map(d => `
-        <button class="place-result-item" onclick="selectPlace(${JSON.stringify(esc(d.place_name))}, ${JSON.stringify(esc(d.road_address_name || d.address_name || ''))}, '${d.x}', '${d.y}', ${JSON.stringify(esc(d.category_name?.split(' > ').pop() || ''))})">
+      results.innerHTML = docs.map((d, i) => `
+        <button class="place-result-item" onclick="pickResult(${i})">
           <span class="place-result-name">${esc(d.place_name)}</span>
           ${d.category_name ? `<span class="place-result-cat">${esc(d.category_name.split(' > ').pop())}</span>` : ''}
           ${(d.road_address_name || d.address_name) ? `<span class="place-result-addr">${esc(d.road_address_name || d.address_name)}</span>` : ''}
         </button>`).join('')
-    } catch (e) {
-      results.innerHTML = '<div class="place-result-empty">검색 오류 — API 키를 확인하세요</div>'
+    } catch(e) {
+      results.innerHTML = '<div class="place-msg">검색 오류 — API 키를 확인하세요</div>'
     }
   }
 
-  async function selectPlace(name, addr, x, y, cat) {
+  function pickResult(i) {
+    const d = searchResults[i]
+    if (!d) return
+    selectPlace(d.place_name, d.road_address_name || d.address_name || '', d.x, d.y)
+  }
+
+  async function selectPlace(name, addr, x, y) {
     if (!currentTarget) return
     const { rowId, field } = currentTarget
     const row = rows.find(r => r.id === rowId)
@@ -801,15 +908,12 @@
     } else {
       row.toName = name; row.toX = x; row.toY = y
     }
-
     closeModal()
 
-    // 거리 계산 (양쪽 좌표 있을 때)
     if (row.fromX && row.toX) {
-      row.distKm = 0
-      row.distAuto = false
-      renderRows()
-      updateSummary()
+      // 임시로 거리 계산 중 표시
+      const distCell = document.getElementById(`dist-cell-${rowId}`)
+      if (distCell) distCell.innerHTML = '<span class="spin" style="color:var(--primary); font-size:16px;">&#8635;</span>'
 
       const dist = await getDistance({ x: row.fromX, y: row.fromY }, { x: row.toX, y: row.toY })
       row.distKm = dist
@@ -822,7 +926,6 @@
 
   // ── 거리 계산 ─────────────────────────────────────────────
   async function getDistance(origin, dest) {
-    // 1. Kakao Mobility Directions API
     try {
       const url = `https://apis-navi.kakaomobility.com/v1/directions?origin=${origin.x},${origin.y}&destination=${dest.x},${dest.y}&priority=RECOMMEND`
       const res = await fetch(url, { headers: { Authorization: `KakaoAK ${KAKAO_KEY}` } })
@@ -831,9 +934,9 @@
         const meters = data.routes?.[0]?.summary?.distance
         if (meters > 0) return Math.round(meters / 100) / 10
       }
-    } catch (e) {}
+    } catch(e) {}
 
-    // 2. Fallback: Haversine × 1.3 (도로 보정)
+    // Haversine × 1.3 fallback
     const km = haversine(
       parseFloat(origin.y), parseFloat(origin.x),
       parseFloat(dest.y), parseFloat(dest.x)
@@ -851,11 +954,9 @@
 
   // ── LocalStorage ──────────────────────────────────────────
   function saveProfile() {
-    localStorage.setItem('transport-profile', JSON.stringify({
+    localStorage.setItem('transport-profile-v2', JSON.stringify({
       name: document.getElementById('f-name').value,
-      vehicle: document.getElementById('f-vehicle').value,
       plate: document.getElementById('f-plate').value,
-      period: document.getElementById('f-period').value,
       fuel: document.getElementById('f-fuel').value,
       displacement: document.getElementById('f-displacement').value
     }))
@@ -866,78 +967,125 @@
   }
 
   function loadProfile() {
-    const p = JSON.parse(localStorage.getItem('transport-profile') || '{}')
+    const p = JSON.parse(localStorage.getItem('transport-profile-v2') || '{}')
     if (p.name) document.getElementById('f-name').value = p.name
-    if (p.vehicle) document.getElementById('f-vehicle').value = p.vehicle
     if (p.plate) document.getElementById('f-plate').value = p.plate
-    if (p.period) document.getElementById('f-period').value = p.period
     if (p.fuel) document.getElementById('f-fuel').value = p.fuel
     if (p.displacement) document.getElementById('f-displacement').value = p.displacement
 
     const savedPrice = localStorage.getItem('transport-fuel-price')
-    if (savedPrice) document.getElementById('f-fuel-price').value = savedPrice
+    if (savedPrice) {
+      document.getElementById('f-fuel-price').value = savedPrice
+      const statusEl = document.getElementById('opinet-status')
+      statusEl.textContent = `저장된 단가 ${parseInt(savedPrice).toLocaleString()}원/L — 최신 단가는 자동조회 버튼으로 갱신하세요`
+    }
 
     onFuelChange()
   }
 
-  // ── 엑셀 내보내기 ──────────────────────────────────────────
+  // ── 엑셀 내보내기 (계산 수식 포함) ───────────────────────
   function exportExcel() {
     const name = document.getElementById('f-name').value || '신청자'
-    const vehicle = document.getElementById('f-vehicle').value
-    const plate = document.getElementById('f-plate').value
-    const fuel = document.getElementById('f-fuel').value
-    const disp = document.getElementById('f-displacement').value
+    const plate = document.getElementById('f-plate').value || ''
+    const fuel = document.getElementById('f-fuel').value || '휘발유'
+    const disp = document.getElementById('f-displacement').value || '1500cc 초과'
     const pricePerL = parseFloat(document.getElementById('f-fuel-price').value) || 0
     const date = document.getElementById('f-date').value || ''
-    const period = document.getElementById('f-period').value || ''
+    const eff = getEfficiency(fuel, disp)
 
     const wb = XLSX.utils.book_new()
-    const wsData = []
+    const ws = Object.create(null)
 
-    // 헤더
-    wsData.push(['교통비 정산서'])
-    wsData.push([])
-    wsData.push([`· 작성일 : ${date}`, '', '', '', '', '', '', `· 정산기간 : ${period}`])
-    wsData.push([`· 신청자 : ${name}`, '', '', '', '', '', '', '(서명)'])
-    wsData.push([])
-    wsData.push(['1. 자차 이용 시'])
-    wsData.push([`· 차량명 : ${vehicle}`, '', '', '', '', '', '', `· 차량번호 : ${plate}`])
-    wsData.push([])
-    wsData.push(['연료구분', fuel, '', '', '배기량', disp, '', '', '유류단가', pricePerL])
-    wsData.push([])
-    wsData.push(['월/일', '출발지', '도착지', '거리(km)', '목적', '동승자', '이동', '유류비', '통행료 등', '합계'])
-
-    let totalDist = 0, totalFuel = 0, totalToll = 0, totalTaxi = 0
-    for (const row of rows) {
-      const fuelCost = row.transport === '자차' ? calcFuelCost(row.distKm, pricePerL, fuel, disp) : 0
-      const toll = row.toll || 0
-      const taxi = row.transport === '택시' ? (row.taxiCost || 0) : 0
-      const rowTotal = fuelCost + taxi + toll
-      totalDist += row.distKm || 0
-      totalFuel += fuelCost
-      totalToll += toll
-      totalTaxi += taxi
-      wsData.push([
-        row.date, row.fromName, row.toName,
-        row.distKm || '', row.purpose, row.companion, row.transport,
-        fuelCost || '', toll || '', rowTotal || ''
-      ])
+    // 셀 작성 헬퍼
+    function SS(addr, v) {
+      ws[addr] = { t: 's', v: v == null ? '' : String(v) }
+    }
+    function SN(addr, v, formula) {
+      if (formula) {
+        ws[addr] = { t: 'n', f: formula }
+      } else {
+        ws[addr] = { t: 'n', v: v || 0 }
+      }
     }
 
-    // 합계 행
-    wsData.push([])
-    wsData.push(['합 계', '', '', totalDist.toFixed(1), '', '', '', totalFuel + totalTaxi, totalToll, totalFuel + totalTaxi + totalToll])
+    // ── 제목 ──
+    SS('A1', '교통비 정산서')
 
-    const ws = XLSX.utils.aoa_to_sheet(wsData)
+    // ── 기본 정보 (행 3~7) ──
+    // 유류단가는 I3에 저장 (수식에서 $I$3 참조)
+    SS('A3', '작성일'); SS('B3', date)
+    SS('H3', '유류단가(원/L)'); SN('I3', pricePerL)   // ← 수식 참조 기준셀
 
-    // 열 너비
+    SS('A4', '신청자'); SS('B4', name); SS('J4', '(서명)')
+
+    SS('A6', '차량번호'); SS('B6', plate)
+    SS('D6', '연료'); SS('E6', fuel)
+    SS('G6', '배기량'); SS('H6', fuel === '휘발유' ? disp : '무관')
+
+    // 적용연비는 B7에 저장 (수식에서 $B$7 참조)
+    SS('A7', '적용연비(km/L)'); SN('B7', eff)          // ← 수식 참조 기준셀
+    SS('C7', '← 수식 자동참조 (연료·배기량 기준)')
+
+    // ── 컬럼 헤더 (행 9) ──
+    const COLS = ['A','B','C','D','E','F','G','H','I','J']
+    const HDRS = ['월/일','출발지','도착지','거리(km)','목적','동승자','이동','유류비(원)','통행료(원)','합계(원)']
+    HDRS.forEach((h, i) => SS(`${COLS[i]}9`, h))
+
+    // ── 데이터 행 (10행~) ──
+    let rowNum = 10
+    const firstDataRow = rowNum
+    let totalDist = 0
+
+    for (const row of rows) {
+      const toll = row.toll || 0
+      totalDist += row.distKm || 0
+
+      SS(`A${rowNum}`, row.date)
+      SS(`B${rowNum}`, row.fromName)
+      SS(`C${rowNum}`, row.toName)
+      if (row.distKm) SN(`D${rowNum}`, row.distKm)
+      SS(`E${rowNum}`, row.purpose)
+      SS(`F${rowNum}`, row.companion)
+      SS(`G${rowNum}`, row.transport)
+
+      if (row.transport === '자차') {
+        // 수식: ROUND(거리 × 유류단가 ÷ 적용연비 / 10, 0) * 10
+        SN(`H${rowNum}`, undefined, `ROUND(D${rowNum}*$I$3/$B$7/10,0)*10`)
+      } else {
+        SN(`H${rowNum}`, row.taxiCost || 0)
+      }
+
+      if (toll) SN(`I${rowNum}`, toll)
+      // 합계 수식: 유류비(또는 택시비) + 통행료
+      SN(`J${rowNum}`, undefined, `H${rowNum}+I${rowNum}`)
+
+      rowNum++
+    }
+
+    const lastDataRow = rowNum - 1
+
+    // ── 합계 행 ──
+    SS(`A${rowNum + 1}`, '합 계')
+    SN(`D${rowNum + 1}`, totalDist)
+    if (lastDataRow >= firstDataRow) {
+      SN(`H${rowNum + 1}`, undefined, `SUM(H${firstDataRow}:H${lastDataRow})`)
+      SN(`I${rowNum + 1}`, undefined, `SUM(I${firstDataRow}:I${lastDataRow})`)
+      SN(`J${rowNum + 1}`, undefined, `SUM(J${firstDataRow}:J${lastDataRow})`)
+    }
+
+    // ── 수식 안내 (마지막+3행) ──
+    SS(`A${rowNum + 3}`, '* H열(유류비) 수식: =ROUND(거리 × 유류단가[$I$3] ÷ 적용연비[$B$7] / 10, 0) × 10')
+    SS(`A${rowNum + 4}`, '* J열(합계) 수식: =유류비 + 통행료 / 택시의 경우 H열에 실비 직접 입력')
+
+    // ── 시트 범위 & 열 너비 ──
+    ws['!ref'] = `A1:J${rowNum + 4}`
     ws['!cols'] = [
-      { wch: 8 }, { wch: 18 }, { wch: 18 }, { wch: 8 },
-      { wch: 20 }, { wch: 8 }, { wch: 6 }, { wch: 10 }, { wch: 10 }, { wch: 10 }
+      { wch: 8 }, { wch: 20 }, { wch: 20 }, { wch: 8 },
+      { wch: 22 }, { wch: 8 }, { wch: 6 }, { wch: 14 }, { wch: 14 }, { wch: 14 }
     ]
 
     XLSX.utils.book_append_sheet(wb, ws, '교통비정산서')
-    const fileName = `교통비정산서_${name}_${date.replace(/-/g, '')}.xlsx`
+    const fileName = `교통비정산서_${name}_${date.replace(/-/g, '') || 'draft'}.xlsx`
     XLSX.writeFile(wb, fileName)
   }
 
@@ -952,15 +1100,29 @@
   // ── 유틸 ──────────────────────────────────────────────────
   function esc(str) {
     if (!str) return ''
-    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#x27;')
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#x27;')
   }
 
   // ── 초기화 ────────────────────────────────────────────────
-  document.addEventListener('DOMContentLoaded', () => {
-    // 오늘 날짜 기본 설정
+  document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('f-date').value = new Date().toISOString().slice(0, 10)
+
+    // 성균관대학교 삼성창원병원 좌표 fetch (addRow보다 먼저)
+    await initSMCLocation()
+
     loadProfile()
     addRow()
+
+    // 오피넷 자동조회 (저장된 가격이 없을 때만)
+    const savedPrice = localStorage.getItem('transport-fuel-price')
+    if (!savedPrice) {
+      fetchOpinetPrice()
+    }
   })
 </script>
 </body>
