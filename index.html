@@ -178,6 +178,7 @@
     .trail-current-info {
       padding: 2px 28px 12px; font-size: 12px; font-weight: 700;
       color: var(--primary); letter-spacing: -0.02em;
+      text-align: center;
     }
     /* 헤더 우측 단계 표시 */
     .header-progress-text {
@@ -187,8 +188,8 @@
 
     /* ── Main Layout ── */
     #mainApp { display: none; min-height: 100vh; }
-    .wizard-content { padding: 32px 28px; max-width: 860px; margin: 0 auto; }
-    #step4.wizard-content { max-width: 1080px; }
+    .wizard-content { padding: 32px 28px; max-width: 960px; margin: 0 auto; }
+    #step4.wizard-content { max-width: 1280px; }
 
     /* ── Question Card (09-style) ── */
     .question-card { text-align: center; padding: 40px 28px 32px; }
@@ -535,9 +536,9 @@
 <div id="loginScreen">
   <div class="login-card">
     <h2>로그인</h2>
-    <p class="login-desc">아이디와 PIN을 입력하세요.</p>
-    <label>아이디
-      <input type="text" id="loginId" placeholder="예: 홍길동 또는 관리자" autocomplete="username"
+    <p class="login-desc">성명과 PIN을 입력하세요.</p>
+    <label>성명
+      <input type="text" id="loginId" placeholder="예: 홍길동" autocomplete="username"
         onkeydown="if(event.key==='Enter')document.getElementById('loginPin').focus()">
     </label>
     <label>PIN
@@ -1017,8 +1018,8 @@
       </div>
       <div id="addUserForm" style="display:none;background:var(--line);border-radius:12px;padding:16px;margin-bottom:16px;">
         <div class="form-row three">
-          <div class="form-col"><label>아이디</label><input type="text" id="newUserId" placeholder="아이디"></div>
-          <div class="form-col"><label>이름</label><input type="text" id="newUserName" placeholder="이름"></div>
+          <div class="form-col"><label>성명</label><input type="text" id="newUserName" placeholder="홍길동"></div>
+          <div class="form-col"><label>부서</label><input type="text" id="newUserDept" placeholder="재무관리파트"></div>
           <div class="form-col"><label>PIN</label><input type="text" id="newUserPin" placeholder="4자리" maxlength="4"></div>
         </div>
         <div style="display:flex;gap:8px;margin-top:4px;">
@@ -1027,7 +1028,7 @@
         </div>
       </div>
       <table class="user-table" id="userTable">
-        <thead><tr><th>아이디</th><th>이름</th><th>권한</th><th>차량번호</th><th>연료</th><th>배기량</th><th>작업</th></tr></thead>
+        <thead><tr><th>성명</th><th>부서</th><th>권한</th><th>차량번호</th><th>연료</th><th>배기량</th><th>작업</th></tr></thead>
         <tbody id="userTableBody"></tbody>
       </table>
     </div>
@@ -1045,8 +1046,8 @@
     <div class="card">
       <div class="card-title">내 프로필</div>
       <div class="info-grid" style="margin-bottom:20px;">
-        <div class="info-item"><label>아이디</label><span id="acId">-</span></div>
-        <div class="info-item"><label>이름</label><span id="acName">-</span></div>
+        <div class="info-item"><label>성명</label><span id="acName">-</span></div>
+        <div class="info-item"><label>부서</label><span id="acDept">-</span></div>
       </div>
       <div class="divider"></div>
       <div style="font-size:15px;font-weight:800;color:var(--ink);margin:16px 0;">PIN 변경</div>
@@ -1200,12 +1201,12 @@ function updateUser(id, patch) {
 function showErr(el, msg) { el.textContent = msg; el.style.display = msg ? 'block' : 'none'; }
 
 function doLogin() {
-  const id = document.getElementById('loginId').value.trim()
+  const inputName = document.getElementById('loginId').value.trim()
   const pin = document.getElementById('loginPin').value.trim()
   const err = document.getElementById('loginErr')
-  if (!id || !pin) { showErr(err, '아이디와 PIN을 입력하세요.'); return }
-  const user = getUser(id)
-  if (!user || user.pin !== pin) { showErr(err, '아이디 또는 PIN이 올바르지 않습니다.'); return }
+  if (!inputName || !pin) { showErr(err, '성명과 PIN을 입력하세요.'); return }
+  const user = loadUsers().find(u => u.name === inputName || u.id === inputName)
+  if (!user || user.pin !== pin) { showErr(err, '성명 또는 PIN이 올바르지 않습니다.'); return }
   currentUser = user
   showErr(err, '')
   if (pin === '0000') {
@@ -1921,33 +1922,74 @@ function closeAdmin() { document.getElementById('adminPanel').style.display = 'n
 function renderUserTable() {
   const users = loadUsers()
   document.getElementById('userTableBody').innerHTML = users.map(u => `
-    <tr>
-      <td>${u.id}</td><td>${u.name}</td>
+    <tr id="urow_${u.id}">
+      <td style="font-weight:700">${u.name}</td>
+      <td>${u.dept||'-'}</td>
       <td><span class="role-badge ${u.role}">${u.role==='admin'?'관리자':'사용자'}</span></td>
       <td>${u.car?.plate||'-'}</td><td>${u.car?.fuel||'-'}</td><td>${u.car?.displacement||'-'}</td>
       <td style="display:flex;gap:6px;flex-wrap:wrap;">
         ${u.role !== 'admin' ? `
-          <button class="btn-sm" onclick="resetPin('${u.id}')">PIN 초기화</button>
+          <button class="btn-sm" onclick="openEditCar('${u.id}')">차량수정</button>
+          <button class="btn-sm" onclick="resetPin('${u.id}')">PIN초기화</button>
           <button class="btn-sm warn" onclick="deleteUser('${u.id}')">삭제</button>
         ` : '<span style="color:var(--muted);font-size:12px;">시스템계정</span>'}
       </td>
+    </tr>
+    <tr id="ucarrow_${u.id}" style="display:none">
+      <td colspan="7" style="padding:0">
+        <div style="background:var(--line);padding:14px 16px;display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:10px;align-items:flex-end;">
+          <div><label style="font-size:11px;font-weight:700;color:var(--muted);display:block;margin-bottom:4px;">차량번호</label>
+            <input type="text" id="ec_plate_${u.id}" value="${u.car?.plate||''}" placeholder="12가 3456" style="width:100%;padding:8px;border:1px solid var(--line2);border-radius:8px;font-family:inherit;font-size:13px;">
+          </div>
+          <div><label style="font-size:11px;font-weight:700;color:var(--muted);display:block;margin-bottom:4px;">연료</label>
+            <select id="ec_fuel_${u.id}" style="width:100%;padding:8px;border:1px solid var(--line2);border-radius:8px;font-family:inherit;font-size:13px;">
+              <option ${(u.car?.fuel||'휘발유')==='휘발유'?'selected':''}>휘발유</option>
+              <option ${u.car?.fuel==='경유'?'selected':''}>경유</option>
+              <option ${u.car?.fuel==='LPG'?'selected':''}>LPG</option>
+            </select>
+          </div>
+          <div><label style="font-size:11px;font-weight:700;color:var(--muted);display:block;margin-bottom:4px;">배기량</label>
+            <select id="ec_disp_${u.id}" style="width:100%;padding:8px;border:1px solid var(--line2);border-radius:8px;font-family:inherit;font-size:13px;">
+              <option ${(u.car?.displacement||'')==='1000cc 미만'?'selected':''}>1000cc 미만</option>
+              <option ${(u.car?.displacement||'1500cc 이하')==='1500cc 이하'?'selected':''}>1500cc 이하</option>
+              <option ${u.car?.displacement==='1500cc 초과'?'selected':''}>1500cc 초과</option>
+            </select>
+          </div>
+          <div style="display:flex;gap:6px;">
+            <button class="btn-sm primary" onclick="saveEditCar('${u.id}')">저장</button>
+            <button class="btn-sm" onclick="document.getElementById('ucarrow_${u.id}').style.display='none'">취소</button>
+          </div>
+        </div>
+      </td>
     </tr>`).join('')
+}
+function openEditCar(id) {
+  document.querySelectorAll('[id^=ucarrow_]').forEach(r => r.style.display = 'none')
+  document.getElementById('ucarrow_' + id).style.display = ''
+}
+function saveEditCar(id) {
+  const plate = document.getElementById('ec_plate_' + id).value.trim()
+  const fuel = document.getElementById('ec_fuel_' + id).value
+  const displacement = document.getElementById('ec_disp_' + id).value
+  updateUser(id, { car: { plate, fuel, displacement } })
+  document.getElementById('ucarrow_' + id).style.display = 'none'
+  renderUserTable()
 }
 function openAddUser() {
   document.getElementById('addUserForm').style.display = ''
-  document.getElementById('newUserId').value = ''
   document.getElementById('newUserName').value = ''
+  document.getElementById('newUserDept').value = ''
   document.getElementById('newUserPin').value = ''
 }
 function addUser() {
-  const id = document.getElementById('newUserId').value.trim()
-  const uname = document.getElementById('newUserName').value.trim()
+  const name = document.getElementById('newUserName').value.trim()
+  const dept = document.getElementById('newUserDept').value.trim()
   const pin = document.getElementById('newUserPin').value.trim()
-  if (!id||!uname||!pin) { alert('아이디, 이름, PIN을 모두 입력하세요.'); return }
+  if (!name||!dept||!pin) { alert('성명, 부서, PIN을 모두 입력하세요.'); return }
   if (pin.length!==4||isNaN(pin)) { alert('PIN은 숫자 4자리여야 합니다.'); return }
   const users = loadUsers()
-  if (users.find(u=>u.id===id)) { alert('이미 존재하는 아이디입니다.'); return }
-  users.push({id,pin,name:uname,role:'user',car:null})
+  const id = 'u' + Date.now()
+  users.push({id, pin, name, dept, role:'user', car:null})
   saveUsers(users)
   document.getElementById('addUserForm').style.display = 'none'
   renderUserTable()
@@ -1967,8 +2009,8 @@ function deleteUser(id) {
    ACCOUNT MANAGEMENT
 ══════════════════════════════════════════ */
 function openAccount() {
-  document.getElementById('acId').textContent = currentUser.id
   document.getElementById('acName').textContent = currentUser.name
+  document.getElementById('acDept').textContent = currentUser.dept || '-'
   const car = currentUser.car || {}
   document.getElementById('ac_plate').value = car.plate || ''
   document.getElementById('ac_fuel').value = car.fuel || '휘발유'
