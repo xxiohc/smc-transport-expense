@@ -693,7 +693,7 @@
         </button>
         <button class="option-card" id="optTaxi" onclick="selectMode('taxi')">
           <div class="option-card-content">
-            <div class="option-card-title">택시 / 대중교통 이용</div>
+            <div class="option-card-title">택시 이용</div>
             <div class="option-card-desc">실제 지출 금액을 직접 입력합니다</div>
           </div>
           <svg class="option-card-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
@@ -910,7 +910,7 @@
       </div>
       <div class="table-wrap">
         <table class="trip-tbl" id="tripTable">
-          <thead>
+          <thead id="tripThead">
             <tr>
               <th style="width:76px">월/일</th>
               <th style="width:200px">출발지</th>
@@ -941,8 +941,8 @@
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
         임시저장
       </button>
-      <button class="btn-next" onclick="step4Next()">
-        다음: 주차비 확인
+      <button class="btn-next" id="btnStep4Next" onclick="step4Next()">
+        <span id="step4NextLabel">다음: 주차비 확인</span>
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
       </button>
     </div>
@@ -1031,7 +1031,7 @@
       </div>
       <div class="table-wrap">
         <table class="preview-tbl" id="pvTable">
-          <thead>
+          <thead id="pvThead">
             <tr>
               <th>월/일</th>
               <th>출발지</th>
@@ -1061,7 +1061,7 @@
     </div>
 
     <div class="step-actions" style="margin-bottom:32px;">
-      <button class="btn-prev" onclick="gotoStep(5)">
+      <button class="btn-prev" onclick="step6Prev()">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
         수정
       </button>
@@ -1104,12 +1104,12 @@
         <button class="btn-sm primary" onclick="openAddUser()">+ 사용자 추가</button>
       </div>
       <div id="addUserForm" style="display:none;background:var(--line);border-radius:12px;padding:16px;margin-bottom:16px;">
-        <div class="form-row three">
+        <div class="form-row">
           <div class="form-col"><label>성명</label><input type="text" id="newUserName" placeholder="홍길동"></div>
           <div class="form-col"><label>부서</label><input type="text" id="newUserDept" placeholder="재무관리파트"></div>
-          <div class="form-col"><label>PIN</label><input type="text" id="newUserPin" placeholder="4자리" maxlength="4"></div>
         </div>
-        <div style="display:flex;gap:8px;margin-top:4px;">
+        <p style="font-size:12px;color:var(--muted);margin:6px 0 10px;">초기 PIN은 <strong>0000</strong>으로 설정됩니다. 사용자가 첫 로그인 시 직접 변경합니다.</p>
+        <div style="display:flex;gap:8px;">
           <button class="btn-sm primary" onclick="addUser()">추가</button>
           <button class="btn-sm" onclick="document.getElementById('addUserForm').style.display='none'">취소</button>
         </div>
@@ -1141,11 +1141,15 @@
       <div class="form-row">
         <div class="form-col">
           <label>현재 PIN</label>
-          <input type="password" id="acOldPin" maxlength="4" placeholder="현재 PIN" style="letter-spacing:0.2em;text-align:center;">
+          <input type="password" id="acOldPin" maxlength="8" inputmode="numeric" placeholder="현재 PIN" style="letter-spacing:0.2em;text-align:center;">
         </div>
         <div class="form-col">
-          <label>새 PIN</label>
-          <input type="password" id="acNewPin" maxlength="4" placeholder="새 PIN 4자리" style="letter-spacing:0.2em;text-align:center;">
+          <label>새 PIN <span style="font-size:11px;font-weight:400;color:var(--muted)">(4~8자리)</span></label>
+          <input type="password" id="acNewPin" maxlength="8" inputmode="numeric" placeholder="새 PIN" style="letter-spacing:0.2em;text-align:center;">
+        </div>
+        <div class="form-col">
+          <label>PIN 확인</label>
+          <input type="password" id="acConfirmPin" maxlength="8" inputmode="numeric" placeholder="PIN 재입력" style="letter-spacing:0.2em;text-align:center;">
         </div>
       </div>
       <div id="pinChangeMsg" style="font-size:13px;min-height:18px;margin-bottom:8px;"></div>
@@ -1238,7 +1242,7 @@ const EFFICIENCY = {
   'LPG': 5
 }
 const STEP_NAMES_CAR = ['이동수단', '차량정보', '유류단가', '이동내역', '주차비', '정산서']
-const STEP_NAMES_TAXI = ['이동수단', '이동내역', '주차비', '정산서']
+const STEP_NAMES_TAXI = ['이동수단', '이동내역', '정산서']
 
 /* ══════════════════════════════════════════
    STATE
@@ -1387,7 +1391,7 @@ function getTrailSteps() {
 
 function getTrailStepIds() {
   if (!tripMode || tripMode === 'car') return [1, 2, 3, 4, 5, 6]
-  return [1, 4, 5, 6]
+  return [1, 4, 6]
 }
 
 function trailPosition() {
@@ -1446,6 +1450,7 @@ function selectMode(mode) {
   document.getElementById('modeTag').style.color = mode === 'car' ? 'var(--primary)' : '#b45309'
 
   if (mode === 'car') {
+    document.getElementById('step4NextLabel').textContent = '다음: 주차비 확인'
     // Check for saved car profile
     setTimeout(() => {
       gotoStep(2)
@@ -1465,11 +1470,15 @@ function selectMode(mode) {
     }, 200)
   } else {
     // Taxi: skip to step 4
+    document.getElementById('step4NextLabel').textContent = '다음: 정산서'
     setTimeout(() => {
       document.getElementById('taxiBasicInfo').classList.remove('hidden')
+      const n2 = document.getElementById('f_name2')
+      if (n2 && !n2.value) n2.value = currentUser?.name || ''
       gotoStep(4)
     }, 200)
   }
+  updateTripThead()
 }
 
 function useSavedCar() {
@@ -1542,7 +1551,13 @@ function step4Next() {
   if (!trips.length) { alert('구간을 하나 이상 추가해 주세요.'); return }
   const incomplete = trips.filter(t => t.type === 'car').some(t => !t.fromName || !t.toName)
   if (incomplete) { alert('자차 구간의 출발지·도착지를 모두 입력해 주세요.'); return }
+  if (tripMode === 'taxi') { gotoStep(6); return }
   gotoStep(5)
+}
+
+function step6Prev() {
+  if (tripMode === 'taxi') gotoStep(4)
+  else gotoStep(5)
 }
 
 function setHasToll(val) {
@@ -1671,45 +1686,53 @@ function addTrip() {
   trips.push({
     id, date: defaultDate,
     type: tripMode === 'taxi' ? 'taxi' : 'car',
-    fromName: tripMode === 'car' ? SMC.name : '',
-    fromX: tripMode === 'car' ? SMC.x : '',
-    fromY: tripMode === 'car' ? SMC.y : '',
+    fromName: SMC.name, fromX: SMC.x, fromY: SMC.y,
     toName: '', toX: '', toY: '',
     dist: null, amount: 0, toll: 0
   })
   renderTrips()
-  if (tripMode === 'car') calcDist(id)
+  calcDist(id)
 }
 
 function removeTrip(id) { trips = trips.filter(t => t.id !== id); renderTrips() }
 
+function updateTripThead() {
+  const isTaxi = tripMode === 'taxi'
+  document.getElementById('tripThead').innerHTML = isTaxi
+    ? `<tr><th style="width:76px">월/일</th><th style="width:200px">출발지</th><th style="width:200px">도착지</th><th style="width:76px">거리(km)</th><th style="width:130px">금액</th><th style="width:90px">합계</th><th style="width:32px"></th></tr>`
+    : `<tr><th style="width:76px">월/일</th><th style="width:200px">출발지</th><th style="width:200px">도착지</th><th style="width:76px">거리(km)</th><th style="width:110px">교통비(유류비)</th><th style="width:96px">하이패스</th><th style="width:90px">합계</th><th style="width:32px"></th></tr>`
+}
+
 function renderTrips() {
+  updateTripThead()
   document.getElementById('tripBody').innerHTML = trips.map(t => tripRowHTML(t)).join('')
   recalcAll()
 }
 
 function tripRowHTML(t) {
-  const distHtml = t.type === 'car'
-    ? (t.dist === null ? `<span class="dist-loading">계산중</span>` : `<span class="dist-display">${t.dist.toFixed(1)}</span>`)
-    : `<span style="color:var(--muted)">-</span>`
-  const fuelCost = calcFuelCost(t)
-  const fuelHtml = t.type === 'car'
-    ? `<span class="cost-display">${fuelCost !== null ? fuelCost.toLocaleString() : '-'}</span>`
-    : `<input type="text" inputmode="numeric" class="trip-num-input" value="${(t.amount||0).toLocaleString()}" style="width:90px;" oninput="applyComma(this);trips.find(x=>x.id===${t.id}).amount=parseFloat(this.value.replace(/,/g,''))||0;recalcAll()">`
-  const tollHtml = `<input type="text" inputmode="numeric" class="trip-num-input" value="${(t.toll||0).toLocaleString()}" style="width:80px;" placeholder="0" oninput="applyComma(this);trips.find(x=>x.id===${t.id}).toll=parseFloat(this.value.replace(/,/g,''))||0;recalcAll()">`
+  const distHtml = t.dist === null
+    ? `<span class="dist-loading">계산중</span>`
+    : t.dist !== undefined ? `<span class="dist-display">${t.dist.toFixed(1)}</span>` : `<span style="color:var(--muted)">-</span>`
   const total = calcTotal(t)
   const totalHtml = `<span class="total-display">${total !== null ? total.toLocaleString() : '-'}</span>`
-  // columns: [0]date [1]from [2]to [3]dist [4]fuel/amount [5]toll [6]total [7]del
-  return `<tr>
-    <td data-label="월/일"><input type="text" class="trip-num-input" value="${t.date||''}" placeholder="MM/DD" style="width:60px;text-align:center;" onchange="trips.find(x=>x.id===${t.id}).date=this.value"></td>
-    <td data-label="출발지"><button class="trip-place-btn ${t.fromName?'set':''}" onclick="openSearch(${t.id},'from')">${t.fromName||'출발지 선택'}</button></td>
-    <td data-label="도착지"><button class="trip-place-btn ${t.toName?'set':''}" onclick="openSearch(${t.id},'to')">${t.toName||'도착지 선택'}</button></td>
-    <td data-label="거리(km)">${distHtml}</td>
-    <td data-label="교통비">${fuelHtml}</td>
-    <td data-label="하이패스">${tollHtml}</td>
-    <td data-label="합계">${totalHtml}</td>
-    <td><button class="del-btn" onclick="removeTrip(${t.id})">×</button></td>
-  </tr>`
+  const dateTd = `<td data-label="월/일"><input type="text" class="trip-num-input" value="${t.date||''}" placeholder="MM/DD" style="width:60px;text-align:center;" onchange="trips.find(x=>x.id===${t.id}).date=this.value"></td>`
+  const fromTd = `<td data-label="출발지"><button class="trip-place-btn ${t.fromName?'set':''}" onclick="openSearch(${t.id},'from')">${t.fromName||'출발지 선택'}</button></td>`
+  const toTd   = `<td data-label="도착지"><button class="trip-place-btn ${t.toName?'set':''}" onclick="openSearch(${t.id},'to')">${t.toName||'도착지 선택'}</button></td>`
+  const distTd = `<td data-label="거리(km)">${distHtml}</td>`
+  const delTd  = `<td><button class="del-btn" onclick="removeTrip(${t.id})">×</button></td>`
+
+  if (t.type === 'taxi') {
+    // [0]date [1]from [2]to [3]dist [4]amount [5]total [6]del
+    return `<tr>${dateTd}${fromTd}${toTd}${distTd}
+      <td data-label="금액"><input type="text" inputmode="numeric" class="trip-num-input" value="${(t.amount||0).toLocaleString()}" style="width:110px;" oninput="applyComma(this);trips.find(x=>x.id===${t.id}).amount=parseFloat(this.value.replace(/,/g,''))||0;recalcAll()"></td>
+      <td data-label="합계">${totalHtml}</td>${delTd}</tr>`
+  }
+  // car: [0]date [1]from [2]to [3]dist [4]fuel [5]toll [6]total [7]del
+  const fuelCost = calcFuelCost(t)
+  return `<tr>${dateTd}${fromTd}${toTd}${distTd}
+    <td data-label="교통비"><span class="cost-display">${fuelCost !== null ? fuelCost.toLocaleString() : '-'}</span></td>
+    <td data-label="하이패스"><input type="text" inputmode="numeric" class="trip-num-input" value="${(t.toll||0).toLocaleString()}" style="width:80px;" placeholder="0" oninput="applyComma(this);trips.find(x=>x.id===${t.id}).toll=parseFloat(this.value.replace(/,/g,''))||0;recalcAll()"></td>
+    <td data-label="합계">${totalHtml}</td>${delTd}</tr>`
 }
 
 
@@ -1722,9 +1745,9 @@ function calcFuelCost(t) {
 }
 
 function calcTotal(t) {
-  const toll = parseFloat(t.toll) || 0
-  if (t.type === 'taxi') return (parseFloat(t.amount) || 0) + toll
+  if (t.type === 'taxi') return parseFloat(t.amount) || 0
   const fc = calcFuelCost(t)
+  const toll = parseFloat(t.toll) || 0
   return fc !== null ? fc + toll : null
 }
 
@@ -1733,13 +1756,16 @@ function recalcAll() {
   trips.forEach((t, i) => {
     const row = rows[i]; if (!row) return
     const cells = row.querySelectorAll('td')
-    // columns: [0]date [1]from [2]to [3]dist [4]fuel/amount [5]toll [6]total [7]del
-    if (t.type === 'car') {
+    const total = calcTotal(t)
+    if (t.type === 'taxi') {
+      // [0]date [1]from [2]to [3]dist [4]amount [5]total [6]del
+      cells[5].innerHTML = `<span class="total-display">${total !== null ? total.toLocaleString() : '-'}</span>`
+    } else {
+      // [0]date [1]from [2]to [3]dist [4]fuel [5]toll [6]total [7]del
       const fuel = calcFuelCost(t)
       cells[4].innerHTML = `<span class="cost-display">${fuel !== null ? fuel.toLocaleString() : '-'}</span>`
+      cells[6].innerHTML = `<span class="total-display">${total !== null ? total.toLocaleString() : '-'}</span>`
     }
-    const total = calcTotal(t)
-    cells[6].innerHTML = `<span class="total-display">${total !== null ? total.toLocaleString() : '-'}</span>`
   })
 }
 
@@ -1789,7 +1815,7 @@ function pickResult(i) {
   if (activeSearchField === 'from') { t.fromName = d.place_name; t.fromX = d.x; t.fromY = d.y }
   else { t.toName = d.place_name; t.toX = d.x; t.toY = d.y }
   closeSearch(); renderTrips()
-  if (t.type === 'car') calcDist(t.id)
+  calcDist(t.id)
 }
 
 /* ══════════════════════════════════════════
@@ -1846,8 +1872,8 @@ function buildPreview() {
     totalRowToll += parseFloat(t.toll) || 0
   })
   const parkingAmt = totalTollAmount
-  const rowGrandTotal = totalFuelAmt + totalRowToll
-  const finalTotal = rowGrandTotal + parkingAmt
+  const rowGrandTotal = totalFuelAmt + (tripMode === 'car' ? totalRowToll : 0)
+  const finalTotal = rowGrandTotal + (tripMode === 'car' ? parkingAmt : 0)
 
   document.getElementById('pvName').textContent = name
   document.getElementById('pvDate').textContent = date + ' 작성'
@@ -1855,32 +1881,53 @@ function buildPreview() {
   document.getElementById('pvDist').textContent = totalDist.toFixed(1)
   document.getElementById('pvTotal').textContent = finalTotal.toLocaleString()
 
-  // pvBody: 7 columns (월/일 출발지 도착지 거리 교통비 하이패스 합계)
+  if (tripMode === 'taxi') {
+    // 택시: 5 columns (월/일 출발지 도착지 거리 금액)
+    document.getElementById('pvThead').innerHTML = `<tr><th>월/일</th><th>출발지</th><th>도착지</th><th>거리(km)</th><th>합계</th></tr>`
+    document.getElementById('pvBody').innerHTML = trips.map(t => {
+      const total = calcTotal(t)
+      return `<tr>
+        <td>${t.date||'-'}</td>
+        <td>${t.fromName||'-'}</td>
+        <td>${t.toName||'-'}</td>
+        <td>${t.dist!==null&&t.dist!==undefined?t.dist.toFixed(1):'-'}</td>
+        <td style="font-weight:700;">${total!==null?total.toLocaleString()+'원':'-'}</td>
+      </tr>`
+    }).join('')
+    document.getElementById('pvFoot').innerHTML = `<tr>
+      <td colspan="3" style="text-align:right;">합계</td>
+      <td>${totalDist.toFixed(1)} km</td>
+      <td style="font-weight:700;">${rowGrandTotal.toLocaleString()}원</td>
+    </tr>`
+    document.getElementById('pvInfo').innerHTML = `
+      <div class="info-item"><label>신청자</label><span>${name}</span></div>
+      <div class="info-item"><label>작성일</label><span>${date}</span></div>
+      <div class="info-item"><label>이동수단</label><span>택시</span></div>`
+    return
+  }
+
+  // 자차: 7 columns
+  document.getElementById('pvThead').innerHTML = `<tr><th>월/일</th><th>출발지</th><th>도착지</th><th>거리(km)</th><th>교통비(유류비)</th><th>하이패스</th><th>합계</th></tr>`
   document.getElementById('pvBody').innerHTML = trips.map(t => {
     const fc = calcFuelCost(t)
     const toll = parseFloat(t.toll) || 0
     const total = calcTotal(t)
-    const fuelCell = t.type === 'car'
-      ? (fc !== null ? fc.toLocaleString() + '원' : '-')
-      : (parseFloat(t.amount) > 0 ? parseFloat(t.amount).toLocaleString() + '원' : '-')
-    const tollCell = toll > 0 ? toll.toLocaleString() + '원' : '-'
     return `<tr>
       <td>${t.date||'-'}</td>
       <td>${t.fromName||'-'}</td>
       <td>${t.toName||'-'}</td>
-      <td>${t.dist!==null&&t.type==='car'?t.dist.toFixed(1):'-'}</td>
-      <td>${fuelCell}</td>
-      <td>${tollCell}</td>
+      <td>${t.dist!==null&&t.dist!==undefined?t.dist.toFixed(1):'-'}</td>
+      <td>${fc !== null ? fc.toLocaleString()+'원' : '-'}</td>
+      <td>${toll > 0 ? toll.toLocaleString()+'원' : '-'}</td>
       <td style="font-weight:700;">${total!==null?total.toLocaleString()+'원':'-'}</td>
     </tr>`
   }).join('')
 
-  // pvFoot
   let footHtml = `<tr>
     <td colspan="3" style="text-align:right;">합계</td>
     <td>${totalDist.toFixed(1)} km</td>
     <td>${totalFuelAmt.toLocaleString()}원</td>
-    <td>${totalRowToll > 0 ? totalRowToll.toLocaleString() + '원' : '-'}</td>
+    <td>${totalRowToll > 0 ? totalRowToll.toLocaleString()+'원' : '-'}</td>
     <td style="font-weight:700;">${rowGrandTotal.toLocaleString()}원</td>
   </tr>`
   if (parkingAmt > 0) {
@@ -1897,26 +1944,19 @@ function buildPreview() {
   document.getElementById('pvFoot').innerHTML = footHtml
 
   const perKm = eff > 0 ? Math.round(fuelPrice / eff) : 0
-  if (tripMode === 'car') {
-    document.getElementById('pvInfo').innerHTML = `
-      <div class="info-item"><label>신청자</label><span>${name}</span></div>
-      <div class="info-item"><label>작성일</label><span>${date}</span></div>
-      <div class="info-item"><label>차량번호</label><span>${plate}</span></div>
-      <div class="info-item"><label>연료 구분</label><span>${fuel}</span></div>
-      <div class="info-item"><label>배기량</label><span>${fuel==='휘발유'?disp:'-'}</span></div>
-      <div class="info-item"><label>연비</label><span>${eff} km/L</span></div>
-      <div class="info-item"><label>유류단가</label><span>${fuelPrice.toLocaleString()}원/L</span></div>
-      <div class="info-item"><label>km당 단가</label>
-        <span>${eff>0?perKm.toLocaleString():'-'}원/km
-          <span style="display:block;font-size:11px;font-weight:400;color:var(--muted);">${fuelPrice.toLocaleString()}원/L ÷ ${eff}km/L</span>
-        </span>
-      </div>`
-  } else {
-    document.getElementById('pvInfo').innerHTML = `
-      <div class="info-item"><label>신청자</label><span>${name}</span></div>
-      <div class="info-item"><label>작성일</label><span>${date}</span></div>
-      <div class="info-item"><label>이동수단</label><span>택시/대중교통</span></div>`
-  }
+  document.getElementById('pvInfo').innerHTML = `
+    <div class="info-item"><label>신청자</label><span>${name}</span></div>
+    <div class="info-item"><label>작성일</label><span>${date}</span></div>
+    <div class="info-item"><label>차량번호</label><span>${plate}</span></div>
+    <div class="info-item"><label>연료 구분</label><span>${fuel}</span></div>
+    <div class="info-item"><label>배기량</label><span>${fuel==='휘발유'?disp:'-'}</span></div>
+    <div class="info-item"><label>연비</label><span>${eff} km/L</span></div>
+    <div class="info-item"><label>유류단가</label><span>${fuelPrice.toLocaleString()}원/L</span></div>
+    <div class="info-item"><label>km당 단가</label>
+      <span>${eff>0?perKm.toLocaleString():'-'}원/km
+        <span style="display:block;font-size:11px;font-weight:400;color:var(--muted);">${fuelPrice.toLocaleString()}원/L ÷ ${eff}km/L</span>
+      </span>
+    </div>`
 }
 
 /* ══════════════════════════════════════════
@@ -1940,18 +1980,46 @@ function downloadExcel() {
   function SN(a,v,f,s) { ws[a] = s?{v,f,t:'n',s}:f?{v,f,t:'n'}:{v} }
   function SS(a,v,s) { ws[a] = s?{v,t:'s',s}:{v,t:'s'} }
 
-  // 7 data columns: A=월/일 B=출발지 C=도착지 D=거리 E=교통비 F=하이패스 G=합계
-  // Car info: H=label I=value (formula refs: $I$3=유류단가, $I$5=연비)
   SS('A1','교통비 정산서',titleStyle)
+  SS('A3','신청자',{font:{bold:true}}); SS('B3',name)
+  SS('D3','작성일',{font:{bold:true}}); SS('E3',date)
+
+  if (tripMode === 'taxi') {
+    // 택시: 5 columns A=월/일 B=출발지 C=도착지 D=거리 E=합계
+    ws['!merges'] = [{s:{r:0,c:0},e:{r:0,c:4}}]
+    SS('A3','이동수단',{font:{bold:true}}); SS('B3','택시')
+    SS('D3','신청자',{font:{bold:true}}); SS('E3',name)
+    SS('A4','작성일',{font:{bold:true}}); SS('B4',date)
+    const taxiHdrs = ['월/일','출발지','도착지','거리(km)','합계']
+    const hdrRow = 6
+    'ABCDE'.split('').forEach((col,i) => SS(col+hdrRow, taxiHdrs[i], hdrStyle))
+    const firstDataRow = hdrRow + 1
+    trips.forEach((t, idx) => {
+      const row = firstDataRow + idx
+      SS('A'+row, t.date||'')
+      SS('B'+row, t.fromName||'')
+      SS('C'+row, t.toName||'')
+      t.dist !== null && t.dist !== undefined ? SN('D'+row, t.dist, undefined, {numFmt:'0.0'}) : SS('D'+row,'-',ctr)
+      SN('E'+row, calcTotal(t)||0, undefined, numStyle)
+    })
+    const lastDataRow = firstDataRow + trips.length - 1
+    const sumRow = lastDataRow + 1
+    SS('A'+sumRow,'합계',{font:{bold:true},fill:{fgColor:{rgb:'EBF3FF'}}})
+    ws['!merges'].push({s:{r:sumRow-1,c:0},e:{r:sumRow-1,c:2}})
+    SN('D'+sumRow,undefined,`SUM(D${firstDataRow}:D${lastDataRow})`,{...sumStyle,numFmt:'0.0'})
+    SN('E'+sumRow,undefined,`SUM(E${firstDataRow}:E${lastDataRow})`,sumStyle)
+    ws['!ref'] = `A1:E${sumRow}`
+    ws['!cols'] = [{wch:8},{wch:22},{wch:22},{wch:10},{wch:14}]
+  } else {
+  // 자차: 7 data columns A=월/일 B=출발지 C=도착지 D=거리 E=교통비 F=하이패스 G=합계
+  // Car info: H=label I=value (formula refs: $I$3=유류단가, $I$5=연비)
   ws['!merges'] = [{s:{r:0,c:0},e:{r:0,c:6}}]
   SS('A3','신청자',{font:{bold:true}}); SS('B3',name)
   SS('D3','작성일',{font:{bold:true}}); SS('E3',date)
-  if (tripMode === 'car') {
-    SS('H3','유류단가',{font:{bold:true}}); SN('I3',fuelPrice,undefined,numStyle)
-    SS('A5','차량번호',{font:{bold:true}}); SS('B5',plate)
-    SS('D5','연료구분',{font:{bold:true}}); SS('E5',fuel)
-    SS('H5','연비',{font:{bold:true}}); SN('I5',eff,undefined,numStyle)
-  }
+  SS('H3','유류단가',{font:{bold:true}}); SN('I3',fuelPrice,undefined,numStyle)
+  SS('A5','차량번호',{font:{bold:true}}); SS('B5',plate)
+  SS('D5','연료구분',{font:{bold:true}}); SS('E5',fuel)
+  SS('H5','연비',{font:{bold:true}}); SN('I5',eff,undefined,numStyle)
 
   const headers = ['월/일','출발지','도착지','거리(km)','교통비(유류비)','하이패스','합계']
   const hdrRow = 7
@@ -1963,7 +2031,7 @@ function downloadExcel() {
     SS('A'+row, t.date||'')
     SS('B'+row, t.fromName||'')
     SS('C'+row, t.toName||'')
-    if (t.type === 'car' && t.dist !== null) {
+    if (t.dist !== null && t.dist !== undefined) {
       SN('D'+row, t.dist, undefined, {numFmt:'0.0'})
       SN('E'+row, calcFuelCost(t), `ROUND(D${row}*$I$3/$I$5/10,0)*10`, numStyle)
     } else {
@@ -1995,6 +2063,7 @@ function downloadExcel() {
     ws['!ref'] = `A1:I${sumRow}`
   }
   ws['!cols'] = [{wch:8},{wch:22},{wch:22},{wch:9},{wch:13},{wch:10},{wch:11}]
+  } // end car mode
   XLSX.utils.book_append_sheet(wb, ws, '정산서')
   XLSX.writeFile(wb, `교통비정산서_${name}_${date}.xlsx`)
 }
@@ -2068,30 +2137,33 @@ function openAddUser() {
   document.getElementById('addUserForm').style.display = ''
   document.getElementById('newUserName').value = ''
   document.getElementById('newUserDept').value = ''
-  document.getElementById('newUserPin').value = ''
 }
 function addUser() {
   const name = document.getElementById('newUserName').value.trim()
   const dept = document.getElementById('newUserDept').value.trim()
-  const pin = document.getElementById('newUserPin').value.trim()
-  if (!name||!dept||!pin) { alert('성명, 부서, PIN을 모두 입력하세요.'); return }
-  if (pin.length!==4||isNaN(pin)) { alert('PIN은 숫자 4자리여야 합니다.'); return }
+  if (!name||!dept) { alert('성명과 부서를 입력하세요.'); return }
   const users = loadUsers()
+  if (users.some(u => u.name === name)) { alert('이미 등록된 성명입니다.'); return }
   const id = 'u' + Date.now()
-  users.push({id, pin, name, dept, role:'user', car:null})
+  users.push({id, pin:'0000', name, dept, role:'user', car:null})
   saveUsers(users)
   document.getElementById('addUserForm').style.display = 'none'
   renderUserTable()
 }
 function resetPin(id) {
-  const p = prompt(`${id} 사용자의 새 PIN을 입력하세요 (4자리):`)
-  if (!p) return
-  if (p.length!==4||isNaN(p)) { alert('PIN은 4자리 숫자여야 합니다.'); return }
-  updateUser(id,{pin:p}); alert('PIN이 초기화되었습니다.')
+  const users = loadUsers()
+  const u = users.find(x => x.id === id)
+  if (!u) return
+  if (!confirm(`${u.name} 사용자의 PIN을 초기화하시겠습니까?\n초기 PIN(0000)으로 재설정되며, 다음 로그인 시 새 PIN을 설정해야 합니다.`)) return
+  updateUser(id, {pin:'0000'})
+  alert(`${u.name}의 PIN이 초기화되었습니다.`)
 }
 function deleteUser(id) {
-  if (!confirm(`${id} 사용자를 삭제하시겠습니까?`)) return
-  saveUsers(loadUsers().filter(u=>u.id!==id)); renderUserTable()
+  const users = loadUsers()
+  const u = users.find(x => x.id === id)
+  if (!u) return
+  if (!confirm(`${u.name} 사용자를 삭제하시겠습니까?`)) return
+  saveUsers(users.filter(x => x.id !== id)); renderUserTable()
 }
 
 /* ══════════════════════════════════════════
@@ -2106,6 +2178,7 @@ function openAccount() {
   document.getElementById('ac_disp').value = car.displacement || '1500cc 이하'
   document.getElementById('acOldPin').value = ''
   document.getElementById('acNewPin').value = ''
+  document.getElementById('acConfirmPin').value = ''
   document.getElementById('pinChangeMsg').textContent = ''
   acFuelChange()
   document.getElementById('accountPanel').style.display = 'block'
@@ -2118,15 +2191,20 @@ function acFuelChange() {
 function changePin() {
   const old = document.getElementById('acOldPin').value.trim()
   const newPin = document.getElementById('acNewPin').value.trim()
+  const confirm = document.getElementById('acConfirmPin').value.trim()
   const msg = document.getElementById('pinChangeMsg')
-  if (!old||!newPin) { msg.textContent='현재 PIN과 새 PIN을 입력하세요.'; msg.style.color='var(--warn)'; return }
-  if (newPin.length!==4||isNaN(newPin)) { msg.textContent='새 PIN은 숫자 4자리여야 합니다.'; msg.style.color='var(--warn)'; return }
-  if (currentUser.pin!==old) { msg.textContent='현재 PIN이 올바르지 않습니다.'; msg.style.color='var(--warn)'; return }
-  updateUser(currentUser.id,{pin:newPin})
+  const err = t => { msg.textContent = t; msg.style.color = 'var(--warn)' }
+  if (!old||!newPin||!confirm) { err('현재 PIN, 새 PIN, PIN 확인을 모두 입력하세요.'); return }
+  if (!/^\d{4,8}$/.test(newPin)) { err('새 PIN은 4~8자리 숫자여야 합니다.'); return }
+  if (newPin === '0000') { err('초기 PIN(0000)은 사용할 수 없습니다.'); return }
+  if (newPin !== confirm) { err('새 PIN과 PIN 확인이 일치하지 않습니다.'); return }
+  if (currentUser.pin !== old) { err('현재 PIN이 올바르지 않습니다.'); return }
+  updateUser(currentUser.id, {pin: newPin})
   currentUser = getUser(currentUser.id)
-  msg.textContent='PIN이 변경되었습니다.'; msg.style.color='var(--green)'
-  document.getElementById('acOldPin').value=''
-  document.getElementById('acNewPin').value=''
+  msg.textContent = 'PIN이 변경되었습니다.'; msg.style.color = 'var(--green)'
+  document.getElementById('acOldPin').value = ''
+  document.getElementById('acNewPin').value = ''
+  document.getElementById('acConfirmPin').value = ''
 }
 function saveAccountCar() {
   const plate = document.getElementById('ac_plate').value.trim()
@@ -2215,9 +2293,15 @@ function restoreDraft() {
       document.getElementById('carInputForm')?.classList.remove('hidden')
       document.getElementById('taxiBasicInfo')?.classList.add('hidden')
       document.getElementById('modeTag').textContent = '자차'
+      document.getElementById('modeTag').style.background = 'var(--primary-light)'
+      document.getElementById('modeTag').style.color = 'var(--primary)'
+      document.getElementById('step4NextLabel').textContent = '다음: 주차비 확인'
     } else if (d.tripMode === 'taxi') {
       document.getElementById('taxiBasicInfo')?.classList.remove('hidden')
       document.getElementById('modeTag').textContent = '택시'
+      document.getElementById('modeTag').style.background = 'var(--orange-bg)'
+      document.getElementById('modeTag').style.color = '#b45309'
+      document.getElementById('step4NextLabel').textContent = '다음: 정산서'
     }
 
     if (d.hasToll !== null && d.hasToll !== undefined) {
