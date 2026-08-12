@@ -1724,7 +1724,7 @@ function selectMode(mode) {
       const car = currentUser?.car
       if (car && car.plate) {
         document.getElementById('savedCarPreview').style.display = ''
-        document.getElementById('savedCarText').textContent = `${car.plate} · ${car.fuel} · ${car.displacement}`
+        document.getElementById('savedCarText').textContent = `${car.plate} · ${car.fuel}${car.fuel === '휘발유' ? ' · ' + car.displacement : ''}`
         document.getElementById('loadCarQuestion').classList.remove('hidden')
         document.getElementById('carInputForm').classList.add('hidden')
       } else {
