@@ -98,7 +98,7 @@
       display: flex; align-items: center; justify-content: space-between;
       height: 80px; padding: 0 28px;
     }
-    .header-brand { display: flex; align-items: center; gap: 16px; }
+    .header-brand { display: flex; align-items: center; gap: 16px; cursor: pointer; }
     .header-logo { width: 140px; height: 40px; object-fit: contain; flex-shrink: 0; }
     .header-text { display: flex; flex-direction: column; }
     .header-sub { font-size: 10px; font-weight: 400; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; line-height: 1; }
@@ -210,7 +210,7 @@
     .option-card.selected { border-color: var(--primary); background: var(--primary-light); }
     .option-card-content { flex: 1; }
     .option-card-title { font-size: 16px; font-weight: 700; color: var(--ink); }
-    .option-card-desc { font-size: 13px; color: var(--muted); margin-top: 3px; }
+    .option-card-desc { font-size: 13px; color: var(--muted); margin-top: 3px; word-break: keep-all; }
     .option-card-chevron { color: var(--muted2); flex-shrink: 0; margin-left: 12px; }
 
     /* ── Card ── */
@@ -271,8 +271,9 @@
       width: 40px; height: 40px; border-radius: 10px; background: var(--primary);
       display: flex; align-items: center; justify-content: center; flex-shrink: 0;
     }
+    .car-preview-text { min-width: 0; flex: 1; }
     .car-preview-text p { font-size: 12px; color: var(--primary); font-weight: 600; }
-    .car-preview-text strong { font-size: 15px; font-weight: 800; color: var(--ink); display: block; }
+    .car-preview-text strong { font-size: 15px; font-weight: 800; color: var(--ink); display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
     /* ── Fuel Card ── */
     .fuel-display {
@@ -353,6 +354,7 @@
     .summary-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-top: 20px; }
     .summary-item { background: rgba(255,255,255,.15); border-radius: 12px; padding: 14px 16px; }
     .summary-item label { font-size: 11px; font-weight: 600; opacity: .8; letter-spacing: .04em; }
+    .val-row { display: flex; align-items: baseline; gap: 4px; margin-top: 2px; }
     .summary-item .val { font-size: 22px; font-weight: 900; letter-spacing: -.03em; }
     .summary-item .unit { font-size: 13px; font-weight: 600; opacity: .8; }
 
@@ -420,7 +422,7 @@
     }
     .admin-header h1 { font-size: 18px; font-weight: 800; color: var(--ink); }
     .admin-content { padding: 32px 28px; max-width: 860px; margin: 0 auto; }
-    .user-table { width: 100%; border-collapse: collapse; }
+    .user-table { width: 100%; border-collapse: collapse; white-space: nowrap; }
     .user-table th { padding: 10px 14px; background: var(--line); font-weight: 700; font-size: 13px; text-align: left; border-bottom: 2px solid var(--line2); }
     .user-table td { padding: 12px 14px; border-bottom: 1px solid var(--line); font-size: 14px; vertical-align: middle; }
     .user-table tr:hover td { background: #fafbfc; }
@@ -500,8 +502,24 @@
       .fuel-display { flex-direction: column; gap: 12px; }
       .fuel-per-km { border-left: none; border-top: 1px solid var(--line2); padding-left: 0; padding-top: 12px; }
 
-      /* 정산서 요약 그리드 */
-      .summary-grid { grid-template-columns: 1fr !important; }
+      /* 정산서 요약 그리드: 모바일에서도 3열 유지, 폰트 축소 */
+      .summary-grid { grid-template-columns: 1fr 1fr 1fr !important; gap: 8px !important; }
+      .summary-item { padding: 10px 12px !important; }
+      .summary-item label { font-size: 10px !important; }
+      .summary-item .val { font-size: 17px !important; }
+      .summary-item .unit { font-size: 11px !important; }
+
+      /* 관리자/계정 패널 모바일 */
+      .admin-content { padding: 20px 12px; }
+      .admin-header { padding: 0 12px; }
+      .user-table th, .user-table td { padding: 8px 10px; font-size: 12px; }
+
+      /* 택시 모드 이동내역 카드 레이아웃 (7셀) */
+      .trip-tbl tbody tr.taxi-row td:nth-child(6) { grid-column: 1 / -1; }
+      .trip-tbl tbody tr.taxi-row td:nth-child(7) {
+        grid-column: 2; grid-row: 1;
+        flex-direction: row; align-items: flex-end; justify-content: flex-end;
+      }
 
       /* 검색 모달: 하단 시트 */
       #modalSearch { align-items: flex-end; }
@@ -511,9 +529,20 @@
       }
       .search-row input { font-size: 16px; }
 
-      /* 스텝 액션 버튼 */
-      .step-actions { padding: 12px 16px; gap: 8px; }
-      .btn-prev, .btn-next { font-size: 14px; padding: 12px 16px; }
+      /* 스텝 액션 버튼 - 줄바꿈 방지 */
+      .step-actions { padding: 12px 16px; gap: 6px; }
+      .btn-prev, .btn-next { font-size: 13px; padding: 10px 14px; white-space: nowrap; flex-shrink: 0; }
+      .btn-save-draft { font-size: 12px; padding: 8px 10px; white-space: nowrap; flex-shrink: 0; }
+      .btn-sm { white-space: nowrap; flex-shrink: 0; }
+
+      /* 이동내역 삭제버튼: 날짜 옆(1행)으로 고정 */
+      .trip-tbl tbody tr td:nth-child(8) { grid-row: 1; }
+
+      /* 정산서 미리보기 테이블: 셀 줄바꿈 방지 (테이블 가로스크롤) */
+      .preview-tbl td, .preview-tbl th { white-space: nowrap; }
+
+      /* 기본정보 4열 → 2열 */
+      .info-grid-4 { grid-template-columns: repeat(2, 1fr) !important; }
 
       /* 카드 패딩 */
       .card { padding: 20px 16px; }
@@ -644,7 +673,7 @@
   <!-- Header -->
   <div class="header">
     <div class="header-inner">
-      <div class="header-brand">
+      <div class="header-brand" onclick="goHome()" title="처음으로">
         <img src="smc-logo.png" class="header-logo" alt="SMC" onerror="this.style.display='none'">
         <div class="header-text">
           <span class="header-sub">Samsung Medical Center · 재무관리파트</span>
@@ -856,8 +885,10 @@
         </div>
         <div class="fuel-per-km">
           <label>연비 기준 km당 단가</label>
-          <div class="per-val" id="perKmDisplay">-</div>
-          <div style="font-size:12px;color:var(--muted);">원/km</div>
+          <div style="display:flex;align-items:baseline;gap:4px;justify-content:flex-end;">
+            <div class="per-val" id="perKmDisplay">-</div>
+            <span style="font-size:12px;color:var(--muted);">원/km</span>
+          </div>
           <div id="perKmFormula" style="font-size:11px;color:var(--muted);margin-top:6px;line-height:1.6;"></div>
         </div>
       </div>
@@ -998,24 +1029,30 @@
   <!-- ── STEP 6: 최종 정산서 ── -->
   <div id="step6" class="wizard-content hidden">
     <div class="summary-top">
-      <h2>정산신청</h2>
+      <h2 id="pvSummaryTitle">교통비 정산신청</h2>
       <div class="summary-name" id="pvName">-</div>
       <div style="font-size:13px;opacity:.8;margin-top:2px;" id="pvDate">-</div>
       <div class="summary-grid">
         <div class="summary-item">
           <label>이동 구간</label>
-          <div class="val" id="pvTrips">0</div>
-          <span class="unit">건</span>
+          <div class="val-row">
+            <span class="val" id="pvTrips">0</span>
+            <span class="unit">건</span>
+          </div>
         </div>
         <div class="summary-item">
           <label>총 이동거리</label>
-          <div class="val" id="pvDist">0</div>
-          <span class="unit">km</span>
+          <div class="val-row">
+            <span class="val" id="pvDist">0</span>
+            <span class="unit">km</span>
+          </div>
         </div>
         <div class="summary-item">
           <label>신청 금액</label>
-          <div class="val" id="pvTotal">0</div>
-          <span class="unit">원</span>
+          <div class="val-row">
+            <span class="val" id="pvTotal">0</span>
+            <span class="unit">원</span>
+          </div>
         </div>
       </div>
     </div>
@@ -1114,10 +1151,12 @@
           <button class="btn-sm" onclick="document.getElementById('addUserForm').style.display='none'">취소</button>
         </div>
       </div>
-      <table class="user-table" id="userTable">
-        <thead><tr><th>성명</th><th>부서</th><th>권한</th><th>차량번호</th><th>연료</th><th>배기량</th><th>작업</th></tr></thead>
-        <tbody id="userTableBody"></tbody>
-      </table>
+      <div style="overflow-x:auto;-webkit-overflow-scrolling:touch;">
+        <table class="user-table" id="userTable">
+          <thead><tr><th>성명</th><th>부서</th><th>권한</th><th>차량번호</th><th>연료</th><th>배기량</th><th>작업</th></tr></thead>
+          <tbody id="userTableBody"></tbody>
+        </table>
+      </div>
     </div>
   </div>
 </div>
@@ -1573,6 +1612,13 @@ function step5Next() {
   gotoStep(6)
 }
 
+function goHome() {
+  if (currentStep === 1) return
+  if (!confirm('처음으로 돌아가시겠습니까?\n작성 중인 내용은 임시저장 후 돌아갑니다.')) return
+  saveDraft()
+  gotoStep(1)
+}
+
 function resetWizard() {
   if (!confirm('새 정산서를 작성하시겠습니까?')) return
   clearDraft()
@@ -1723,13 +1769,13 @@ function tripRowHTML(t) {
 
   if (t.type === 'taxi') {
     // [0]date [1]from [2]to [3]dist [4]amount [5]total [6]del
-    return `<tr>${dateTd}${fromTd}${toTd}${distTd}
+    return `<tr class="taxi-row">${dateTd}${fromTd}${toTd}${distTd}
       <td data-label="금액"><input type="text" inputmode="numeric" class="trip-num-input" value="${(t.amount||0).toLocaleString()}" style="width:110px;" oninput="applyComma(this);trips.find(x=>x.id===${t.id}).amount=parseFloat(this.value.replace(/,/g,''))||0;recalcAll()"></td>
       <td data-label="합계">${totalHtml}</td>${delTd}</tr>`
   }
   // car: [0]date [1]from [2]to [3]dist [4]fuel [5]toll [6]total [7]del
   const fuelCost = calcFuelCost(t)
-  return `<tr>${dateTd}${fromTd}${toTd}${distTd}
+  return `<tr class="car-row">${dateTd}${fromTd}${toTd}${distTd}
     <td data-label="교통비"><span class="cost-display">${fuelCost !== null ? fuelCost.toLocaleString() : '-'}</span></td>
     <td data-label="하이패스"><input type="text" inputmode="numeric" class="trip-num-input" value="${(t.toll||0).toLocaleString()}" style="width:80px;" placeholder="0" oninput="applyComma(this);trips.find(x=>x.id===${t.id}).toll=parseFloat(this.value.replace(/,/g,''))||0;recalcAll()"></td>
     <td data-label="합계">${totalHtml}</td>${delTd}</tr>`
@@ -1875,6 +1921,7 @@ function buildPreview() {
   const rowGrandTotal = totalFuelAmt + (tripMode === 'car' ? totalRowToll : 0)
   const finalTotal = rowGrandTotal + (tripMode === 'car' ? parkingAmt : 0)
 
+  document.getElementById('pvSummaryTitle').textContent = tripMode === 'taxi' ? '교통비 정산신청 (택시)' : '교통비 정산신청 (자차)'
   document.getElementById('pvName').textContent = name
   document.getElementById('pvDate').textContent = date + ' 작성'
   document.getElementById('pvTrips').textContent = trips.length
@@ -2085,7 +2132,7 @@ function renderUserTable() {
       <td>${u.dept||'-'}</td>
       <td><span class="role-badge ${u.role}">${u.role==='admin'?'관리자':'사용자'}</span></td>
       <td>${u.car?.plate||'-'}</td><td>${u.car?.fuel||'-'}</td><td>${u.car?.displacement||'-'}</td>
-      <td style="display:flex;gap:6px;flex-wrap:wrap;">
+      <td style="display:flex;gap:6px;flex-wrap:nowrap;align-items:center;">
         ${u.role !== 'admin' ? `
           <button class="btn-sm" onclick="openEditCar('${u.id}')">차량수정</button>
           <button class="btn-sm" onclick="resetPin('${u.id}')">PIN초기화</button>
