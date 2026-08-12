@@ -261,12 +261,32 @@
     .form-col input:focus, .form-col select:focus { border-color: var(--primary); }
     .form-hint { font-size: 12px; color: var(--muted); margin-top: 2px; }
 
-    /* ── Car Banner ── */
-    .car-profile-preview {
-      background: var(--primary-light); border: 1.5px solid #c5d9fb;
-      border-radius: 12px; padding: 14px 18px;
-      display: flex; align-items: center; gap: 12px; margin-bottom: 24px;
+    /* ── Car Banner (Step 2) ── */
+    .car-load-btn {
+      display: flex; flex-direction: column; width: 100%; max-width: 480px; margin: 0 auto;
+      background: var(--white); border: 2px solid var(--primary); border-radius: 14px;
+      cursor: pointer; font-family: inherit; overflow: hidden; transition: all .15s;
     }
+    .car-load-btn:hover, .car-load-btn.selected { background: var(--primary-light); }
+    .car-profile-preview-inner {
+      display: flex; align-items: center; gap: 12px; padding: 16px 18px;
+      border-bottom: 1.5px solid #c5d9fb; text-align: left;
+    }
+    .car-load-cta {
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+      padding: 12px 18px; font-size: 14px; font-weight: 700; color: var(--primary);
+    }
+    .or-divider {
+      display: flex; align-items: center; gap: 12px; max-width: 480px;
+      margin: 16px auto; color: var(--muted); font-size: 13px; width: 100%;
+    }
+    .or-divider::before, .or-divider::after { content: ''; flex: 1; height: 1px; background: var(--line2); }
+    .new-car-link {
+      display: block; background: none; border: none; cursor: pointer;
+      font-family: inherit; font-size: 14px; font-weight: 600; color: var(--muted);
+      margin: 0 auto; padding: 8px 16px; transition: color .15s;
+    }
+    .new-car-link:hover, .new-car-link.selected { color: var(--ink); }
     .car-preview-icon {
       width: 40px; height: 40px; border-radius: 10px; background: var(--primary);
       display: flex; align-items: center; justify-content: center; flex-shrink: 0;
@@ -467,35 +487,37 @@
       .form-row, .form-row.three { grid-template-columns: 1fr; }
       .wizard-content { padding: 20px 16px; }
 
-      /* 이동내역 테이블 → 카드형 */
+      /* 이동내역 테이블 → 카드형 (14차 전면 재설계) */
       .trip-tbl { min-width: unset !important; }
       .trip-tbl thead { display: none; }
       .trip-tbl tbody tr {
         display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 6px; padding: 12px; margin-bottom: 8px;
-        background: var(--white); border-radius: 12px;
-        border: 1px solid var(--line2); position: relative;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 0; padding: 0; margin-bottom: 12px;
+        background: var(--white); border-radius: 14px;
+        border: 1.5px solid var(--line2); position: relative; overflow: hidden;
       }
-      .trip-tbl td { border: none; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+      .trip-tbl td { border: none; padding: 8px 8px; display: flex; flex-direction: column; gap: 3px; }
       .trip-tbl td::before {
         content: attr(data-label);
         font-size: 10px; font-weight: 700; color: var(--muted);
-        text-transform: uppercase; letter-spacing: 0.03em;
+        text-transform: uppercase; letter-spacing: 0.02em;
       }
-      /* 날짜: 전체 너비, 삭제버튼과 나란히 */
-      .trip-tbl td:nth-child(1) { grid-column: 1; }
-      .trip-tbl td:nth-child(8) { grid-column: 2; align-items: flex-end; justify-content: flex-end; flex-direction: row; }
+      /* 날짜: col1-3 / row1 / 회색 헤더 */
+      .trip-tbl tbody tr td:nth-child(1) {
+        grid-column: 1 / 4; grid-row: 1;
+        background: var(--line); border-bottom: 1px solid var(--line2);
+        flex-direction: row; align-items: center; padding: 8px 12px; gap: 6px;
+      }
+      .trip-tbl tbody tr td:nth-child(1)::before { display: none; }
       /* 출발지 / 도착지: 전체 너비 */
-      .trip-tbl td:nth-child(2),
-      .trip-tbl td:nth-child(3) { grid-column: 1 / -1; }
-      /* 거리 / 교통비 / 하이패스 / 합계: 2열 */
-      .trip-tbl td:nth-child(4) { grid-column: 1; }
-      .trip-tbl td:nth-child(5) { grid-column: 2; }
-      .trip-tbl td:nth-child(6) { grid-column: 1; }
-      .trip-tbl td:nth-child(7) { grid-column: 2; }
-
-      .trip-place-btn { width: 100%; text-align: left; }
+      .trip-tbl tbody tr td:nth-child(2) { grid-column: 1 / -1; grid-row: 2; padding: 8px 12px 3px; }
+      .trip-tbl tbody tr td:nth-child(3) {
+        grid-column: 1 / -1; grid-row: 3;
+        padding: 3px 12px 8px; border-bottom: 1px solid var(--line2);
+      }
+      /* place-btn: 전체 너비, 좌측정렬 */
+      .trip-place-btn { max-width: 100% !important; width: 100%; text-align: left; }
       .trip-num-input { width: 100% !important; }
 
       /* 연료 표시 박스 */
@@ -514,18 +536,33 @@
       .admin-header { padding: 0 12px; }
       .user-table th, .user-table td { padding: 8px 10px; font-size: 12px; }
 
-      /* 택시 모드 이동내역 카드 레이아웃 (7셀) */
-      .trip-tbl tbody tr.taxi-row td:nth-child(6) { grid-column: 1 / -1; }
-      .trip-tbl tbody tr.taxi-row td:nth-child(7) {
-        grid-column: 2; grid-row: 1;
-        flex-direction: row; align-items: flex-end; justify-content: flex-end;
+      /* 자차(car-row): 삭제=col4 row1, 스탯 4열 */
+      .trip-tbl tbody tr.car-row td:nth-child(8) {
+        grid-column: 4; grid-row: 1;
+        background: var(--line); border-bottom: 1px solid var(--line2);
+        flex-direction: row; align-items: center; justify-content: center; padding: 4px;
       }
+      .trip-tbl tbody tr.car-row td:nth-child(8)::before { display: none; }
+      .trip-tbl tbody tr.car-row td:nth-child(4) { grid-column: 1; grid-row: 4; padding: 8px 4px 8px 12px; }
+      .trip-tbl tbody tr.car-row td:nth-child(5) { grid-column: 2; grid-row: 4; padding: 8px 4px; }
+      .trip-tbl tbody tr.car-row td:nth-child(6) { grid-column: 3; grid-row: 4; padding: 8px 4px; }
+      .trip-tbl tbody tr.car-row td:nth-child(7) { grid-column: 4; grid-row: 4; padding: 8px 12px 8px 4px; align-items: flex-end; }
+      /* 택시(taxi-row): 삭제=col4 row1, 스탯 3열 */
+      .trip-tbl tbody tr.taxi-row td:nth-child(7) {
+        grid-column: 4; grid-row: 1;
+        background: var(--line); border-bottom: 1px solid var(--line2);
+        flex-direction: row; align-items: center; justify-content: center; padding: 4px;
+      }
+      .trip-tbl tbody tr.taxi-row td:nth-child(7)::before { display: none; }
+      .trip-tbl tbody tr.taxi-row td:nth-child(4) { grid-column: 1; grid-row: 4; padding: 8px 4px 8px 12px; }
+      .trip-tbl tbody tr.taxi-row td:nth-child(5) { grid-column: 2 / 4; grid-row: 4; padding: 8px 4px; }
+      .trip-tbl tbody tr.taxi-row td:nth-child(6) { grid-column: 4; grid-row: 4; padding: 8px 12px 8px 4px; align-items: flex-end; }
 
       /* 검색 모달: 하단 시트 */
       #modalSearch { align-items: flex-end; }
-      .search-modal {
+      #modalSearch .modal-box {
         width: 100%; max-width: 100%; border-radius: 20px 20px 0 0;
-        padding: 20px 16px; max-height: 85vh;
+        padding: 20px 16px; max-height: 85vh; overflow-y: auto;
       }
       .search-row input { font-size: 16px; }
 
@@ -534,9 +571,6 @@
       .btn-prev, .btn-next { font-size: 13px; padding: 10px 14px; white-space: nowrap; flex-shrink: 0; }
       .btn-save-draft { font-size: 12px; padding: 8px 10px; white-space: nowrap; flex-shrink: 0; }
       .btn-sm { white-space: nowrap; flex-shrink: 0; }
-
-      /* 이동내역 삭제버튼: 날짜 옆(1행)으로 고정 */
-      .trip-tbl tbody tr td:nth-child(8) { grid-row: 1; }
 
       /* 정산서 미리보기 테이블: 셀 줄바꿈 방지 (테이블 가로스크롤) */
       .preview-tbl td, .preview-tbl th { white-space: nowrap; }
@@ -604,7 +638,6 @@
       border-radius: 4px; margin-left: 3px; vertical-align: middle; line-height: 1.5;
     }
     .dist-badge.auto { background: #e6f9f0; color: #00a661; }
-    .dist-badge.est  { background: var(--orange-bg); color: #92400e; }
     .dist-badge.manual { background: var(--primary-light); color: var(--primary); }
 
     /* ── 직접입력 거리 input ── */
@@ -791,34 +824,28 @@
     <!-- 저장된 차량정보 불러오기 질문 -->
     <div class="card question-card" id="loadCarQuestion">
       <div class="question-heading">저장된 차량 정보를<br>불러올까요?</div>
-      <div class="question-desc" id="loadCarDesc">이전에 저장한 차량 정보가 있습니다</div>
-      <div id="savedCarPreview" class="car-profile-preview" style="max-width:480px;margin:0 auto 24px;">
-        <div class="car-preview-icon">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
-          </svg>
-        </div>
-        <div class="car-preview-text">
-          <p>저장된 차량</p>
-          <strong id="savedCarText">-</strong>
-        </div>
-      </div>
-      <div class="option-cards">
-        <button class="option-card" id="optLoadYes" onclick="useSavedCar()">
-          <div class="option-card-content">
-            <div class="option-card-title">네, 불러옵니다</div>
-            <div class="option-card-desc">저장된 차량 정보로 바로 진행합니다</div>
+      <div class="question-desc" id="loadCarDesc" style="margin-bottom:20px;">이전에 저장한 차량 정보가 있습니다</div>
+      <!-- 차량 카드 → 탭하면 바로 불러오기 -->
+      <button class="car-load-btn" id="optLoadYes" onclick="useSavedCar()">
+        <div id="savedCarPreview" class="car-profile-preview-inner">
+          <div class="car-preview-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
+            </svg>
           </div>
-          <svg class="option-card-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-        </button>
-        <button class="option-card" id="optLoadNo" onclick="enterNewCar()">
-          <div class="option-card-content">
-            <div class="option-card-title">아니요, 새로 입력</div>
-            <div class="option-card-desc">차량 정보를 직접 입력합니다</div>
+          <div class="car-preview-text">
+            <p>저장된 차량</p>
+            <strong id="savedCarText">-</strong>
           </div>
-          <svg class="option-card-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-        </button>
-      </div>
+        </div>
+        <div class="car-load-cta">
+          이 차량 정보로 계속하기
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
+      </button>
+      <!-- 구분선 + 새로 작성 링크 -->
+      <div class="or-divider">또는</div>
+      <button class="new-car-link" id="optLoadNo" onclick="enterNewCar()">+ 차량 정보 새로 작성하기</button>
     </div>
 
     <!-- 차량정보 + 기본정보 입력폼 -->
@@ -1262,6 +1289,9 @@
         </div>
         나의 자동차
       </div>
+      <div id="carRegNotice" class="inline-warn" style="display:none;margin-bottom:16px;padding:12px 14px;border-radius:10px;background:var(--primary-light);border:1.5px solid #c5d9fb;color:var(--primary);font-size:13px;">
+        차량 정보를 등록하면 이동 거리와 연비를 기반으로 교통비가 자동 계산됩니다.
+      </div>
       <div class="form-row">
         <div class="form-col">
           <label>차량번호</label>
@@ -1468,7 +1498,19 @@ function doChangePin() {
   currentUser = getUser(currentUser.id)
   document.getElementById('changePinScreen').style.display = 'none'
   localStorage.setItem(KEY_SESSION, JSON.stringify({ userId: currentUser.id, loginTime: Date.now() }))
+  const isFirstUser = !currentUser.car?.plate
   startApp()
+  if (isFirstUser) {
+    setTimeout(() => {
+      openAccount()
+      showToast('환영합니다! 차량 정보를 먼저 등록해 주세요.')
+      setTimeout(() => {
+        const pl = document.getElementById('ac_plate')
+        pl.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        pl.focus()
+      }, 250)
+    }, 350)
+  }
 }
 
 function doLogout() {
@@ -1874,12 +1916,11 @@ function renderTrips() {
 
 function tripRowHTML(t) {
   const distBadge = t.distMode === 'auto' ? `<span class="dist-badge auto">자동</span>`
-    : t.distMode === 'est' ? `<span class="dist-badge est">추정</span>`
     : t.distMode === 'manual' ? `<span class="dist-badge manual">직접</span>` : ''
   const distHtml = t.dist === null
     ? `<span class="dist-loading">계산중</span>`
     : t.dist !== undefined
-      ? `<span class="dist-display">${t.dist.toFixed(1)}</span>${distBadge}${t.distMode === 'est' ? `<br><input type="number" class="dist-manual-input" placeholder="직접입력" step="0.1" min="0.1" onchange="setManualDist(${t.id},this.value)" title="직접 거리 입력(km)">` : ''}`
+      ? `<span class="dist-display">${t.dist.toFixed(1)}</span>${distBadge}`
       : `<input type="number" class="dist-manual-input" placeholder="km 입력" step="0.1" min="0.1" onchange="setManualDist(${t.id},this.value)" title="직접 거리 입력(km)">`
   const total = calcTotal(t)
   const totalHtml = `<span class="total-display">${total !== null ? total.toLocaleString() : '-'}</span>`
@@ -2064,7 +2105,6 @@ function buildPreview() {
     if (!t.date) warns.push(`${n}번째 구간: 날짜 미입력`)
     if (!t.fromName || !t.toName) warns.push(`${n}번째 구간: 출발지·도착지 미입력`)
     if (t.type === 'taxi' && !(parseFloat(t.amount) > 0)) warns.push(`${n}번째 구간: 금액 0원`)
-    if (t.distMode === 'est') warns.push(`${n}번째 구간: 거리 추정값 (직접 확인 권장)`)
     if (t.dist === null || t.dist === undefined) warns.push(`${n}번째 구간: 거리 미계산`)
   })
   const warnEl = document.getElementById('pvWarnList')
@@ -2379,6 +2419,7 @@ function openAccount() {
   document.getElementById('acNewPin').value = ''
   document.getElementById('acConfirmPin').value = ''
   document.getElementById('pinChangeMsg').textContent = ''
+  document.getElementById('carRegNotice').style.display = car.plate ? 'none' : 'block'
   acFuelChange()
   document.getElementById('accountPanel').style.display = 'block'
 }
