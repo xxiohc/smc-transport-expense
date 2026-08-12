@@ -521,9 +521,49 @@
       .question-heading { font-size: 22px; }
     }
 
+    /* ── Draft Banner ── */
+    .draft-banner {
+      background: var(--orange-bg); border-bottom: 1.5px solid var(--orange);
+    }
+    .draft-banner-inner {
+      max-width: 960px; margin: 0 auto;
+      padding: 10px 20px;
+      display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+    }
+    .draft-banner-text { flex: 1; font-size: 13px; line-height: 1.5; }
+    .draft-banner-text strong { color: var(--ink); font-size: 14px; display: block; }
+    .draft-banner-text span { color: var(--muted); }
+    .draft-restore-btn {
+      padding: 7px 16px; border-radius: 8px; border: none; cursor: pointer;
+      background: var(--orange); color: #fff; font-size: 13px; font-weight: 700;
+      font-family: inherit; transition: opacity .15s; white-space: nowrap;
+    }
+    .draft-restore-btn:hover { opacity: 0.85; }
+    .draft-discard-btn {
+      padding: 7px 14px; border-radius: 8px; border: 1px solid var(--line2); cursor: pointer;
+      background: var(--white); color: var(--muted); font-size: 13px; font-weight: 600;
+      font-family: inherit; transition: background .15s; white-space: nowrap;
+    }
+    .draft-discard-btn:hover { background: var(--line); }
+    .btn-save-draft {
+      display: flex; align-items: center; gap: 6px;
+      padding: 10px 16px; border-radius: 10px;
+      border: 1.5px solid var(--orange); background: var(--orange-bg);
+      color: var(--orange); font-size: 14px; font-weight: 700;
+      font-family: inherit; cursor: pointer; transition: all .15s;
+    }
+    .btn-save-draft:hover { background: #fef0c2; }
+    .btn-save-draft.saved {
+      border-color: var(--green); color: var(--green); background: var(--green-bg);
+    }
+    @media (max-width: 640px) {
+      .draft-banner-inner { padding: 10px 14px; gap: 8px; }
+      .btn-save-draft { font-size: 13px; padding: 9px 12px; }
+    }
+
     @media print {
       #loginScreen, .header, .wizard-bar, .step-actions, .add-row-btn,
-      #adminPanel, #accountPanel, .del-btn, .trip-place-btn,
+      #adminPanel, #accountPanel, .del-btn, .trip-place-btn, .draft-banner,
       .btn-prev, .btn-next, .btn-sm, #modalSearch { display: none !important; }
       body { background: white; }
       .wizard-content { padding: 16px 0; max-width: 100%; }
@@ -587,6 +627,20 @@
 
 <!-- MAIN APP -->
 <div id="mainApp">
+  <!-- DRAFT BANNER -->
+  <div id="draftBanner" class="draft-banner" style="display:none">
+    <div class="draft-banner-inner">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0">
+        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/>
+      </svg>
+      <div class="draft-banner-text">
+        <strong>임시저장된 작업이 있습니다</strong>
+        <span id="draftSavedAt"></span>
+      </div>
+      <button class="draft-restore-btn" onclick="restoreDraft()">이어서 작성하기</button>
+      <button class="draft-discard-btn" onclick="discardDraft()">새로 시작</button>
+    </div>
+  </div>
   <!-- Header -->
   <div class="header">
     <div class="header-inner">
@@ -752,6 +806,10 @@
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
           이전
         </button>
+        <button class="btn-save-draft" onclick="saveDraft()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+          임시저장
+        </button>
         <button class="btn-next" onclick="step2Next()">
           다음: 유류단가
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
@@ -811,6 +869,10 @@
       <button class="btn-prev" onclick="gotoStep(2)">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
         이전
+      </button>
+      <button class="btn-save-draft" onclick="saveDraft()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+        임시저장
       </button>
       <button class="btn-next" onclick="gotoStep(4)">
         다음: 이동내역
@@ -875,6 +937,10 @@
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
         이전
       </button>
+      <button class="btn-save-draft" onclick="saveDraft()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+        임시저장
+      </button>
       <button class="btn-next" onclick="step4Next()">
         다음: 주차비 확인
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
@@ -917,6 +983,10 @@
       <button class="btn-prev" onclick="gotoStep(4)">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
         이전
+      </button>
+      <button class="btn-save-draft" onclick="saveDraft()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+        임시저장
       </button>
       <button class="btn-next green" id="btnToReport" onclick="step5Next()" style="display:none">
         최종 정산서 보기
@@ -1295,6 +1365,7 @@ function startApp() {
   initSMCLocation()
   trips = []; tripIdSeq = 0; tripMode = null; hasToll = null
   gotoStep(1)
+  checkDraft()
 }
 
 /* ══════════════════════════════════════════
@@ -1489,6 +1560,7 @@ function step5Next() {
 
 function resetWizard() {
   if (!confirm('새 정산서를 작성하시겠습니까?')) return
+  clearDraft()
   trips = []; tripIdSeq = 0; tripMode = null; hasToll = null; totalTollAmount = 0
   document.getElementById('tripBody').innerHTML = ''
   document.getElementById('taxiBasicInfo').classList.add('hidden')
@@ -2065,6 +2137,107 @@ function saveAccountCar() {
   alert('차량 정보가 저장되었습니다.')
   closeAccount()
 }
+
+/* ══════════════════════════════════════════
+   DRAFT SAVE / RESTORE
+══════════════════════════════════════════ */
+const DRAFT_PREFIX = 'te_draft_'
+function draftKey() { return DRAFT_PREFIX + (currentUser?.id || 'anon') }
+
+function saveDraft() {
+  const state = {
+    tripMode, currentStep, trips, tripIdSeq, hasToll, totalTollAmount,
+    f_name: document.getElementById('f_name')?.value || '',
+    f_date: document.getElementById('f_date')?.value || '',
+    f_plate: document.getElementById('f_plate')?.value || '',
+    f_fuel: document.getElementById('f_fuel')?.value || '휘발유',
+    f_disp: document.getElementById('f_disp')?.value || '1500cc 이하',
+    f_fuelPrice: document.getElementById('f_fuelPrice')?.value || '',
+    fuelTypeSelect: document.getElementById('fuelTypeSelect')?.value || 'B027',
+    f_name2: document.getElementById('f_name2')?.value || '',
+    f_date2: document.getElementById('f_date2')?.value || '',
+    tollAmountInput: document.getElementById('tollAmountInput')?.value || '0',
+    savedAt: Date.now()
+  }
+  localStorage.setItem(draftKey(), JSON.stringify(state))
+  document.querySelectorAll('.btn-save-draft').forEach(btn => {
+    btn.classList.add('saved')
+    const orig = btn.innerHTML
+    btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> 저장됨'
+    setTimeout(() => { btn.innerHTML = orig; btn.classList.remove('saved') }, 2000)
+  })
+}
+
+function checkDraft() {
+  const raw = localStorage.getItem(draftKey())
+  if (!raw) return
+  try {
+    const d = JSON.parse(raw)
+    if (!d.savedAt || Date.now() - d.savedAt > 7 * 24 * 3600 * 1000) {
+      localStorage.removeItem(draftKey()); return
+    }
+    const dt = new Date(d.savedAt)
+    const label = `${dt.getMonth()+1}/${dt.getDate()} ${String(dt.getHours()).padStart(2,'0')}:${String(dt.getMinutes()).padStart(2,'0')} 저장 · ${d.currentStep}단계까지 진행`
+    document.getElementById('draftSavedAt').textContent = label
+    document.getElementById('draftBanner').style.display = 'block'
+    // wizard-bar를 배너 높이만큼 아래로 이동
+    const bh = document.getElementById('draftBanner').offsetHeight
+    document.querySelector('.wizard-bar').style.top = (80 + bh) + 'px'
+  } catch(e) { localStorage.removeItem(draftKey()) }
+}
+
+function restoreDraft() {
+  const raw = localStorage.getItem(draftKey())
+  if (!raw) return
+  try {
+    const d = JSON.parse(raw)
+    document.getElementById('draftBanner').style.display = 'none'
+    document.querySelector('.wizard-bar').style.top = ''
+
+    tripMode = d.tripMode
+    tripIdSeq = d.tripIdSeq || 0
+    trips = d.trips || []
+    hasToll = d.hasToll
+    totalTollAmount = d.totalTollAmount || 0
+
+    if (d.f_name) document.getElementById('f_name').value = d.f_name
+    if (d.f_date) document.getElementById('f_date').value = d.f_date
+    if (d.f_plate) document.getElementById('f_plate').value = d.f_plate
+    if (d.f_fuel) { document.getElementById('f_fuel').value = d.f_fuel; updateEfficiency() }
+    if (d.f_disp) document.getElementById('f_disp').value = d.f_disp
+    if (d.f_fuelPrice) { document.getElementById('f_fuelPrice').value = d.f_fuelPrice; updateFuelDisplay() }
+    if (d.fuelTypeSelect) document.getElementById('fuelTypeSelect').value = d.fuelTypeSelect
+    if (d.f_name2) document.getElementById('f_name2').value = d.f_name2
+    if (d.f_date2) document.getElementById('f_date2').value = d.f_date2
+
+    if (d.tripMode === 'car') {
+      document.getElementById('loadCarQuestion')?.classList.add('hidden')
+      document.getElementById('carInputForm')?.classList.remove('hidden')
+      document.getElementById('taxiBasicInfo')?.classList.add('hidden')
+      document.getElementById('modeTag').textContent = '자차'
+    } else if (d.tripMode === 'taxi') {
+      document.getElementById('taxiBasicInfo')?.classList.remove('hidden')
+      document.getElementById('modeTag').textContent = '택시'
+    }
+
+    if (d.hasToll !== null && d.hasToll !== undefined) {
+      setHasToll(d.hasToll)
+      if (d.totalTollAmount) setNumVal(document.getElementById('tollAmountInput'), d.totalTollAmount)
+      if (d.hasToll) document.getElementById('btnToReport').style.display = ''
+    }
+
+    renderTrips()
+    gotoStep(d.currentStep || 1)
+  } catch(e) { console.error('Draft restore failed', e); discardDraft() }
+}
+
+function discardDraft() {
+  localStorage.removeItem(draftKey())
+  document.getElementById('draftBanner').style.display = 'none'
+  document.querySelector('.wizard-bar').style.top = ''
+}
+
+function clearDraft() { localStorage.removeItem(draftKey()) }
 
 /* ══════════════════════════════════════════
    INIT
