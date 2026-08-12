@@ -354,6 +354,12 @@ async function handle(req, res) {
   }
 }
 
-createServer(handle).listen(PORT, () =>
-  console.log(`교통비정산서 server :${PORT}`)
-);
+export default handle;
+
+// 직접 실행 시에만 HTTP 서버 기동
+const isMain = process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1];
+if (isMain) {
+  createServer(handle).listen(PORT, () =>
+    console.log(`교통비정산서 server :${PORT}`)
+  );
+}

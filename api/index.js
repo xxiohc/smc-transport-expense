@@ -1,2 +1,2 @@
-import server from "../server.js";
-export default server;
+import handle from "../server.js";
+export default handle;
