@@ -234,10 +234,10 @@
       margin-bottom: 20px; display: flex; align-items: center; gap: 8px;
     }
     .card-title-icon {
-      width: 32px; height: 32px; border-radius: 9px;
-      display: flex; align-items: center; justify-content: center;
-      background: var(--primary-light); flex-shrink: 0;
+      width: 3px; height: 20px; border-radius: 2px;
+      background: var(--primary); flex-shrink: 0; overflow: hidden;
     }
+    .card-title-icon svg { display: none; }
 
     /* ── Step Actions ── */
     .step-actions {
@@ -753,7 +753,7 @@
   <div class="car-reg-card">
     <div class="car-reg-icon">
       <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
+        <path d="M4 13 L6.5 8 Q7.5 6 9.5 6 L14.5 6 Q16.5 6 17.5 8 L20 13 Z"/><rect x="2" y="13" width="20" height="5" rx="1.5"/><circle cx="7" cy="20" r="2"/><circle cx="17" cy="20" r="2"/>
       </svg>
     </div>
     <h2>차량 정보 등록</h2>
@@ -880,7 +880,7 @@
         <div id="savedCarPreview" class="car-profile-preview-inner">
           <div class="car-preview-icon">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
+              <path d="M4 13 L6.5 8 Q7.5 6 9.5 6 L14.5 6 Q16.5 6 17.5 8 L20 13 Z"/><rect x="2" y="13" width="20" height="5" rx="1.5"/><circle cx="7" cy="20" r="2"/><circle cx="17" cy="20" r="2"/>
             </svg>
           </div>
           <div class="car-preview-text">
@@ -924,7 +924,7 @@
         <div class="card-title">
           <div class="card-title-icon">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3182f6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
+              <path d="M4 13 L6.5 8 Q7.5 6 9.5 6 L14.5 6 Q16.5 6 17.5 8 L20 13 Z"/><rect x="2" y="13" width="20" height="5" rx="1.5"/><circle cx="7" cy="20" r="2"/><circle cx="17" cy="20" r="2"/>
             </svg>
           </div>
           차량정보
@@ -1164,6 +1164,7 @@
     <div class="summary-top">
       <h2 id="pvSummaryTitle">교통비 정산신청</h2>
       <div class="summary-name" id="pvName">-</div>
+      <div style="font-size:13px;opacity:.7;margin-top:2px;" id="pvDept"></div>
       <div style="font-size:13px;opacity:.8;margin-top:2px;" id="pvDate">-</div>
       <div class="summary-grid">
         <div class="summary-item">
@@ -1334,7 +1335,7 @@
       <div class="card-title">
         <div class="card-title-icon">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3182f6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
+            <path d="M4 13 L6.5 8 Q7.5 6 9.5 6 L14.5 6 Q16.5 6 17.5 8 L20 13 Z"/><rect x="2" y="13" width="20" height="5" rx="1.5"/><circle cx="7" cy="20" r="2"/><circle cx="17" cy="20" r="2"/>
           </svg>
         </div>
         나의 자동차
@@ -1879,7 +1880,7 @@ function getEfficiency() {
 
 function updateEfficiency() {
   const fuel = document.getElementById('f_fuel').value
-  document.getElementById('dispCol').style.opacity = (fuel === '경유' || fuel === 'LPG') ? '0.4' : '1'
+  document.getElementById('dispCol').style.display = (fuel === '경유' || fuel === 'LPG') ? 'none' : ''
   document.getElementById('effDisplay').textContent = getEfficiency() + ' km/L'
   updateFuelDisplay()
   recalcAll()
@@ -2195,6 +2196,7 @@ function buildPreview() {
     warnEl.style.display = 'none'
   }
   document.getElementById('pvName').textContent = name
+  document.getElementById('pvDept').textContent = currentUser?.dept || ''
   document.getElementById('pvDate').textContent = date + ' 작성'
   document.getElementById('pvTrips').textContent = trips.length
   document.getElementById('pvDist').textContent = totalDist.toFixed(1)
@@ -2220,6 +2222,7 @@ function buildPreview() {
     </tr>`
     document.getElementById('pvInfo').innerHTML = `
       <div class="info-item"><label>신청자</label><span>${name}</span></div>
+      <div class="info-item"><label>부서</label><span>${currentUser?.dept || '-'}</span></div>
       <div class="info-item"><label>작성일</label><span>${date}</span></div>
       <div class="info-item"><label>이동수단</label><span>택시</span></div>`
     return
@@ -2265,6 +2268,7 @@ function buildPreview() {
   const perKm = eff > 0 ? Math.round(fuelPrice / eff) : 0
   document.getElementById('pvInfo').innerHTML = `
     <div class="info-item"><label>신청자</label><span>${name}</span></div>
+    <div class="info-item"><label>부서</label><span>${currentUser?.dept || '-'}</span></div>
     <div class="info-item"><label>작성일</label><span>${date}</span></div>
     <div class="info-item"><label>차량번호</label><span>${plate}</span></div>
     <div class="info-item"><label>연료 구분</label><span>${fuel}</span></div>
