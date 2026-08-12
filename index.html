@@ -1283,6 +1283,10 @@ const EFFICIENCY = {
 const STEP_NAMES_CAR = ['이동수단', '차량정보', '유류단가', '이동내역', '주차비', '정산서']
 const STEP_NAMES_TAXI = ['이동수단', '이동내역', '정산서']
 
+function escapeHtml(v) {
+  return String(v ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;')
+}
+
 /* ══════════════════════════════════════════
    STATE
 ══════════════════════════════════════════ */
@@ -1371,6 +1375,7 @@ function doLogout() {
   currentUser = null
   localStorage.removeItem(KEY_SESSION)
   trips = []; tripIdSeq = 0; tripMode = null; hasToll = null; totalTollAmount = 0
+  document.getElementById('btnAdmin').style.display = 'none'
   document.getElementById('mainApp').style.display = 'none'
   document.getElementById('changePinScreen').style.display = 'none'
   document.getElementById('loginScreen').style.display = 'flex'
@@ -1403,7 +1408,7 @@ function startApp() {
   document.getElementById('loginScreen').style.display = 'none'
   document.getElementById('mainApp').style.display = 'block'
   document.getElementById('headerUserName').textContent = currentUser.name
-  if (currentUser.role === 'admin') document.getElementById('btnAdmin').style.display = ''
+  document.getElementById('btnAdmin').style.display = currentUser.role === 'admin' ? '' : 'none'
   setDefaultDate()
   initSMCLocation()
   trips = []; tripIdSeq = 0; tripMode = null; hasToll = null
@@ -1648,11 +1653,12 @@ function updateEfficiency() {
 }
 
 function setDefaultDate() {
-  const iso = new Date().toISOString().split('T')[0]
+  const d = new Date()
+  const kst = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`
   const d1 = document.getElementById('f_date')
   const d2 = document.getElementById('f_date2')
-  if (d1) d1.value = iso
-  if (d2) d2.value = iso
+  if (d1) d1.value = kst
+  if (d2) d2.value = kst
 }
 
 /* ══════════════════════════════════════════
@@ -1761,9 +1767,9 @@ function tripRowHTML(t) {
     : t.dist !== undefined ? `<span class="dist-display">${t.dist.toFixed(1)}</span>` : `<span style="color:var(--muted)">-</span>`
   const total = calcTotal(t)
   const totalHtml = `<span class="total-display">${total !== null ? total.toLocaleString() : '-'}</span>`
-  const dateTd = `<td data-label="월/일"><input type="text" class="trip-num-input" value="${t.date||''}" placeholder="MM/DD" style="width:60px;text-align:center;" onchange="trips.find(x=>x.id===${t.id}).date=this.value"></td>`
-  const fromTd = `<td data-label="출발지"><button class="trip-place-btn ${t.fromName?'set':''}" onclick="openSearch(${t.id},'from')">${t.fromName||'출발지 선택'}</button></td>`
-  const toTd   = `<td data-label="도착지"><button class="trip-place-btn ${t.toName?'set':''}" onclick="openSearch(${t.id},'to')">${t.toName||'도착지 선택'}</button></td>`
+  const dateTd = `<td data-label="월/일"><input type="text" class="trip-num-input" value="${escapeHtml(t.date||'')}" placeholder="MM/DD" style="width:60px;text-align:center;" onchange="trips.find(x=>x.id===${t.id}).date=this.value"></td>`
+  const fromTd = `<td data-label="출발지"><button class="trip-place-btn ${t.fromName?'set':''}" onclick="openSearch(${t.id},'from')">${t.fromName?escapeHtml(t.fromName):'출발지 선택'}</button></td>`
+  const toTd   = `<td data-label="도착지"><button class="trip-place-btn ${t.toName?'set':''}" onclick="openSearch(${t.id},'to')">${t.toName?escapeHtml(t.toName):'도착지 선택'}</button></td>`
   const distTd = `<td data-label="거리(km)">${distHtml}</td>`
   const delTd  = `<td><button class="del-btn" onclick="removeTrip(${t.id})">×</button></td>`
 
@@ -1849,8 +1855,8 @@ async function doSearch() {
     if (!searchResults.length) { list.innerHTML = '<div class="place-placeholder">결과가 없습니다.</div>'; return }
     list.innerHTML = searchResults.map((d, i) => `
       <button class="place-result-item" onclick="pickResult(${i})">
-        <span class="pname">${d.place_name}</span>
-        <span class="paddr">${d.road_address_name || d.address_name || ''}</span>
+        <span class="pname">${escapeHtml(d.place_name)}</span>
+        <span class="paddr">${escapeHtml(d.road_address_name || d.address_name || '')}</span>
       </button>`).join('')
   } catch (e) { list.innerHTML = '<div class="place-placeholder">검색 실패. 다시 시도해 주세요.</div>' }
 }
@@ -2127,11 +2133,11 @@ function closeAdmin() { document.getElementById('adminPanel').style.display = 'n
 function renderUserTable() {
   const users = loadUsers()
   document.getElementById('userTableBody').innerHTML = users.map(u => `
-    <tr id="urow_${u.id}">
-      <td style="font-weight:700">${u.name}</td>
-      <td>${u.dept||'-'}</td>
-      <td><span class="role-badge ${u.role}">${u.role==='admin'?'관리자':'사용자'}</span></td>
-      <td>${u.car?.plate||'-'}</td><td>${u.car?.fuel||'-'}</td><td>${u.car?.displacement||'-'}</td>
+    <tr id="urow_${escapeHtml(u.id)}">
+      <td style="font-weight:700">${escapeHtml(u.name)}</td>
+      <td>${escapeHtml(u.dept||'-')}</td>
+      <td><span class="role-badge ${u.role==='admin'?'admin':'user'}">${u.role==='admin'?'관리자':'사용자'}</span></td>
+      <td>${escapeHtml(u.car?.plate||'-')}</td><td>${escapeHtml(u.car?.fuel||'-')}</td><td>${escapeHtml(u.car?.displacement||'-')}</td>
       <td style="display:flex;gap:6px;flex-wrap:nowrap;align-items:center;">
         ${u.role !== 'admin' ? `
           <button class="btn-sm" onclick="openEditCar('${u.id}')">차량수정</button>
@@ -2144,7 +2150,7 @@ function renderUserTable() {
       <td colspan="7" style="padding:0">
         <div style="background:var(--line);padding:14px 16px;display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:10px;align-items:flex-end;">
           <div><label style="font-size:11px;font-weight:700;color:var(--muted);display:block;margin-bottom:4px;">차량번호</label>
-            <input type="text" id="ec_plate_${u.id}" value="${u.car?.plate||''}" placeholder="12가 3456" style="width:100%;padding:8px;border:1px solid var(--line2);border-radius:8px;font-family:inherit;font-size:13px;">
+            <input type="text" id="ec_plate_${escapeHtml(u.id)}" value="${escapeHtml(u.car?.plate||'')}" placeholder="12가 3456" style="width:100%;padding:8px;border:1px solid var(--line2);border-radius:8px;font-family:inherit;font-size:13px;">
           </div>
           <div><label style="font-size:11px;font-weight:700;color:var(--muted);display:block;margin-bottom:4px;">연료</label>
             <select id="ec_fuel_${u.id}" style="width:100%;padding:8px;border:1px solid var(--line2);border-radius:8px;font-family:inherit;font-size:13px;">
