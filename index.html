@@ -367,6 +367,9 @@
 
     /* ── Info Grid ── */
     .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .info-grid-4 { grid-template-columns: repeat(4, 1fr); gap: 8px 16px; }
+    .info-grid-4 .info-item label { font-size: 11px; margin-bottom: 2px; }
+    .info-grid-4 .info-item span { font-size: 14px; }
     .info-item { display: flex; flex-direction: column; gap: 2px; }
     .info-item label { font-size: 11px; font-weight: 600; color: var(--muted); letter-spacing: .04em; }
     .info-item span { font-size: 14px; font-weight: 700; color: var(--ink); }
@@ -525,8 +528,22 @@
       body { background: white; }
       .wizard-content { padding: 16px 0; max-width: 100%; }
       .card { box-shadow: none; border: 1px solid #ddd; page-break-inside: avoid; }
-      .summary-top { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+      /* 이동내역 카드: 행이 많을 경우 페이지 분할 허용 */
+      .trip-card { page-break-inside: auto !important; }
+      .trip-card .card-title { page-break-after: avoid; }
+      .preview-tbl { border-collapse: collapse; width: 100%; }
+      .preview-tbl thead { display: table-header-group; } /* 페이지마다 헤더 반복 */
+      .preview-tbl tfoot { display: table-footer-group; } /* 마지막 페이지에 푸터 */
+      .preview-tbl tbody tr { page-break-inside: avoid; }
+      /* 기본정보 카드: 항상 온전히 유지 */
+      .card:not(.trip-card) { page-break-inside: avoid; }
+      .summary-top {
+        print-color-adjust: exact; -webkit-print-color-adjust: exact;
+        page-break-after: avoid;
+      }
       #step6 { display: block !important; }
+      /* 인쇄 시 info-grid 4열 유지 */
+      .info-grid-4 { grid-template-columns: repeat(4, 1fr) !important; }
     }
   </style>
 </head>
@@ -933,7 +950,7 @@
       </div>
     </div>
 
-    <div class="card">
+    <div class="card trip-card">
       <div class="card-title">
         <div class="card-title-icon">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3182f6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -970,7 +987,7 @@
         </div>
         기본정보 및 유류단가
       </div>
-      <div class="info-grid" id="pvInfo"></div>
+      <div class="info-grid info-grid-4" id="pvInfo"></div>
     </div>
 
     <div class="step-actions" style="margin-bottom:32px;">
@@ -1606,8 +1623,8 @@ function tripRowHTML(t) {
   const fuelCost = calcFuelCost(t)
   const fuelHtml = t.type === 'car'
     ? `<span class="cost-display">${fuelCost !== null ? fuelCost.toLocaleString() : '-'}</span>`
-    : `<input type="text" inputmode="numeric" class="trip-num-input" value="${(t.amount||0).toLocaleString()}" style="width:90px;" oninput="applyComma(this)" onchange="trips.find(x=>x.id===${t.id}).amount=parseFloat(this.value.replace(/,/g,''))||0;recalcAll()">`
-  const tollHtml = `<input type="text" inputmode="numeric" class="trip-num-input" value="${(t.toll||0).toLocaleString()}" style="width:80px;" placeholder="0" oninput="applyComma(this)" onchange="trips.find(x=>x.id===${t.id}).toll=parseFloat(this.value.replace(/,/g,''))||0;recalcAll()">`
+    : `<input type="text" inputmode="numeric" class="trip-num-input" value="${(t.amount||0).toLocaleString()}" style="width:90px;" oninput="applyComma(this);trips.find(x=>x.id===${t.id}).amount=parseFloat(this.value.replace(/,/g,''))||0;recalcAll()">`
+  const tollHtml = `<input type="text" inputmode="numeric" class="trip-num-input" value="${(t.toll||0).toLocaleString()}" style="width:80px;" placeholder="0" oninput="applyComma(this);trips.find(x=>x.id===${t.id}).toll=parseFloat(this.value.replace(/,/g,''))||0;recalcAll()">`
   const total = calcTotal(t)
   const totalHtml = `<span class="total-display">${total !== null ? total.toLocaleString() : '-'}</span>`
   // columns: [0]date [1]from [2]to [3]dist [4]fuel/amount [5]toll [6]total [7]del
