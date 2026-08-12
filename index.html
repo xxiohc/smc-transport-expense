@@ -76,6 +76,7 @@
     .login-card label input[type="password"], .change-pin-card label input[type="password"] {
       letter-spacing: 0.15em;
     }
+    input[type="password"]::placeholder { letter-spacing: 0; text-align: left; }
     .form-error {
       color: var(--warn); font-size: 13px;
       background: var(--warn-bg); padding: 8px 12px; border-radius: 8px;
@@ -457,6 +458,9 @@
 
     /* ── Mobile Responsive ── */
     @media (max-width: 640px) {
+      /* iOS 자동 줌인 방지: 모든 input/select font-size 16px */
+      input, select, textarea { font-size: 16px !important; }
+
       /* 헤더 compact */
       .header-inner { height: 52px; padding: 0 12px; }
       .header-logo { width: 76px; height: 22px; }
@@ -570,7 +574,8 @@
       .step-actions { padding: 12px 16px; gap: 6px; }
       .btn-prev, .btn-next { font-size: 13px; padding: 10px 14px; white-space: nowrap; flex-shrink: 0; }
       .btn-save-draft { font-size: 12px; padding: 8px 10px; white-space: nowrap; flex-shrink: 0; }
-      .btn-sm { white-space: nowrap; flex-shrink: 0; }
+      .btn-sm { white-space: nowrap; flex-shrink: 0; padding: 6px 9px; gap: 3px; font-size: 12px; }
+      #step6 .step-actions > div { gap: 6px; }
 
       /* 정산서 미리보기 테이블: 셀 줄바꿈 방지 (테이블 가로스크롤) */
       .preview-tbl td, .preview-tbl th { white-space: nowrap; }
