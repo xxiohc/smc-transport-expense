@@ -574,6 +574,53 @@
       font-family: inherit; transition: background .15s; white-space: nowrap;
     }
     .draft-discard-btn:hover { background: var(--line); }
+
+    /* ── Toast ── */
+    .app-toast {
+      position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
+      background: var(--ink); color: #fff; padding: 10px 22px;
+      border-radius: 10px; font-size: 14px; font-weight: 600;
+      z-index: 9999; pointer-events: none; white-space: nowrap; display: none;
+      animation: toastIn .2s ease;
+    }
+    .app-toast.warn { background: var(--warn); }
+    .app-toast.ok { background: var(--green); }
+    @keyframes toastIn { from { opacity:0; transform: translateX(-50%) translateY(8px); } to { opacity:1; transform: translateX(-50%) translateY(0); } }
+
+    /* ── 인라인 경고 패널 ── */
+    .inline-warn {
+      background: var(--warn-bg); border: 1px solid #fecaca; border-radius: 10px;
+      padding: 12px 16px; margin: 0 0 12px; font-size: 13px;
+      color: #c0392b; line-height: 1.7;
+    }
+    .inline-warn.orange {
+      background: var(--orange-bg); border-color: #fcd34d; color: #92400e;
+    }
+    .inline-warn ul { margin: 4px 0 0 16px; padding: 0; }
+
+    /* ── 거리 상태 배지 ── */
+    .dist-badge {
+      display: inline-block; font-size: 9px; font-weight: 700; padding: 1px 5px;
+      border-radius: 4px; margin-left: 3px; vertical-align: middle; line-height: 1.5;
+    }
+    .dist-badge.auto { background: #e6f9f0; color: #00a661; }
+    .dist-badge.est  { background: var(--orange-bg); color: #92400e; }
+    .dist-badge.manual { background: var(--primary-light); color: var(--primary); }
+
+    /* ── 직접입력 거리 input ── */
+    .dist-manual-input {
+      width: 64px; padding: 3px 6px; border: 1.5px solid var(--primary);
+      border-radius: 6px; font-size: 13px; font-family: inherit; text-align: right;
+    }
+
+    /* ── 모드 전환 경고 ── */
+    .mode-change-warn {
+      background: var(--orange-bg); border: 1px solid #fcd34d; border-radius: 10px;
+      padding: 14px 16px; margin-top: 14px; font-size: 13px; color: #92400e;
+      display: none;
+    }
+    .mode-change-warn p { font-weight: 600; margin-bottom: 10px; }
+    .mode-change-warn .warn-btns { display: flex; gap: 8px; }
     .btn-save-draft {
       display: flex; align-items: center; gap: 6px;
       padding: 10px 16px; border-radius: 10px;
@@ -713,20 +760,28 @@
       <div class="question-heading">어떤 이동수단을<br>이용하셨나요?</div>
       <div class="question-desc">이동수단에 따라 계산 방식이 달라집니다</div>
       <div class="option-cards">
-        <button class="option-card" id="optCar" onclick="selectMode('car')">
+        <button class="option-card" id="optCar" onclick="selectModeRequest('car')">
           <div class="option-card-content">
             <div class="option-card-title">자차 이용</div>
             <div class="option-card-desc">차량 연비와 유류단가로 교통비를 자동 계산합니다</div>
           </div>
           <svg class="option-card-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
         </button>
-        <button class="option-card" id="optTaxi" onclick="selectMode('taxi')">
+        <button class="option-card" id="optTaxi" onclick="selectModeRequest('taxi')">
           <div class="option-card-content">
             <div class="option-card-title">택시 이용</div>
             <div class="option-card-desc">실제 지출 금액을 직접 입력합니다</div>
           </div>
           <svg class="option-card-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
         </button>
+      </div>
+      <!-- 모드 전환 경고 -->
+      <div id="modeChangeWarn" class="mode-change-warn">
+        <p id="modeChangeWarnMsg">이동수단을 변경하면 기존 이동내역이 삭제됩니다. 계속하시겠습니까?</p>
+        <div class="warn-btns">
+          <button class="btn-sm warn" id="modeChangeConfirmBtn" onclick="confirmModeChange()">변경 (삭제)</button>
+          <button class="btn-sm" onclick="cancelModeChange()">취소</button>
+        </div>
       </div>
     </div>
   </div>
@@ -963,6 +1018,7 @@
         구간 추가
       </button>
     </div>
+    <div id="step4Err" class="inline-warn" style="display:none;margin:0 20px 0;"></div>
     <div class="step-actions">
       <button class="btn-prev" id="btnStep4Prev" onclick="step4Prev()">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
@@ -1056,6 +1112,8 @@
         </div>
       </div>
     </div>
+
+    <div id="pvWarnList" class="inline-warn orange" style="display:none;margin:16px 20px 0;"></div>
 
     <div class="card trip-card">
       <div class="card-title">
@@ -1235,8 +1293,11 @@
   </div>
 </div>
 
+<!-- TOAST -->
+<div id="appToast" class="app-toast"></div>
+
 <!-- SEARCH MODAL -->
-<div id="modalSearch" class="modal-bg hidden">
+<div id="modalSearch" class="modal-bg hidden" role="dialog" aria-modal="true" aria-labelledby="searchModalTitle">
   <div class="modal-box">
     <div class="modal-title" id="searchModalTitle">장소 검색</div>
     <div class="search-row">
@@ -1249,7 +1310,7 @@
       <div class="place-placeholder">검색어를 입력하세요</div>
     </div>
     <div style="display:flex;justify-content:flex-end;margin-top:12px;">
-      <button class="btn-sm" onclick="closeSearch()">닫기</button>
+      <button class="btn-sm" onclick="closeSearch()" aria-label="장소 검색 닫기">닫기</button>
     </div>
   </div>
 </div>
@@ -1285,6 +1346,45 @@ const STEP_NAMES_TAXI = ['이동수단', '이동내역', '정산서']
 
 function escapeHtml(v) {
   return String(v ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;')
+}
+
+function showToast(msg, type = 'info') {
+  const t = document.getElementById('appToast')
+  t.textContent = msg
+  t.className = 'app-toast' + (type !== 'info' ? ' ' + type : '')
+  t.style.display = 'block'
+  clearTimeout(t._tid)
+  t._tid = setTimeout(() => { t.style.display = 'none' }, 3000)
+}
+
+function showStep4Err(msg) {
+  const el = document.getElementById('step4Err')
+  el.innerHTML = msg ? msg.split('\n').map(escapeHtml).join('<br>') : ''
+  el.style.display = msg ? 'block' : 'none'
+  if (msg) el.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+}
+
+let _pendingMode = null
+function selectModeRequest(mode) {
+  if (mode === tripMode) return
+  if (trips.length > 0) {
+    _pendingMode = mode
+    const w = document.getElementById('modeChangeWarn')
+    document.getElementById('modeChangeWarnMsg').textContent =
+      `이동수단을 변경하면 기존 이동내역 ${trips.length}건이 삭제됩니다. 계속하시겠습니까?`
+    w.style.display = 'block'
+    return
+  }
+  selectMode(mode)
+}
+function confirmModeChange() {
+  document.getElementById('modeChangeWarn').style.display = 'none'
+  trips = []; tripIdSeq = 0
+  if (_pendingMode) { selectMode(_pendingMode); _pendingMode = null }
+}
+function cancelModeChange() {
+  document.getElementById('modeChangeWarn').style.display = 'none'
+  _pendingMode = null
 }
 
 /* ══════════════════════════════════════════
@@ -1584,17 +1684,28 @@ function step4Prev() {
 }
 
 function step4Next() {
+  showStep4Err('')
   if (tripMode === 'taxi') {
     const name = document.getElementById('f_name2').value.trim()
     const date = document.getElementById('f_date2').value
-    if (!name) { alert('신청자 이름을 입력하세요.'); return }
-    if (!date) { alert('작성일을 선택하세요.'); return }
+    if (!name) { showStep4Err('신청자 이름을 입력하세요.'); return }
+    if (!date) { showStep4Err('작성일을 선택하세요.'); return }
     document.getElementById('f_name') && (document.getElementById('f_name').value = name)
     document.getElementById('f_date') && (document.getElementById('f_date').value = date)
   }
-  if (!trips.length) { alert('구간을 하나 이상 추가해 주세요.'); return }
-  const incomplete = trips.filter(t => t.type === 'car').some(t => !t.fromName || !t.toName)
-  if (incomplete) { alert('자차 구간의 출발지·도착지를 모두 입력해 주세요.'); return }
+  if (!trips.length) { showStep4Err('구간을 하나 이상 추가해 주세요.'); return }
+
+  const errs = []
+  trips.forEach((t, i) => {
+    const n = i + 1
+    if (!t.fromName) errs.push(`${n}번째 구간: 출발지를 선택해 주세요.`)
+    if (!t.toName)   errs.push(`${n}번째 구간: 도착지를 선택해 주세요.`)
+    if (!t.date)     errs.push(`${n}번째 구간: 날짜를 입력해 주세요.`)
+    if (t.type === 'taxi' && !(parseFloat(t.amount) > 0))
+      errs.push(`${n}번째 구간: 택시 금액을 입력해 주세요.`)
+  })
+  if (errs.length) { showStep4Err(errs.join('\n')); return }
+
   if (tripMode === 'taxi') { gotoStep(6); return }
   gotoStep(5)
 }
@@ -1762,9 +1873,14 @@ function renderTrips() {
 }
 
 function tripRowHTML(t) {
+  const distBadge = t.distMode === 'auto' ? `<span class="dist-badge auto">자동</span>`
+    : t.distMode === 'est' ? `<span class="dist-badge est">추정</span>`
+    : t.distMode === 'manual' ? `<span class="dist-badge manual">직접</span>` : ''
   const distHtml = t.dist === null
     ? `<span class="dist-loading">계산중</span>`
-    : t.dist !== undefined ? `<span class="dist-display">${t.dist.toFixed(1)}</span>` : `<span style="color:var(--muted)">-</span>`
+    : t.dist !== undefined
+      ? `<span class="dist-display">${t.dist.toFixed(1)}</span>${distBadge}${t.distMode === 'est' ? `<br><input type="number" class="dist-manual-input" placeholder="직접입력" step="0.1" min="0.1" onchange="setManualDist(${t.id},this.value)" title="직접 거리 입력(km)">` : ''}`
+      : `<input type="number" class="dist-manual-input" placeholder="km 입력" step="0.1" min="0.1" onchange="setManualDist(${t.id},this.value)" title="직접 거리 입력(km)">`
   const total = calcTotal(t)
   const totalHtml = `<span class="total-display">${total !== null ? total.toLocaleString() : '-'}</span>`
   const dateTd = `<td data-label="월/일"><input type="text" class="trip-num-input" value="${escapeHtml(t.date||'')}" placeholder="MM/DD" style="width:60px;text-align:center;" onchange="trips.find(x=>x.id===${t.id}).date=this.value"></td>`
@@ -1841,6 +1957,9 @@ function openSearch(tripId, field) {
   setTimeout(() => document.getElementById('searchInput').focus(), 100)
 }
 function closeSearch() { document.getElementById('modalSearch').classList.add('hidden') }
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && !document.getElementById('modalSearch').classList.contains('hidden')) closeSearch()
+})
 
 async function doSearch() {
   const q = document.getElementById('searchInput').value.trim()
@@ -1876,17 +1995,26 @@ function pickResult(i) {
 async function calcDist(tripId) {
   const t = trips.find(x => x.id === tripId)
   if (!t || !t.fromX || !t.toX) return
-  t.dist = null; renderTrips()
+  t.dist = null; t.distMode = null; renderTrips()
   try {
     const res = await fetch(
       `https://apis-navi.kakaomobility.com/v1/directions?origin=${t.fromX},${t.fromY}&destination=${t.toX},${t.toY}`,
       { headers: { Authorization: `KakaoAK ${KAKAO_KEY}` } })
     const data = await res.json()
     const section = data.routes?.[0]?.sections?.[0]
-    if (section) { t.dist = section.distance / 1000; renderTrips(); return }
+    if (section) { t.dist = section.distance / 1000; t.distMode = 'auto'; renderTrips(); return }
   } catch (e) {}
   t.dist = haversine(parseFloat(t.fromY), parseFloat(t.fromX), parseFloat(t.toY), parseFloat(t.toX)) * 1.3
+  t.distMode = 'est'
   renderTrips()
+}
+
+function setManualDist(tripId, val) {
+  const t = trips.find(x => x.id === tripId)
+  if (!t) return
+  const v = parseFloat(val)
+  if (!isNaN(v) && v > 0) { t.dist = v; t.distMode = 'manual' }
+  recalcAll()
 }
 
 function haversine(lat1, lon1, lat2, lon2) {
@@ -1928,6 +2056,24 @@ function buildPreview() {
   const finalTotal = rowGrandTotal + (tripMode === 'car' ? parkingAmt : 0)
 
   document.getElementById('pvSummaryTitle').textContent = tripMode === 'taxi' ? '교통비 정산신청 (택시)' : '교통비 정산신청 (자차)'
+
+  // 검증 요약
+  const warns = []
+  trips.forEach((t, i) => {
+    const n = i + 1
+    if (!t.date) warns.push(`${n}번째 구간: 날짜 미입력`)
+    if (!t.fromName || !t.toName) warns.push(`${n}번째 구간: 출발지·도착지 미입력`)
+    if (t.type === 'taxi' && !(parseFloat(t.amount) > 0)) warns.push(`${n}번째 구간: 금액 0원`)
+    if (t.distMode === 'est') warns.push(`${n}번째 구간: 거리 추정값 (직접 확인 권장)`)
+    if (t.dist === null || t.dist === undefined) warns.push(`${n}번째 구간: 거리 미계산`)
+  })
+  const warnEl = document.getElementById('pvWarnList')
+  if (warns.length) {
+    warnEl.innerHTML = `<strong>⚠ 확인이 필요한 항목이 있습니다</strong><ul>${warns.map(w=>`<li>${escapeHtml(w)}</li>`).join('')}</ul>`
+    warnEl.style.display = 'block'
+  } else {
+    warnEl.style.display = 'none'
+  }
   document.getElementById('pvName').textContent = name
   document.getElementById('pvDate').textContent = date + ' 작성'
   document.getElementById('pvTrips').textContent = trips.length
