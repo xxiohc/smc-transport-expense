@@ -133,9 +133,21 @@
       box-shadow: 0 1px 4px rgba(0,0,0,.04);
       position: sticky; top: 80px; z-index: 150;
     }
+    .wizard-bar-inner { position: relative; }
+    .back-btn {
+      position: absolute; top: 14px; left: 14px;
+      width: 36px; height: 36px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      border: none; background: none; cursor: pointer;
+      color: var(--ink2); transition: background .15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .back-btn:hover { background: var(--line); }
+    .back-btn.hidden { visibility: hidden; pointer-events: none; }
     .step-trail {
       display: flex; align-items: center; justify-content: center; gap: 4px;
-      padding: 16px 28px 8px; overflow-x: auto; scrollbar-width: none;
+      padding: 48px 28px 8px; overflow-x: auto; scrollbar-width: none;
+      position: relative;
     }
     .step-trail::-webkit-scrollbar { display: none; }
     .trail-item {
@@ -166,6 +178,11 @@
     .trail-current-info {
       padding: 2px 28px 12px; font-size: 12px; font-weight: 700;
       color: var(--primary); letter-spacing: -0.02em;
+    }
+    /* 헤더 우측 단계 표시 */
+    .header-progress-text {
+      font-size: 13px; color: var(--muted); font-weight: 500;
+      letter-spacing: 0.01em; white-space: nowrap;
     }
 
     /* ── Main Layout ── */
@@ -412,6 +429,94 @@
     .hidden { display: none !important; }
     .divider { height: 1px; background: var(--line2); margin: 20px 0; }
 
+    /* ── Mobile Responsive ── */
+    @media (max-width: 640px) {
+      /* 헤더 compact */
+      .header-inner { height: 52px; padding: 0 12px; }
+      .header-logo { width: 76px; height: 22px; }
+      .header-sub { display: none; }
+      .header-title { font-size: 13px; white-space: nowrap; }
+      .header-brand { gap: 8px; min-width: 0; overflow: hidden; }
+      .header-progress-text { display: none; }
+      .whoami { display: none; }
+      .icon-btn:not(.warn) { display: none; }
+      .wizard-bar { top: 52px; }
+
+      /* 도트 트레일 숨김, current-info가 한 줄 내비 바 역할 */
+      .step-trail { display: none; }
+      .trail-current-info {
+        display: flex; align-items: center;
+        height: 48px; padding: 0 16px 0 56px;
+        font-size: 13px; font-weight: 600; color: var(--ink);
+        border-bottom: 1px solid var(--line2); background: var(--white);
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      }
+      /* 모바일 백버튼: trail-current-info 내 절대 위치 */
+      .back-btn {
+        position: absolute; top: 4px; left: 8px;
+        width: 40px; height: 40px;
+      }
+
+      /* 폼 레이아웃: 1열 */
+      .form-row, .form-row.three { grid-template-columns: 1fr; }
+      .wizard-content { padding: 20px 16px; }
+
+      /* 이동내역 테이블 → 카드형 */
+      .trip-tbl { min-width: unset !important; }
+      .trip-tbl thead { display: none; }
+      .trip-tbl tbody tr {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 6px; padding: 12px; margin-bottom: 8px;
+        background: var(--white); border-radius: 12px;
+        border: 1px solid var(--line2); position: relative;
+      }
+      .trip-tbl td { border: none; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+      .trip-tbl td::before {
+        content: attr(data-label);
+        font-size: 10px; font-weight: 700; color: var(--muted);
+        text-transform: uppercase; letter-spacing: 0.03em;
+      }
+      /* 날짜: 전체 너비, 삭제버튼과 나란히 */
+      .trip-tbl td:nth-child(1) { grid-column: 1; }
+      .trip-tbl td:nth-child(8) { grid-column: 2; align-items: flex-end; justify-content: flex-end; flex-direction: row; }
+      /* 출발지 / 도착지: 전체 너비 */
+      .trip-tbl td:nth-child(2),
+      .trip-tbl td:nth-child(3) { grid-column: 1 / -1; }
+      /* 거리 / 교통비 / 하이패스 / 합계: 2열 */
+      .trip-tbl td:nth-child(4) { grid-column: 1; }
+      .trip-tbl td:nth-child(5) { grid-column: 2; }
+      .trip-tbl td:nth-child(6) { grid-column: 1; }
+      .trip-tbl td:nth-child(7) { grid-column: 2; }
+
+      .trip-place-btn { width: 100%; text-align: left; }
+      .trip-num-input { width: 100% !important; }
+
+      /* 연료 표시 박스 */
+      .fuel-display { flex-direction: column; gap: 12px; }
+      .fuel-per-km { border-left: none; border-top: 1px solid var(--line2); padding-left: 0; padding-top: 12px; }
+
+      /* 정산서 요약 그리드 */
+      .summary-grid { grid-template-columns: 1fr !important; }
+
+      /* 검색 모달: 하단 시트 */
+      #modalSearch { align-items: flex-end; }
+      .search-modal {
+        width: 100%; max-width: 100%; border-radius: 20px 20px 0 0;
+        padding: 20px 16px; max-height: 85vh;
+      }
+      .search-row input { font-size: 16px; }
+
+      /* 스텝 액션 버튼 */
+      .step-actions { padding: 12px 16px; gap: 8px; }
+      .btn-prev, .btn-next { font-size: 14px; padding: 12px 16px; }
+
+      /* 카드 패딩 */
+      .card { padding: 20px 16px; }
+      .question-card { padding: 28px 16px 24px; }
+      .question-heading { font-size: 22px; }
+    }
+
     @media print {
       #loginScreen, .header, .wizard-bar, .step-actions, .add-row-btn,
       #adminPanel, #accountPanel, .del-btn, .trip-place-btn,
@@ -475,6 +580,7 @@
         </div>
       </div>
       <div class="header-actions">
+        <span class="header-progress-text" id="headerProgressText"></span>
         <span class="whoami" id="headerUserName"></span>
         <button class="icon-btn" onclick="openAccount()">계정관리</button>
         <button class="icon-btn" id="btnAdmin" onclick="openAdmin()" style="display:none">관리자</button>
@@ -491,8 +597,13 @@
 
   <!-- Step Trail -->
   <div class="wizard-bar">
-    <div class="step-trail" id="stepTrail"></div>
-    <div class="trail-current-info" id="trailInfo"></div>
+    <div class="wizard-bar-inner">
+      <button class="back-btn hidden" id="backBtn" onclick="prevStep()" aria-label="뒤로">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <div class="step-trail" id="stepTrail"></div>
+      <div class="trail-current-info" id="trailInfo"></div>
+    </div>
   </div>
 
   <!-- ── STEP 1: 이동수단 선택 ── -->
@@ -660,9 +771,9 @@
         <div class="fuel-main">
           <label>현재 유류단가 (원/L)</label>
           <div class="fuel-val">
-            <input type="number" id="f_fuelPrice" value="1700" min="0" step="10"
+            <input type="text" inputmode="numeric" id="f_fuelPrice" value="1,700"
               style="width:120px;font-size:28px;font-weight:900;border:none;border-bottom:2px solid var(--primary);border-radius:0;padding:0;background:transparent;color:var(--ink);font-family:inherit;outline:none;"
-              oninput="updateFuelDisplay()">
+              oninput="applyComma(this);updateFuelDisplay()">
             <span>원/L</span>
           </div>
           <div class="opinet-status" id="fuelSource">수동 입력</div>
@@ -779,9 +890,9 @@
     <div id="tollInputGuide" class="card hidden" style="padding:24px 28px;">
       <div style="font-size:14px;font-weight:700;color:var(--ink);margin-bottom:6px;">주차비 총액</div>
       <div style="font-size:13px;color:var(--muted);margin-bottom:14px;">주차 영수증 등을 확인하여 총 주차비를 입력하세요</div>
-      <input type="number" id="tollAmountInput" class="trip-num-input" min="0" step="100" value="0"
+      <input type="text" inputmode="numeric" id="tollAmountInput" class="trip-num-input" value="0"
         style="width:160px;font-size:15px;padding:10px 12px;text-align:right;"
-        oninput="document.getElementById('btnToReport').style.display=''">
+        oninput="applyComma(this);document.getElementById('btnToReport').style.display=''">
       <span style="font-size:14px;color:var(--muted);margin-left:6px;">원</span>
     </div>
     <div class="step-actions">
@@ -1016,6 +1127,20 @@
 /* ══════════════════════════════════════════
    CONSTANTS
 ══════════════════════════════════════════ */
+/* ── 숫자 콤마 포맷팅 ── */
+function applyComma(el) {
+  const raw = el.value.replace(/[^0-9]/g, '')
+  el.value = raw === '' ? '' : parseInt(raw, 10).toLocaleString()
+}
+function parseNum(el) {
+  return parseFloat(String(el ? el.value : 0).replace(/,/g, '')) || 0
+}
+function setNumVal(el, v) {
+  if (!el) return
+  const n = Math.round(v)
+  el.value = isNaN(n) ? '' : n.toLocaleString()
+}
+
 const KAKAO_KEY = '995bceb54093798d160d753693a9c98e'
 const OPINET_KEY = 'F260811056'
 const OPINET_CODES = { '휘발유': 'B027', '경유': 'D047', 'LPG': 'K015' }
@@ -1202,7 +1327,20 @@ function updateStepUI() {
   trail.innerHTML = html
   const total = ids.length
   const cur = pos + 1
-  document.getElementById('trailInfo').textContent = `${cur}/${total}단계 · ${names[pos]}`
+  const label = `${cur}/${total}단계 · ${names[pos]}`
+  document.getElementById('trailInfo').textContent = label
+  document.getElementById('headerProgressText').textContent = `${cur} / ${total} 단계`
+  const backBtn = document.getElementById('backBtn')
+  if (cur === 1) {
+    backBtn.classList.add('hidden')
+  } else {
+    backBtn.classList.remove('hidden')
+  }
+}
+
+function prevStep() {
+  const { ids, pos } = trailPosition()
+  if (pos > 0) gotoStep(ids[pos - 1])
 }
 
 function trailClick(stepId) {
@@ -1327,7 +1465,7 @@ function setHasToll(val) {
 }
 
 function step5Next() {
-  totalTollAmount = hasToll === true ? (parseFloat(document.getElementById('tollAmountInput')?.value) || 0) : 0
+  totalTollAmount = hasToll === true ? parseNum(document.getElementById('tollAmountInput')) : 0
   gotoStep(6)
 }
 
@@ -1407,7 +1545,7 @@ async function fetchOpinet() {
       const item = items.find(o => o.PRODCD === code)
       if (!item) continue
       const price = parseFloat(item.PRICE)
-      document.getElementById('f_fuelPrice').value = Math.round(price)
+      setNumVal(document.getElementById('f_fuelPrice'), price)
       updateFuelDisplay()
       status.textContent = `조회 성공 (${new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'})})`
       status.className = 'opinet-status ok'
@@ -1419,7 +1557,7 @@ async function fetchOpinet() {
 }
 
 function updateFuelDisplay() {
-  const price = parseFloat(document.getElementById('f_fuelPrice').value) || 0
+  const price = parseNum(document.getElementById('f_fuelPrice'))
   const eff = getEfficiency()
   const perKm = eff > 0 ? Math.round(price / eff) : 0
   document.getElementById('perKmDisplay').textContent = eff > 0 ? perKm.toLocaleString() : '-'
@@ -1467,19 +1605,19 @@ function tripRowHTML(t) {
   const fuelCost = calcFuelCost(t)
   const fuelHtml = t.type === 'car'
     ? `<span class="cost-display">${fuelCost !== null ? fuelCost.toLocaleString() : '-'}</span>`
-    : `<input type="number" class="trip-num-input" value="${t.amount || 0}" min="0" step="100" style="width:90px;" onchange="trips.find(x=>x.id===${t.id}).amount=+this.value;recalcAll()">`
-  const tollHtml = `<input type="number" class="trip-num-input" value="${t.toll || 0}" min="0" step="100" style="width:80px;" placeholder="0" onchange="trips.find(x=>x.id===${t.id}).toll=+this.value;recalcAll()">`
+    : `<input type="text" inputmode="numeric" class="trip-num-input" value="${(t.amount||0).toLocaleString()}" style="width:90px;" oninput="applyComma(this)" onchange="trips.find(x=>x.id===${t.id}).amount=parseFloat(this.value.replace(/,/g,''))||0;recalcAll()">`
+  const tollHtml = `<input type="text" inputmode="numeric" class="trip-num-input" value="${(t.toll||0).toLocaleString()}" style="width:80px;" placeholder="0" oninput="applyComma(this)" onchange="trips.find(x=>x.id===${t.id}).toll=parseFloat(this.value.replace(/,/g,''))||0;recalcAll()">`
   const total = calcTotal(t)
   const totalHtml = `<span class="total-display">${total !== null ? total.toLocaleString() : '-'}</span>`
   // columns: [0]date [1]from [2]to [3]dist [4]fuel/amount [5]toll [6]total [7]del
   return `<tr>
-    <td><input type="text" class="trip-num-input" value="${t.date||''}" placeholder="MM/DD" style="width:60px;text-align:center;" onchange="trips.find(x=>x.id===${t.id}).date=this.value"></td>
-    <td><button class="trip-place-btn ${t.fromName?'set':''}" onclick="openSearch(${t.id},'from')">${t.fromName||'출발지 선택'}</button></td>
-    <td><button class="trip-place-btn ${t.toName?'set':''}" onclick="openSearch(${t.id},'to')">${t.toName||'도착지 선택'}</button></td>
-    <td>${distHtml}</td>
-    <td>${fuelHtml}</td>
-    <td>${tollHtml}</td>
-    <td>${totalHtml}</td>
+    <td data-label="월/일"><input type="text" class="trip-num-input" value="${t.date||''}" placeholder="MM/DD" style="width:60px;text-align:center;" onchange="trips.find(x=>x.id===${t.id}).date=this.value"></td>
+    <td data-label="출발지"><button class="trip-place-btn ${t.fromName?'set':''}" onclick="openSearch(${t.id},'from')">${t.fromName||'출발지 선택'}</button></td>
+    <td data-label="도착지"><button class="trip-place-btn ${t.toName?'set':''}" onclick="openSearch(${t.id},'to')">${t.toName||'도착지 선택'}</button></td>
+    <td data-label="거리(km)">${distHtml}</td>
+    <td data-label="교통비">${fuelHtml}</td>
+    <td data-label="하이패스">${tollHtml}</td>
+    <td data-label="합계">${totalHtml}</td>
     <td><button class="del-btn" onclick="removeTrip(${t.id})">×</button></td>
   </tr>`
 }
@@ -1487,7 +1625,7 @@ function tripRowHTML(t) {
 
 function calcFuelCost(t) {
   if (t.type !== 'car' || t.dist === null) return null
-  const price = parseFloat(document.getElementById('f_fuelPrice').value) || 0
+  const price = parseNum(document.getElementById('f_fuelPrice'))
   const eff = getEfficiency()
   if (eff === 0) return null
   return Math.round(t.dist * price / eff / 10) * 10
@@ -1609,7 +1747,7 @@ function buildPreview() {
   const fuel = document.getElementById('f_fuel')?.value || '-'
   const disp = document.getElementById('f_disp')?.value || '-'
   const eff = getEfficiency()
-  const fuelPrice = parseFloat(document.getElementById('f_fuelPrice')?.value) || 0
+  const fuelPrice = parseNum(document.getElementById('f_fuelPrice'))
 
   let totalDist = 0, totalFuelAmt = 0, totalRowToll = 0
   trips.forEach(t => {
@@ -1700,7 +1838,7 @@ function downloadExcel() {
   const plate = document.getElementById('f_plate')?.value.trim() || ''
   const fuel = document.getElementById('f_fuel')?.value || ''
   const eff = getEfficiency()
-  const fuelPrice = parseFloat(document.getElementById('f_fuelPrice')?.value) || 0
+  const fuelPrice = parseNum(document.getElementById('f_fuelPrice'))
 
   const wb = XLSX.utils.book_new(); const ws = {}
   const hdrStyle = { font:{bold:true}, fill:{fgColor:{rgb:'EBF3FF'}}, alignment:{horizontal:'center'} }
