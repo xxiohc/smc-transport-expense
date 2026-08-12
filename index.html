@@ -46,36 +46,45 @@
     }
 
     /* ── Login / Change PIN ── */
-    #loginScreen, #changePinScreen {
+    #loginScreen, #changePinScreen, #carRegScreen {
       position: fixed; inset: 0; background: var(--bg);
       display: flex; align-items: center; justify-content: center;
       padding: 24px; z-index: 1000;
     }
-    #changePinScreen { display: none; }
-    .login-card, .change-pin-card {
+    #changePinScreen, #carRegScreen { display: none; }
+    .login-card, .change-pin-card, .car-reg-card {
       background: var(--white); border-radius: 16px; padding: 32px;
-      width: 100%; max-width: 360px;
+      width: 100%; max-width: 400px;
       box-shadow: 0 4px 24px rgba(0,0,0,.06);
       display: flex; flex-direction: column; gap: 14px;
     }
-    .login-card h2, .change-pin-card h2 { font-size: 20px; font-weight: 700; letter-spacing: -0.02em; }
-    .login-desc, .cp-desc {
+    .login-card h2, .change-pin-card h2, .car-reg-card h2 { font-size: 20px; font-weight: 700; letter-spacing: -0.02em; }
+    .login-desc, .cp-desc, .cr-desc {
       margin: -8px 0 4px; font-size: 13px; color: var(--muted); line-height: 1.6;
     }
     .cp-desc strong { color: var(--warn); font-weight: 700; }
-    .login-card label, .change-pin-card label {
+    .login-card label, .change-pin-card label, .car-reg-card label {
       display: flex; flex-direction: column; gap: 6px;
       font-size: 13px; color: var(--muted); font-weight: 600;
     }
-    .login-card label input, .change-pin-card label input {
+    .login-card label input, .change-pin-card label input, .car-reg-card label input,
+    .car-reg-card label select {
       border: 1px solid var(--line2); border-radius: 10px;
       padding: 12px; font-size: 15px; color: var(--ink);
-      font-family: inherit; outline: none; transition: border-color .15s;
+      font-family: inherit; outline: none; transition: border-color .15s; background: var(--white);
     }
-    .login-card label input:focus, .change-pin-card label input:focus { border-color: var(--primary); }
+    .login-card label input:focus, .change-pin-card label input:focus,
+    .car-reg-card label input:focus, .car-reg-card label select:focus { border-color: var(--primary); }
     .login-card label input[type="password"], .change-pin-card label input[type="password"] {
       letter-spacing: 0.15em;
     }
+    .car-reg-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .cr-skip { background: none; border: none; cursor: pointer; font-family: inherit;
+      font-size: 13px; color: var(--muted2); text-align: center; padding: 4px;
+      transition: color .15s; }
+    .cr-skip:hover { color: var(--ink); }
+    .car-reg-icon { display: flex; justify-content: center; margin-bottom: 4px; }
+    .car-reg-icon svg { color: var(--primary); }
     input[type="password"]::placeholder { letter-spacing: 0; text-align: left; }
     .form-error {
       color: var(--warn); font-size: 13px;
@@ -736,6 +745,42 @@
     </label>
     <div class="form-error" id="cpErr" style="display:none"></div>
     <button class="btn-cp" onclick="doChangePin()">PIN 변경 후 로그인</button>
+  </div>
+</div>
+
+<!-- CAR REGISTRATION SCREEN -->
+<div id="carRegScreen">
+  <div class="car-reg-card">
+    <div class="car-reg-icon">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
+      </svg>
+    </div>
+    <h2>차량 정보 등록</h2>
+    <p class="cr-desc">교통비 자동 계산을 위해 차량 정보를 등록해 주세요.<br>나중에 계정관리에서도 변경할 수 있습니다.</p>
+    <label>차량번호
+      <input type="text" id="cr_plate" placeholder="예: 123가4567" autocomplete="off"
+        onkeydown="if(event.key==='Enter')document.getElementById('cr_fuel').focus()">
+    </label>
+    <div class="car-reg-row">
+      <label>연료 구분
+        <select id="cr_fuel" onchange="crFuelChange()">
+          <option value="휘발유">휘발유</option>
+          <option value="경유">경유</option>
+          <option value="LPG">LPG</option>
+        </select>
+      </label>
+      <label id="crDispLabel">배기량
+        <select id="cr_disp">
+          <option value="1000cc 미만">1000cc 미만</option>
+          <option value="1500cc 이하">1500cc 이하</option>
+          <option value="1500cc 초과">1500cc 초과</option>
+        </select>
+      </label>
+    </div>
+    <div class="form-error" id="crErr" style="display:none"></div>
+    <button class="btn-cp" onclick="doCarReg()">차량 등록 후 시작하기</button>
+    <button class="cr-skip" onclick="doSkipCarReg()">나중에 등록하기</button>
   </div>
 </div>
 
@@ -1488,6 +1533,44 @@ function doLogin() {
     return
   }
   localStorage.setItem(KEY_SESSION, JSON.stringify({ userId: user.id, loginTime: Date.now() }))
+  if (!user.car?.plate) {
+    document.getElementById('loginScreen').style.display = 'none'
+    showCarReg()
+  } else {
+    startApp()
+  }
+}
+
+function showCarReg() {
+  document.getElementById('carRegScreen').style.display = 'flex'
+  document.getElementById('cr_plate').value = ''
+  document.getElementById('cr_fuel').value = '휘발유'
+  document.getElementById('cr_disp').value = '1500cc 이하'
+  crFuelChange()
+  document.getElementById('crErr').style.display = 'none'
+  setTimeout(() => document.getElementById('cr_plate').focus(), 100)
+}
+
+function crFuelChange() {
+  const f = document.getElementById('cr_fuel').value
+  document.getElementById('crDispLabel').style.display = (f === 'LPG' || f === '경유') ? 'none' : ''
+}
+
+function doCarReg() {
+  const plate = document.getElementById('cr_plate').value.trim()
+  const fuel = document.getElementById('cr_fuel').value
+  const disp = document.getElementById('cr_disp').value
+  const err = document.getElementById('crErr')
+  if (!plate) { showErr(err, '차량번호를 입력해 주세요.'); return }
+  updateUser(currentUser.id, { car: { plate, fuel, displacement: disp } })
+  currentUser = getUser(currentUser.id)
+  document.getElementById('carRegScreen').style.display = 'none'
+  startApp()
+  showToast('차량 정보가 등록됐습니다.')
+}
+
+function doSkipCarReg() {
+  document.getElementById('carRegScreen').style.display = 'none'
   startApp()
 }
 
@@ -1503,18 +1586,10 @@ function doChangePin() {
   currentUser = getUser(currentUser.id)
   document.getElementById('changePinScreen').style.display = 'none'
   localStorage.setItem(KEY_SESSION, JSON.stringify({ userId: currentUser.id, loginTime: Date.now() }))
-  const isFirstUser = !currentUser.car?.plate
-  startApp()
-  if (isFirstUser) {
-    setTimeout(() => {
-      openAccount()
-      showToast('환영합니다! 차량 정보를 먼저 등록해 주세요.')
-      setTimeout(() => {
-        const pl = document.getElementById('ac_plate')
-        pl.scrollIntoView({ behavior: 'smooth', block: 'center' })
-        pl.focus()
-      }, 250)
-    }, 350)
+  if (!currentUser.car?.plate) {
+    showCarReg()
+  } else {
+    startApp()
   }
 }
 
