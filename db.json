@@ -441,19 +441,6 @@
         "displacement": "1500cc 이하"
       },
       "created_at": "2026-08-13T00:00:00.000Z"
-    },
-    {
-      "id": "14de2c1a829fb7e0",
-      "name": "박수현",
-      "dept": "총무파트",
-      "role": "user",
-      "pin_hash": "661494d4755ef9b6e959cfe40e5dacaf5de6896515f02d506ac3397e7d974241",
-      "car": {
-        "plate": "경남 70사 5658",
-        "fuel": "경유",
-        "displacement": "1500cc 이하"
-      },
-      "created_at": "2026-08-13T00:00:00.000Z"
     }
   ]
 }
