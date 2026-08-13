@@ -308,16 +308,25 @@
     /* ── Fuel Card ── */
     .fuel-display {
       background: var(--orange-bg); border: 1.5px solid #fde68a;
-      border-radius: 12px; padding: 16px 20px;
-      display: flex; align-items: center; gap: 20px; margin-top: 16px;
+      border-radius: 14px; padding: 20px 24px;
+      display: grid; grid-template-columns: 1fr 1px 1fr;
+      align-items: center; gap: 0; margin-top: 16px;
     }
-    .fuel-main { flex: 1; }
-    .fuel-main label { font-size: 12px; font-weight: 600; color: #b45309; }
-    .fuel-main .fuel-val { font-size: 28px; font-weight: 900; color: var(--ink); letter-spacing: -.03em; }
-    .fuel-main .fuel-val span { font-size: 14px; font-weight: 600; color: var(--muted); }
-    .fuel-per-km { flex: 1; text-align: right; }
-    .fuel-per-km label { font-size: 12px; font-weight: 600; color: var(--muted); }
-    .fuel-per-km .per-val { font-size: 20px; font-weight: 800; color: var(--ink2); }
+    .fuel-main { padding-right: 20px; }
+    .fuel-main label {
+      font-size: 11px; font-weight: 700; color: #92400e;
+      letter-spacing: .05em; text-transform: uppercase; display: block; margin-bottom: 10px;
+    }
+    .fuel-val { display: flex; align-items: baseline; gap: 8px; }
+    .fuel-val span { font-size: 20px; font-weight: 700; color: #92400e; }
+    .fuel-sep { background: #fde68a; align-self: stretch; }
+    .fuel-per-km { padding-left: 20px; text-align: right; }
+    .fuel-per-km label {
+      font-size: 11px; font-weight: 700; color: var(--muted);
+      letter-spacing: .05em; text-transform: uppercase; display: block; margin-bottom: 10px;
+    }
+    .fuel-per-km .per-val { font-size: 38px; font-weight: 900; color: var(--primary); letter-spacing: -.03em; }
+    .fuel-per-km .per-unit { font-size: 16px; font-weight: 600; color: var(--muted); margin-left: 4px; }
     .opinet-status { font-size: 12px; color: var(--muted); margin-top: 4px; }
     .opinet-status.ok { color: var(--green); }
     .opinet-status.fail { color: var(--warn); }
@@ -459,6 +468,12 @@
     .role-badge { display: inline-block; padding: 3px 9px; border-radius: 20px; font-size: 11px; font-weight: 700; }
     .role-badge.admin { background: #fef3c7; color: #b45309; }
     .role-badge.user { background: var(--primary-light); color: var(--primary); }
+    .dept-header-row td {
+      background: var(--line); padding: 7px 14px !important;
+      font-size: 11px; font-weight: 700; color: var(--muted);
+      letter-spacing: .06em; text-transform: uppercase; border-top: 2px solid var(--line2);
+    }
+    .dept-header-row:first-child td { border-top: none; }
 
 
     /* ── Utils ── */
@@ -534,8 +549,11 @@
       .trip-num-input { width: 100% !important; }
 
       /* 연료 표시 박스 */
-      .fuel-display { flex-direction: column; gap: 12px; }
-      .fuel-per-km { border-left: none; border-top: 1px solid var(--line2); padding-left: 0; padding-top: 12px; }
+      .fuel-display { grid-template-columns: 1fr; }
+      .fuel-sep { height: 1px; width: 100%; align-self: auto; margin: 4px 0; }
+      .fuel-main { padding-right: 0; padding-bottom: 16px; }
+      .fuel-per-km { padding-left: 0; padding-top: 16px; text-align: left; }
+      .fuel-per-km .per-val, .fuel-per-km-row { justify-content: flex-start; }
 
       /* 정산서 요약 그리드: 모바일에서도 3열 유지, 폰트 축소 */
       .summary-grid { grid-template-columns: 1fr 1fr 1fr !important; gap: 8px !important; }
@@ -1006,22 +1024,23 @@
       </div>
       <div class="fuel-display">
         <div class="fuel-main">
-          <label>현재 유류단가 (원/L)</label>
+          <label>현재 유류단가</label>
           <div class="fuel-val">
             <input type="text" inputmode="numeric" id="f_fuelPrice" value="1,700"
-              style="width:120px;font-size:28px;font-weight:900;border:none;border-bottom:2px solid var(--primary);border-radius:0;padding:0;background:transparent;color:var(--ink);font-family:inherit;outline:none;"
+              style="width:150px;font-size:44px;font-weight:900;border:none;border-bottom:2.5px solid var(--primary);border-radius:0;padding:0;background:transparent;color:var(--ink);font-family:inherit;outline:none;letter-spacing:-.03em;"
               oninput="applyComma(this);updateFuelDisplay()">
             <span>원/L</span>
           </div>
-          <div class="opinet-status" id="fuelSource">수동 입력</div>
+          <div class="opinet-status" id="fuelSource" style="margin-top:8px;">수동 입력</div>
         </div>
+        <div class="fuel-sep"></div>
         <div class="fuel-per-km">
           <label>연비 기준 km당 단가</label>
-          <div style="display:flex;align-items:baseline;gap:4px;justify-content:flex-end;">
+          <div style="display:flex;align-items:baseline;gap:6px;justify-content:flex-end;">
             <div class="per-val" id="perKmDisplay">-</div>
-            <span style="font-size:12px;color:var(--muted);">원/km</span>
+            <span class="per-unit">원/km</span>
           </div>
-          <div id="perKmFormula" style="font-size:11px;color:var(--muted);margin-top:6px;line-height:1.6;"></div>
+          <div id="perKmFormula" style="font-size:11px;color:var(--muted);margin-top:8px;line-height:1.6;text-align:right;"></div>
         </div>
       </div>
       <div style="font-size:12px;color:var(--muted);margin-top:12px;">
@@ -1289,7 +1308,7 @@
       </div>
       <div style="overflow-x:auto;-webkit-overflow-scrolling:touch;">
         <table class="user-table" id="userTable">
-          <thead><tr><th>성명</th><th>부서</th><th>권한</th><th>차량번호</th><th>연료</th><th>배기량</th><th>작업</th></tr></thead>
+          <thead><tr><th>성명</th><th>권한</th><th>차량번호</th><th>연료</th><th>배기량</th><th>작업</th></tr></thead>
           <tbody id="userTableBody"></tbody>
         </table>
       </div>
@@ -2388,47 +2407,79 @@ async function renderUserTable() {
   const data = await api('/api/users')
   if (!data.ok) { alert(data.error || '사용자 목록 조회 실패'); return }
   const users = data.accounts
-  document.getElementById('userTableBody').innerHTML = users.map(u => `
-    <tr id="urow_${escapeHtml(u.id)}">
-      <td style="font-weight:700">${escapeHtml(u.name)}</td>
-      <td>${escapeHtml(u.dept||'-')}</td>
-      <td><span class="role-badge ${u.role==='admin'?'admin':'user'}">${u.role==='admin'?'관리자':'사용자'}</span></td>
-      <td>${escapeHtml(u.car?.plate||'-')}</td><td>${escapeHtml(u.car?.fuel||'-')}</td><td>${escapeHtml(u.car?.displacement||'-')}</td>
-      <td style="display:flex;gap:6px;flex-wrap:nowrap;align-items:center;">
-        ${u.role !== 'admin' ? `
-          <button class="btn-sm" onclick="openEditCar('${u.id}')">차량수정</button>
-          <button class="btn-sm" onclick="resetPin('${u.id}')">PIN초기화</button>
-          <button class="btn-sm warn" onclick="deleteUser('${u.id}')">삭제</button>
-        ` : '<span style="color:var(--muted);font-size:12px;">시스템계정</span>'}
-      </td>
-    </tr>
-    <tr id="ucarrow_${u.id}" style="display:none">
-      <td colspan="7" style="padding:0">
-        <div style="background:var(--line);padding:14px 16px;display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:10px;align-items:flex-end;">
-          <div><label style="font-size:11px;font-weight:700;color:var(--muted);display:block;margin-bottom:4px;">차량번호</label>
-            <input type="text" id="ec_plate_${escapeHtml(u.id)}" value="${escapeHtml(u.car?.plate||'')}" placeholder="12가 3456" style="width:100%;padding:8px;border:1px solid var(--line2);border-radius:8px;font-family:inherit;font-size:13px;">
+
+  const admins = users.filter(u => u.role === 'admin')
+  const regular = users.filter(u => u.role !== 'admin')
+
+  const deptOrder = ['재무관리파트','경영관리파트','경영지원팀','구매파트','총무파트','시설팀','정보지원팀','의공파트','안전보건관리파트']
+  const deptMap = {}
+  regular.forEach(u => {
+    const d = u.dept || '기타'
+    if (!deptMap[d]) deptMap[d] = []
+    deptMap[d].push(u)
+  })
+  const sortedDepts = [
+    ...deptOrder.filter(d => deptMap[d]),
+    ...Object.keys(deptMap).filter(d => !deptOrder.includes(d)).sort()
+  ]
+
+  function userRows(list) {
+    return list.map(u => `
+      <tr id="urow_${escapeHtml(u.id)}">
+        <td style="font-weight:700">${escapeHtml(u.name)}</td>
+        <td><span class="role-badge ${u.role==='admin'?'admin':'user'}">${u.role==='admin'?'관리자':'사용자'}</span></td>
+        <td>${escapeHtml(u.car?.plate||'-')}</td>
+        <td>${escapeHtml(u.car?.fuel||'-')}</td>
+        <td>${escapeHtml(u.car?.displacement||'-')}</td>
+        <td style="display:flex;gap:6px;flex-wrap:nowrap;align-items:center;">
+          ${u.role !== 'admin' ? `
+            <button class="btn-sm" onclick="openEditCar('${u.id}')">차량수정</button>
+            <button class="btn-sm" onclick="resetPin('${u.id}')">PIN초기화</button>
+            <button class="btn-sm warn" onclick="deleteUser('${u.id}')">삭제</button>
+          ` : '<span style="color:var(--muted);font-size:12px;">시스템계정</span>'}
+        </td>
+      </tr>
+      <tr id="ucarrow_${u.id}" style="display:none">
+        <td colspan="6" style="padding:0">
+          <div style="background:var(--line);padding:14px 16px;display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:10px;align-items:flex-end;">
+            <div><label style="font-size:11px;font-weight:700;color:var(--muted);display:block;margin-bottom:4px;">차량번호</label>
+              <input type="text" id="ec_plate_${escapeHtml(u.id)}" value="${escapeHtml(u.car?.plate||'')}" placeholder="12가 3456" style="width:100%;padding:8px;border:1px solid var(--line2);border-radius:8px;font-family:inherit;font-size:13px;">
+            </div>
+            <div><label style="font-size:11px;font-weight:700;color:var(--muted);display:block;margin-bottom:4px;">연료</label>
+              <select id="ec_fuel_${u.id}" style="width:100%;padding:8px;border:1px solid var(--line2);border-radius:8px;font-family:inherit;font-size:13px;">
+                <option ${(u.car?.fuel||'휘발유')==='휘발유'?'selected':''}>휘발유</option>
+                <option ${u.car?.fuel==='경유'?'selected':''}>경유</option>
+                <option ${u.car?.fuel==='LPG'?'selected':''}>LPG</option>
+              </select>
+            </div>
+            <div><label style="font-size:11px;font-weight:700;color:var(--muted);display:block;margin-bottom:4px;">배기량</label>
+              <select id="ec_disp_${u.id}" style="width:100%;padding:8px;border:1px solid var(--line2);border-radius:8px;font-family:inherit;font-size:13px;">
+                <option ${(u.car?.displacement||'')==='1000cc 미만'?'selected':''}>1000cc 미만</option>
+                <option ${(u.car?.displacement||'1500cc 이하')==='1500cc 이하'?'selected':''}>1500cc 이하</option>
+                <option ${u.car?.displacement==='1500cc 초과'?'selected':''}>1500cc 초과</option>
+              </select>
+            </div>
+            <div style="display:flex;gap:6px;">
+              <button class="btn-sm primary" onclick="saveEditCar('${u.id}')">저장</button>
+              <button class="btn-sm" onclick="document.getElementById('ucarrow_${u.id}').style.display='none'">취소</button>
+            </div>
           </div>
-          <div><label style="font-size:11px;font-weight:700;color:var(--muted);display:block;margin-bottom:4px;">연료</label>
-            <select id="ec_fuel_${u.id}" style="width:100%;padding:8px;border:1px solid var(--line2);border-radius:8px;font-family:inherit;font-size:13px;">
-              <option ${(u.car?.fuel||'휘발유')==='휘발유'?'selected':''}>휘발유</option>
-              <option ${u.car?.fuel==='경유'?'selected':''}>경유</option>
-              <option ${u.car?.fuel==='LPG'?'selected':''}>LPG</option>
-            </select>
-          </div>
-          <div><label style="font-size:11px;font-weight:700;color:var(--muted);display:block;margin-bottom:4px;">배기량</label>
-            <select id="ec_disp_${u.id}" style="width:100%;padding:8px;border:1px solid var(--line2);border-radius:8px;font-family:inherit;font-size:13px;">
-              <option ${(u.car?.displacement||'')==='1000cc 미만'?'selected':''}>1000cc 미만</option>
-              <option ${(u.car?.displacement||'1500cc 이하')==='1500cc 이하'?'selected':''}>1500cc 이하</option>
-              <option ${u.car?.displacement==='1500cc 초과'?'selected':''}>1500cc 초과</option>
-            </select>
-          </div>
-          <div style="display:flex;gap:6px;">
-            <button class="btn-sm primary" onclick="saveEditCar('${u.id}')">저장</button>
-            <button class="btn-sm" onclick="document.getElementById('ucarrow_${u.id}').style.display='none'">취소</button>
-          </div>
-        </div>
-      </td>
-    </tr>`).join('')
+        </td>
+      </tr>`).join('')
+  }
+
+  let html = ''
+  if (admins.length) {
+    html += `<tr class="dept-header-row"><td colspan="6">시스템 계정</td></tr>`
+    html += userRows(admins)
+  }
+  sortedDepts.forEach(dept => {
+    const count = deptMap[dept].length
+    html += `<tr class="dept-header-row"><td colspan="6">${escapeHtml(dept)} <span style="font-weight:400;opacity:.6;">(${count}명)</span></td></tr>`
+    html += userRows(deptMap[dept])
+  })
+
+  document.getElementById('userTableBody').innerHTML = html
 }
 function openEditCar(id) {
   document.querySelectorAll('[id^=ucarrow_]').forEach(r => r.style.display = 'none')
