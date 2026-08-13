@@ -203,7 +203,11 @@
       "dept": "재무관리파트",
       "role": "user",
       "pin_hash": "d60bed18d2a68463e8d2bbcdc1a7c8c631e4bb2e94f1a51c3afde2ada062f1d5",
-      "car": null,
+      "car": {
+        "plate": "231다6585",
+        "fuel": "휘발유",
+        "displacement": "1500cc 초과"
+      },
       "created_at": "2026-08-13T00:00:00.000Z"
     },
     {
