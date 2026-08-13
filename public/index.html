@@ -1271,13 +1271,7 @@
           </svg>
           PDF
         </button>
-        <button class="btn-sm" style="background:var(--primary);color:#fff;" onclick="sendSettlementEmail()">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>
-          </svg>
-          메일 전송
-        </button>
-        <button class="btn-sm green" onclick="downloadExcel()">
+<button class="btn-sm green" onclick="downloadExcel()">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
             <polyline points="7 10 12 15 17 10"/>
@@ -2296,60 +2290,6 @@ function buildPreview() {
         <span style="display:block;font-size:11px;font-weight:400;color:var(--muted);">${fuelPrice.toLocaleString()}원/L ÷ ${eff}km/L</span>
       </span>
     </div>`
-}
-
-/* ══════════════════════════════════════════
-   EMAIL EXPORT
-══════════════════════════════════════════ */
-function sendSettlementEmail() {
-  const name  = document.getElementById('f_name')?.value  || document.getElementById('f_name2')?.value  || ''
-  const date  = document.getElementById('f_date')?.value  || document.getElementById('f_date2')?.value  || ''
-  const dept  = currentUser?.dept || ''
-  const isTaxi = tripMode === 'taxi'
-
-  // 이동내역 요약
-  let tripLines = ''
-  let totalAmt = 0
-  trips.forEach((t, i) => {
-    const total = calcTotal(t)
-    if (total !== null) totalAmt += total
-    const from = t.fromName || t.from || '-'
-    const to   = t.toName   || t.to   || '-'
-    const dist = (t.dist !== null && t.dist !== undefined) ? t.dist.toFixed(1) + 'km' : '-'
-    const amt  = total !== null ? total.toLocaleString() + '원' : '-'
-    tripLines += `  ${i+1}. ${t.date||'-'} ${from} → ${to} ${isTaxi ? '' : '(' + dist + ')'} ${amt}\n`
-  })
-
-  // 주차비
-  const parking = parseFloat(document.getElementById('f_parking')?.value?.replace(/,/g,'')) || 0
-  if (parking > 0) totalAmt += parking
-
-  // 차량 정보 (자차)
-  let carLine = ''
-  if (!isTaxi) {
-    const plate = document.getElementById('f_plate')?.value || currentUser?.car?.plate || ''
-    const fuel  = document.getElementById('f_fuel')?.value  || currentUser?.car?.fuel  || ''
-    const eff   = getEfficiency()
-    const price = parseNum(document.getElementById('f_fuelPrice'))
-    const perKm = eff > 0 ? Math.round(price / eff) : 0
-    carLine = `차량번호: ${plate}  연료: ${fuel}  km당 단가: ${perKm}원/km\n`
-  }
-
-  const subject = encodeURIComponent(`[교통비 정산서] ${name} ${date}`)
-  const body = encodeURIComponent(
-`교통비 정산서
-═══════════════════════════
-신청자: ${name}${dept ? '  부서: ' + dept : ''}
-이동수단: ${isTaxi ? '택시' : '자차'}
-${carLine}
-이동내역:
-${tripLines}${parking > 0 ? '주차비: ' + parking.toLocaleString() + '원\n' : ''}
-신청 금액: ${totalAmt.toLocaleString()}원
-═══════════════════════════
-* 이 메일은 교통비 정산서 앱에서 자동 생성되었습니다.
-* PDF 첨부: 앱에서 PDF 버튼 → 인쇄 → PDF로 저장 후 첨부하세요.`)
-
-  window.open(`mailto:xxiohc@gmail.com?subject=${subject}&body=${body}`)
 }
 
 /* ══════════════════════════════════════════
