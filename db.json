@@ -341,7 +341,11 @@
       "dept": "TF",
       "role": "user",
       "pin_hash": "28abc438b5da0b0863be1840234ec8d2e9162996bd63852e37c59be9e9eac4e4",
-      "car": null,
+      "car": {
+        "plate": "60부8270",
+        "fuel": "휘발유",
+        "displacement": "1500cc 초과"
+      },
       "created_at": "2026-08-13T01:14:14.633Z"
     }
   ]
