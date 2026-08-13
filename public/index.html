@@ -411,6 +411,9 @@
     .info-grid-4 { grid-template-columns: repeat(4, 1fr); gap: 8px 16px; }
     .info-grid-4 .info-item label { font-size: 11px; margin-bottom: 2px; }
     .info-grid-4 .info-item span { font-size: 14px; }
+    .info-grid-6 { grid-template-columns: repeat(6, 1fr); gap: 8px 20px; }
+    .info-grid-6 .info-item label { font-size: 11px; margin-bottom: 2px; }
+    .info-grid-6 .info-item span { font-size: 14px; white-space: nowrap; }
     .info-item { display: flex; flex-direction: column; gap: 2px; }
     .info-item label { font-size: 11px; font-weight: 600; color: var(--muted); letter-spacing: .04em; }
     .info-item span { font-size: 14px; font-weight: 700; color: var(--ink); }
@@ -609,6 +612,8 @@
 
       /* 기본정보 4열 → 2열 */
       .info-grid-4 { grid-template-columns: repeat(2, 1fr) !important; }
+      .info-grid-6 { grid-template-columns: repeat(3, 1fr) !important; }
+      .info-grid-6 .info-item span { white-space: normal !important; }
 
       /* 카드 패딩 */
       .card { padding: 20px 16px; }
@@ -1249,7 +1254,7 @@
         </div>
         기본정보
       </div>
-      <div class="info-grid info-grid-4" id="pvInfo"></div>
+      <div class="info-grid info-grid-6" id="pvInfo"></div>
     </div>
 
     <div class="step-actions" style="margin-bottom:32px;">
@@ -1652,6 +1657,8 @@ function gotoStep(n) {
   updateStepUI()
   if (n === 6) buildPreview()
   window.scrollTo(0, 0)
+  document.documentElement.scrollTop = 0
+  document.body.scrollTop = 0
 }
 
 function getTrailSteps() {
@@ -1958,7 +1965,7 @@ function updateFuelDisplay() {
   const formulaEl = document.getElementById('perKmFormula')
   if (formulaEl) {
     formulaEl.innerHTML = (eff > 0 && price > 0)
-      ? `${price.toLocaleString()}원/L ÷ ${eff}km/L = <strong style="color:var(--ink2)">${perKm.toLocaleString()}원/km</strong>`
+      ? `${price.toLocaleString()}원/L ÷ ${eff}km/L`
       : ''
   }
   recalcAll()
