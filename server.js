@@ -310,6 +310,19 @@ async function handleResetPin(req, res, id) {
   json(res, { ok: true });
 }
 
+async function handleResetCar(req, res, id) {
+  const callerId = getCallerId(req);
+  if (!callerId) return err(res, "인증이 필요합니다.", 401);
+  const db = await readDb();
+  const caller = db.accounts.find(a => a.id === callerId);
+  if (!caller || caller.role !== "admin") return err(res, "관리자만 접근할 수 있습니다.", 403);
+  const account = db.accounts.find(a => a.id === id);
+  if (!account) return err(res, "계정을 찾을 수 없습니다.", 404);
+  account.car = null;
+  await writeDb(db);
+  json(res, { ok: true });
+}
+
 async function handleDeleteUser(req, res, id) {
   const callerId = getCallerId(req);
   if (!callerId) return err(res, "인증이 필요합니다.", 401);
@@ -366,8 +379,11 @@ async function handle(req, res) {
     if (path === "/api/users"       && method === "GET")  return handleGetUsers(req, res);
     if (path === "/api/users"       && method === "POST") return handleAddUser(req, res);
 
-    const mReset = path.match(/^\/api\/users\/([^/]+)\/reset-pin$/);
-    if (mReset && method === "POST") return handleResetPin(req, res, mReset[1]);
+    const mResetPin = path.match(/^\/api\/users\/([^/]+)\/reset-pin$/);
+    if (mResetPin && method === "POST") return handleResetPin(req, res, mResetPin[1]);
+
+    const mResetCar = path.match(/^\/api\/users\/([^/]+)\/reset-car$/);
+    if (mResetCar && method === "POST") return handleResetCar(req, res, mResetCar[1]);
 
     const mUser = path.match(/^\/api\/users\/([^/]+)$/);
     if (mUser && method === "PUT")    return handleUpdateUser(req, res, mUser[1]);

@@ -2473,6 +2473,7 @@ function renderUserTable() {
           <span class="${u.pin_is_default?'pin-badge-default':'pin-badge-ok'}">${u.pin_is_default?'미변경':'변경됨'}</span>
           ${u.role !== 'admin' ? `
             <button class="btn-sm" onclick="openEditCar('${u.id}')">차량수정</button>
+            <button class="btn-sm" onclick="resetCar('${u.id}')">차량초기화</button>
             <button class="btn-sm" onclick="resetPin('${u.id}')">PIN초기화</button>
             <button class="btn-sm warn" onclick="deleteUser('${u.id}')">삭제</button>
           ` : '<span style="color:var(--muted);font-size:12px;">시스템계정</span>'}
@@ -2560,6 +2561,15 @@ async function resetPin(id) {
   const data = await api('/api/users/' + id + '/reset-pin', { method: 'POST' })
   if (!data.ok) { alert(data.error || '초기화 실패'); return }
   alert(`PIN이 초기화되었습니다.`)
+  loadUsers()
+}
+async function resetCar(id) {
+  const row = document.getElementById('urow_' + id)
+  const nameCell = row?.querySelector('td:first-child')
+  const uName = nameCell?.textContent || '해당'
+  if (!confirm(`${uName} 사용자의 차량 정보를 초기화하시겠습니까?`)) return
+  const data = await api('/api/users/' + id + '/reset-car', { method: 'POST' })
+  if (!data.ok) { alert(data.error || '초기화 실패'); return }
   loadUsers()
 }
 async function deleteUser(id) {
