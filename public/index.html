@@ -1247,7 +1247,7 @@
             <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
           </svg>
         </div>
-        기본정보 및 유류단가
+        기본정보
       </div>
       <div class="info-grid info-grid-4" id="pvInfo"></div>
     </div>
@@ -2226,7 +2226,6 @@ function buildPreview() {
     document.getElementById('pvInfo').innerHTML = `
       <div class="info-item"><label>신청자</label><span>${name}</span></div>
       <div class="info-item"><label>부서</label><span>${currentUser?.dept || '-'}</span></div>
-      <div class="info-item"><label>작성일</label><span>${date}</span></div>
       <div class="info-item"><label>이동수단</label><span>택시</span></div>`
     return
   }
@@ -2272,12 +2271,9 @@ function buildPreview() {
   document.getElementById('pvInfo').innerHTML = `
     <div class="info-item"><label>신청자</label><span>${name}</span></div>
     <div class="info-item"><label>부서</label><span>${currentUser?.dept || '-'}</span></div>
-    <div class="info-item"><label>작성일</label><span>${date}</span></div>
     <div class="info-item"><label>차량번호</label><span>${plate}</span></div>
     <div class="info-item"><label>연료 구분</label><span>${fuel}</span></div>
     <div class="info-item"><label>배기량</label><span>${fuel==='휘발유'?disp:'-'}</span></div>
-    <div class="info-item"><label>연비</label><span>${eff} km/L</span></div>
-    <div class="info-item"><label>유류단가</label><span>${fuelPrice.toLocaleString()}원/L</span></div>
     <div class="info-item"><label>km당 단가</label>
       <span>${eff>0?perKm.toLocaleString():'-'}원/km
         <span style="display:block;font-size:11px;font-weight:400;color:var(--muted);">${fuelPrice.toLocaleString()}원/L ÷ ${eff}km/L</span>
