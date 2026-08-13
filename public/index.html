@@ -463,7 +463,7 @@
       padding: 0 28px; box-shadow: 0 1px 4px rgba(0,0,0,.06);
     }
     .admin-header h1 { font-size: 18px; font-weight: 800; color: var(--ink); }
-    .admin-content { padding: 32px 28px; max-width: 860px; margin: 0 auto; }
+    .admin-content { padding: 32px 28px; max-width: 1160px; margin: 0 auto; }
     .user-table { width: 100%; border-collapse: collapse; white-space: nowrap; }
     .user-table th { padding: 10px 14px; background: var(--line); font-weight: 700; font-size: 13px; text-align: left; border-bottom: 2px solid var(--line2); }
     .user-table td { padding: 12px 14px; border-bottom: 1px solid var(--line); font-size: 14px; vertical-align: middle; }
@@ -483,6 +483,8 @@
     .user-filter-select { padding: 9px 12px; border: 1.5px solid var(--line2); border-radius: 10px; font-family: inherit; font-size: 13px; background: var(--bg); color: var(--ink); cursor: pointer; }
     .user-count { font-size: 12px; color: var(--muted); white-space: nowrap; }
     .pin-badge-default { display: inline-block; padding: 2px 7px; border-radius: 20px; font-size: 11px; font-weight: 700; background: #fef3c7; color: #b45309; }
+    .test-badge { display: inline-block; padding: 2px 7px; border-radius: 20px; font-size: 11px; font-weight: 700; background: #e0f2fe; color: #0369a1; margin-right: 4px; }
+    .user-table td:last-child { min-width: 340px; }
     .pin-badge-ok { display: inline-block; padding: 2px 7px; border-radius: 20px; font-size: 11px; font-weight: 700; background: #d1fae5; color: #065f46; }
 
     /* ── Utils ── */
@@ -2470,11 +2472,13 @@ function renderUserTable() {
         <td>${escapeHtml(u.car?.fuel||'-')}</td>
         <td>${escapeHtml(u.car?.displacement||'-')}</td>
         <td style="display:flex;gap:6px;flex-wrap:nowrap;align-items:center;">
+          ${u.is_test ? `<span class="test-badge">테스트</span>` : ''}
           <span class="${u.pin_is_default?'pin-badge-default':'pin-badge-ok'}">${u.pin_is_default?'미변경':'변경됨'}</span>
           ${u.role !== 'admin' ? `
             <button class="btn-sm" onclick="openEditCar('${u.id}')">차량수정</button>
             <button class="btn-sm" onclick="resetCar('${u.id}')">차량초기화</button>
             <button class="btn-sm" onclick="resetPin('${u.id}')">PIN초기화</button>
+            <button class="btn-sm${u.is_test ? ' primary' : ''}" onclick="toggleTest('${u.id}')">${u.is_test ? '테스트ON' : '테스트OFF'}</button>
             <button class="btn-sm warn" onclick="deleteUser('${u.id}')">삭제</button>
           ` : '<span style="color:var(--muted);font-size:12px;">시스템계정</span>'}
         </td>
@@ -2570,6 +2574,11 @@ async function resetCar(id) {
   if (!confirm(`${uName} 사용자의 차량 정보를 초기화하시겠습니까?`)) return
   const data = await api('/api/users/' + id + '/reset-car', { method: 'POST' })
   if (!data.ok) { alert(data.error || '초기화 실패'); return }
+  loadUsers()
+}
+async function toggleTest(id) {
+  const data = await api('/api/users/' + id + '/toggle-test', { method: 'POST' })
+  if (!data.ok) { alert(data.error || '변경 실패'); return }
   loadUsers()
 }
 async function deleteUser(id) {

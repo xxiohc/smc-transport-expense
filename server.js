@@ -184,7 +184,8 @@ function getCallerId(req) {
 }
 function sanitize(a) {
   const { pin_hash, ...rest } = a;
-  rest.pin_is_default = pin_hash === hashPin("0000");
+  // 테스트 계정은 PIN 강제변경 화면 스킵 (pin_is_default 항상 false로 반환)
+  rest.pin_is_default = a.is_test ? false : pin_hash === hashPin("0000");
   return rest;
 }
 
@@ -215,8 +216,10 @@ async function handleInitialPin(req, res) {
   const account = db.accounts.find(a => a.id === callerId);
   if (!account) return err(res, "계정을 찾을 수 없습니다.", 404);
   if (account.pin_hash !== hashPin("0000")) return err(res, "이미 PIN이 설정된 계정입니다.", 400);
-  account.pin_hash = hashPin(String(new_pin));
-  await writeDb(db);
+  if (!account.is_test) {
+    account.pin_hash = hashPin(String(new_pin));
+    await writeDb(db);
+  }
   const token = createToken(account.id);
   json(res, { ok: true, token, account: sanitize(account) });
 }
@@ -232,8 +235,10 @@ async function handleChangePin(req, res) {
   const account = db.accounts.find(a => a.id === callerId);
   if (!account) return err(res, "계정을 찾을 수 없습니다.", 404);
   if (account.pin_hash !== hashPin(String(old_pin))) return err(res, "현재 PIN이 올바르지 않습니다.", 400);
-  account.pin_hash = hashPin(String(new_pin));
-  await writeDb(db);
+  if (!account.is_test) {
+    account.pin_hash = hashPin(String(new_pin));
+    await writeDb(db);
+  }
   json(res, { ok: true });
 }
 
@@ -255,7 +260,7 @@ async function handleUpdateMyCar(req, res) {
   const account = db.accounts.find(a => a.id === callerId);
   if (!account) return err(res, "계정을 찾을 수 없습니다.", 404);
   account.car = { plate, fuel: fuel || "휘발유", displacement: displacement || "1500cc 이하" };
-  await writeDb(db);
+  if (!account.is_test) await writeDb(db);
   json(res, { ok: true, account: sanitize(account) });
 }
 
@@ -308,6 +313,19 @@ async function handleResetPin(req, res, id) {
   account.pin_hash = hashPin("0000");
   await writeDb(db);
   json(res, { ok: true });
+}
+
+async function handleToggleTest(req, res, id) {
+  const callerId = getCallerId(req);
+  if (!callerId) return err(res, "인증이 필요합니다.", 401);
+  const db = await readDb();
+  const caller = db.accounts.find(a => a.id === callerId);
+  if (!caller || caller.role !== "admin") return err(res, "관리자만 접근할 수 있습니다.", 403);
+  const account = db.accounts.find(a => a.id === id);
+  if (!account) return err(res, "계정을 찾을 수 없습니다.", 404);
+  account.is_test = !account.is_test;
+  await writeDb(db);
+  json(res, { ok: true, account: sanitize(account) });
 }
 
 async function handleResetCar(req, res, id) {
@@ -384,6 +402,9 @@ async function handle(req, res) {
 
     const mResetCar = path.match(/^\/api\/users\/([^/]+)\/reset-car$/);
     if (mResetCar && method === "POST") return handleResetCar(req, res, mResetCar[1]);
+
+    const mToggleTest = path.match(/^\/api\/users\/([^/]+)\/toggle-test$/);
+    if (mToggleTest && method === "POST") return handleToggleTest(req, res, mToggleTest[1]);
 
     const mUser = path.match(/^\/api\/users\/([^/]+)$/);
     if (mUser && method === "PUT")    return handleUpdateUser(req, res, mUser[1]);
