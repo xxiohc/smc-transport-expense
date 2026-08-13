@@ -556,7 +556,9 @@
       .fuel-sep { height: 1px; width: 100%; align-self: auto; margin: 4px 0; }
       .fuel-main { padding-right: 0; padding-bottom: 16px; }
       .fuel-per-km { padding-left: 0; padding-top: 16px; text-align: left; }
+      .fuel-per-km .per-val { font-size: 48px; }
       .fuel-per-km .per-val, .fuel-per-km-row { justify-content: flex-start; }
+      #perKmFormula { display: none !important; }
 
       /* 정산서 요약 그리드: 모바일에서도 3열 유지, 폰트 축소 */
       .summary-grid { grid-template-columns: 1fr 1fr 1fr !important; gap: 8px !important; }
@@ -1656,9 +1658,11 @@ function gotoStep(n) {
   currentStep = n
   updateStepUI()
   if (n === 6) buildPreview()
-  window.scrollTo(0, 0)
-  document.documentElement.scrollTop = 0
-  document.body.scrollTop = 0
+  requestAnimationFrame(() => {
+    window.scrollTo(0, 0)
+    document.documentElement.scrollTop = 0
+    document.body.scrollTop = 0
+  })
 }
 
 function getTrailSteps() {
