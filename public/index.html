@@ -1043,7 +1043,7 @@
           <div class="fuel-val">
             <input type="text" inputmode="numeric" id="f_fuelPrice" value="1,700"
               style="width:150px;font-size:44px;font-weight:900;border:none;border-bottom:2.5px solid var(--primary);border-radius:0;padding:0;background:transparent;color:var(--ink);font-family:inherit;outline:none;letter-spacing:-.03em;"
-              oninput="applyComma(this);updateFuelDisplay()">
+              oninput="applyComma(this);fuelConfirmed=true;updateFuelDisplay()">
             <span>원/L</span>
           </div>
           <div class="opinet-status" id="fuelSource" style="margin-top:8px;">수동 입력</div>
@@ -1519,6 +1519,7 @@ let SMC = { name: '성균관대학교 삼성창원병원', x: '128.5726', y: '35
 const TOKEN_KEY = 'te_token'
 let currentUser = null
 let trips = []
+let fuelConfirmed = false  // 오피넷 조회 또는 수동 입력 확인 여부
 let tripIdSeq = 0
 let searchResults = []
 let currentStep = 1
@@ -1787,6 +1788,7 @@ function useSavedCar() {
     prefillCarForm(car)  // f_fuel, f_disp, f_plate 등 폼 채움 (화면 표시 없이)
     const fuelCode = OPINET_CODES[car.fuel] || 'B027'
     document.getElementById('fuelTypeSelect').value = fuelCode
+    fuelConfirmed = false
     updateFuelDisplay()
     gotoStep(3)
     fetchOpinet()
@@ -1828,6 +1830,7 @@ async function step2Next() {
   }
   const fuelCode = OPINET_CODES[document.getElementById('f_fuel').value] || 'B027'
   document.getElementById('fuelTypeSelect').value = fuelCode
+  fuelConfirmed = false
   updateFuelDisplay()
   gotoStep(3)
   fetchOpinet()
@@ -1969,6 +1972,7 @@ async function fetchOpinet() {
       if (!item) continue
       const price = parseFloat(item.PRICE)
       setNumVal(document.getElementById('f_fuelPrice'), price)
+      fuelConfirmed = true
       updateFuelDisplay()
       status.textContent = `조회 성공 (${new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'})})`
       status.className = 'opinet-status ok'
@@ -1979,6 +1983,13 @@ async function fetchOpinet() {
   status.textContent = '자동조회 실패 — 직접 입력해 주세요'; status.className = 'opinet-status fail'
 }
 
+function setFuelColors() {
+  const inp = document.getElementById('f_fuelPrice')
+  const perKm = document.getElementById('perKmDisplay')
+  if (!inp || !perKm) return
+  inp.style.color = fuelConfirmed ? 'var(--ink)' : 'var(--muted)'
+  perKm.style.color = fuelConfirmed ? 'var(--primary)' : 'var(--muted)'
+}
 function updateFuelDisplay() {
   const price = parseNum(document.getElementById('f_fuelPrice'))
   const eff = getEfficiency()
@@ -1990,6 +2001,7 @@ function updateFuelDisplay() {
       ? `${price.toLocaleString()}원/L ÷ ${eff}km/L`
       : ''
   }
+  setFuelColors()
   recalcAll()
 }
 
@@ -2710,7 +2722,7 @@ function restoreDraft() {
     if (d.f_plate) document.getElementById('f_plate').value = d.f_plate
     if (d.f_fuel) { document.getElementById('f_fuel').value = d.f_fuel; updateEfficiency() }
     if (d.f_disp) document.getElementById('f_disp').value = d.f_disp
-    if (d.f_fuelPrice) { document.getElementById('f_fuelPrice').value = d.f_fuelPrice; updateFuelDisplay() }
+    if (d.f_fuelPrice) { document.getElementById('f_fuelPrice').value = d.f_fuelPrice; fuelConfirmed = true; updateFuelDisplay() }
     if (d.fuelTypeSelect) document.getElementById('fuelTypeSelect').value = d.fuelTypeSelect
     if (d.f_name2) document.getElementById('f_name2').value = d.f_name2
     if (d.f_date2) document.getElementById('f_date2').value = d.f_date2
