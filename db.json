@@ -333,7 +333,11 @@
       "dept": "TF",
       "role": "user",
       "pin_hash": "8e75f26927d6c87874db1a0a8242ea1efdcf0d37815ae48e7f282e542df213f0",
-      "car": null,
+      "car": {
+        "plate": "51머 0233",
+        "fuel": "경유",
+        "displacement": "1500cc 이하"
+      },
       "created_at": "2026-08-13T01:14:14.633Z"
     }
   ]
