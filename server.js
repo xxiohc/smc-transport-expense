@@ -10,6 +10,9 @@ const PORT = Number(process.env.PORT || 3014);
 
 const SALT = "smc-transport-expense-2026";
 const JWT_SECRET = process.env.JWT_SECRET || "te-jwt-fallback-secret-2026";
+if (!process.env.JWT_SECRET) {
+  console.warn("[WARNING] JWT_SECRET 환경변수 미설정 — fallback 키 사용 중 (로컬 개발 전용)");
+}
 const JWT_TTL = 8 * 3600;
 const GH_CACHE_MS = 10_000;
 
@@ -22,6 +25,23 @@ const mime = {
   ".svg": "image/svg+xml",
   ".ico": "image/x-icon",
 };
+
+// ── Login rate limiting ───────────────────────────────────────────────────────
+const loginAttempts = new Map();
+const MAX_ATTEMPTS = 5;
+const LOCKOUT_MS = 15 * 60 * 1000;
+
+function checkRateLimit(key) {
+  const now = Date.now();
+  let entry = loginAttempts.get(key);
+  if (!entry || now > entry.resetAt) {
+    entry = { count: 0, resetAt: now + LOCKOUT_MS };
+    loginAttempts.set(key, entry);
+  }
+  return entry.count < MAX_ATTEMPTS;
+}
+function recordFail(key) { const e = loginAttempts.get(key); if (e) e.count++; }
+function clearAttempts(key) { loginAttempts.delete(key); }
 
 // ── JWT ───────────────────────────────────────────────────────────────────────
 function b64url(data) {
@@ -103,25 +123,27 @@ async function writeDb(snapshot) {
   gh.cache = snapshot;
   gh.cacheAt = Date.now();
   if (!ghInit()) return;
-  try {
-    if (!gh.cacheSha) {
+  if (!gh.cacheSha) {
+    try {
       const r = await ghFetch("/contents/db.json?ref=db");
       if (r.ok) { const m = await r.json(); gh.cacheSha = m.sha; }
-    }
-    const res = await ghFetch("/contents/db.json", {
-      method: "PUT",
-      body: JSON.stringify({
-        message: `update db ${new Date().toISOString()}`,
-        content: Buffer.from(JSON.stringify(snapshot, null, 2)).toString("base64"),
-        branch: "db",
-        sha: gh.cacheSha || undefined,
-      }),
-    });
-    if (res.ok) {
-      const m = await res.json();
-      gh.cacheSha = m.content?.sha || gh.cacheSha;
-    }
-  } catch (e) { console.error("writeDb error", e.message); }
+    } catch { /* sha 프리패치 실패 시 sha 없이 PUT 시도 */ }
+  }
+  const res = await ghFetch("/contents/db.json", {
+    method: "PUT",
+    body: JSON.stringify({
+      message: `update db ${new Date().toISOString()}`,
+      content: Buffer.from(JSON.stringify(snapshot, null, 2)).toString("base64"),
+      branch: "db",
+      sha: gh.cacheSha || undefined,
+    }),
+  });
+  if (!res.ok) {
+    console.error("writeDb failed:", res.status);
+    throw new Error(`DB 저장에 실패했습니다. (GitHub ${res.status})`);
+  }
+  const m = await res.json();
+  gh.cacheSha = m.content?.sha || gh.cacheSha;
 }
 
 function getDefaultDb() {
@@ -170,9 +192,14 @@ function sanitize(a) {
 async function handleLogin(req, res) {
   const { name, pin } = await parseBody(req);
   if (!name || !pin) return err(res, "이름과 PIN을 입력하세요.");
+  if (!checkRateLimit(name)) return err(res, "로그인 시도 횟수를 초과했습니다. 15분 후 다시 시도하세요.", 429);
   const db = await readDb();
   const account = db.accounts.find(a => a.name === name || a.id === name);
-  if (!account || account.pin_hash !== hashPin(pin)) return err(res, "성명 또는 PIN이 올바르지 않습니다.", 401);
+  if (!account || account.pin_hash !== hashPin(pin)) {
+    recordFail(name);
+    return err(res, "성명 또는 PIN이 올바르지 않습니다.", 401);
+  }
+  clearAttempts(name);
   const token = createToken(account.id);
   json(res, { ok: true, token, account: sanitize(account) });
 }
