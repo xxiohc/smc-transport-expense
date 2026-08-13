@@ -313,6 +313,15 @@
       "pin_hash": "661494d4755ef9b6e959cfe40e5dacaf5de6896515f02d506ac3397e7d974241",
       "car": null,
       "created_at": "2026-08-13T00:00:00.000Z"
+    },
+    {
+      "id": "3640d4e9f830a929",
+      "name": "테스트(재무)",
+      "dept": "재무관리파트",
+      "role": "user",
+      "pin_hash": "661494d4755ef9b6e959cfe40e5dacaf5de6896515f02d506ac3397e7d974241",
+      "car": null,
+      "created_at": "2026-08-13T00:57:35.877Z"
     }
   ]
 }
