@@ -1024,7 +1024,7 @@
         유류단가 조회
       </div>
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap;">
-        <select id="fuelTypeSelect" style="padding:10px 12px;border:1.5px solid var(--line2);border-radius:9px;font-size:14px;font-family:inherit;outline:none;">
+        <select id="fuelTypeSelect" onchange="updateFuelDisplay()" style="padding:10px 12px;border:1.5px solid var(--line2);border-radius:9px;font-size:14px;font-family:inherit;outline:none;">
           <option value="B027">휘발유</option>
           <option value="D047">경유</option>
           <option value="K015">LPG</option>
@@ -1461,6 +1461,7 @@ function setNumVal(el, v) {
 const KAKAO_KEY = '995bceb54093798d160d753693a9c98e'
 const OPINET_KEY = 'F260811056'
 const OPINET_CODES = { '휘발유': 'B027', '경유': 'D047', 'LPG': 'K015' }
+const OPINET_FUEL  = { 'B027': '휘발유', 'D047': '경유', 'K015': 'LPG' }
 const EFFICIENCY = {
   '휘발유': { '1000cc 미만': 9, '1500cc 이하': 8, '1500cc 초과': 7 },
   '경유': 7,
@@ -1912,6 +1913,13 @@ function getEfficiency() {
   if (fuel === '휘발유') return EFFICIENCY['휘발유'][disp] || 7
   return EFFICIENCY[fuel] || 7
 }
+function getActiveEfficiency() {
+  const code = document.getElementById('fuelTypeSelect')?.value
+  const fuel = (code && OPINET_FUEL[code]) || document.getElementById('f_fuel').value
+  const disp = document.getElementById('f_disp').value
+  if (fuel === '휘발유') return EFFICIENCY['휘발유'][disp] || 7
+  return EFFICIENCY[fuel] || 7
+}
 
 function updateEfficiency() {
   const fuel = document.getElementById('f_fuel').value
@@ -1992,7 +2000,7 @@ function setFuelColors() {
 }
 function updateFuelDisplay() {
   const price = parseNum(document.getElementById('f_fuelPrice'))
-  const eff = getEfficiency()
+  const eff = getActiveEfficiency()
   const perKm = eff > 0 ? Math.round(price / eff) : 0
   document.getElementById('perKmDisplay').textContent = eff > 0 ? perKm.toLocaleString() : '-'
   const formulaEl = document.getElementById('perKmFormula')
@@ -2073,7 +2081,7 @@ function tripRowHTML(t) {
 function calcFuelCost(t) {
   if (t.type !== 'car' || t.dist === null) return null
   const price = parseNum(document.getElementById('f_fuelPrice'))
-  const eff = getEfficiency()
+  const eff = getActiveEfficiency()
   if (eff === 0) return null
   return Math.round(t.dist * price / eff / 10) * 10
 }
@@ -2208,7 +2216,7 @@ function buildPreview() {
   const plate = document.getElementById('f_plate')?.value.trim() || '-'
   const fuel = document.getElementById('f_fuel')?.value || '-'
   const disp = document.getElementById('f_disp')?.value || '-'
-  const eff = getEfficiency()
+  const eff = getActiveEfficiency()
   const fuelPrice = parseNum(document.getElementById('f_fuelPrice'))
 
   let totalDist = 0, totalFuelAmt = 0, totalRowToll = 0
@@ -2330,7 +2338,7 @@ function downloadExcel() {
   const name = getName(), date = getDate()
   const plate = document.getElementById('f_plate')?.value.trim() || ''
   const fuel = document.getElementById('f_fuel')?.value || ''
-  const eff = getEfficiency()
+  const eff = getActiveEfficiency()
   const fuelPrice = parseNum(document.getElementById('f_fuelPrice'))
 
   const wb = XLSX.utils.book_new(); const ws = {}
