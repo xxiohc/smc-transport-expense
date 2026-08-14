@@ -260,7 +260,11 @@
       "dept": "경영관리파트",
       "role": "user",
       "pin_hash": "5f966bb98696497368201bc960b666584e4f517321536a1c2251221d0a2ee2cd",
-      "car": null,
+      "car": {
+        "plate": "1111",
+        "fuel": "휘발유",
+        "displacement": "1500cc 이하"
+      },
       "created_at": "2026-08-13T00:00:00.000Z"
     },
     {
