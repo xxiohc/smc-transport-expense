@@ -47,14 +47,14 @@
 
     /* ── Login / Change PIN ── */
     #loginScreen, #changePinScreen, #carRegScreen {
-      position: fixed; inset: 0; background: var(--bg);
       display: flex; align-items: center; justify-content: center;
-      padding: 24px; z-index: 1000;
+      min-height: calc(100vh - 80px); min-height: calc(100dvh - 80px);
+      padding: 24px; background: var(--bg);
     }
     #changePinScreen, #carRegScreen { display: none; }
     .login-card, .change-pin-card, .car-reg-card {
       background: var(--white); border-radius: 16px; padding: 32px;
-      width: 100%; max-width: 400px;
+      width: 100%; max-width: 360px;
       box-shadow: 0 4px 24px rgba(0,0,0,.06);
       display: flex; flex-direction: column; gap: 14px;
     }
@@ -69,7 +69,7 @@
     }
     .login-card label input, .change-pin-card label input, .car-reg-card label input,
     .car-reg-card label select {
-      border: 1px solid var(--line2); border-radius: 10px;
+      border: 1px solid var(--line); border-radius: 10px;
       padding: 12px; font-size: 15px; color: var(--ink);
       font-family: inherit; outline: none; transition: border-color .15s; background: var(--white);
     }
@@ -91,7 +91,7 @@
       background: var(--warn-bg); padding: 8px 12px; border-radius: 8px;
     }
     .btn-login, .btn-cp {
-      width: 100%; padding: 12px 16px; background: var(--primary); color: white;
+      width: 100%; padding: 14px; background: var(--primary); color: white;
       border: none; border-radius: 10px; font-size: 15px; font-weight: 700;
       cursor: pointer; font-family: inherit; transition: background .15s;
     }
@@ -745,17 +745,43 @@
 </head>
 <body>
 
+<!-- Header -->
+<div class="header">
+  <div class="header-inner">
+    <div class="header-brand" onclick="goHome()" title="처음으로">
+      <img src="smc-logo.png" class="header-logo" alt="SMC" onerror="this.style.display='none'">
+      <div class="header-text">
+        <span class="header-sub">Samsung Medical Center · 재무관리파트</span>
+        <span class="header-title">교통비 정산서</span>
+      </div>
+    </div>
+    <div class="header-actions" id="headerActions" style="display:none">
+      <span class="header-progress-text" id="headerProgressText"></span>
+      <span class="whoami" id="headerUserName"></span>
+      <button class="icon-btn" onclick="openAccount()">계정관리</button>
+      <button class="icon-btn" id="btnAdmin" onclick="openAdmin()" style="display:none">관리자</button>
+      <button class="icon-btn warn" onclick="doLogout()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+          <polyline points="16 17 21 12 16 7"/>
+          <line x1="21" y1="12" x2="9" y2="12"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>
+
 <!-- LOGIN -->
 <div id="loginScreen">
   <div class="login-card">
     <h2>로그인</h2>
-    <p class="login-desc">성명과 PIN을 입력하세요.</p>
-    <label>성명
+    <p class="login-desc">담당자 이름과 PIN을 입력하세요.</p>
+    <label>이름
       <input type="text" id="loginId" placeholder="예: 홍길동" autocomplete="username"
         onkeydown="if(event.key==='Enter')document.getElementById('loginPin').focus()">
     </label>
     <label>PIN
-      <input type="password" id="loginPin" placeholder="PIN 번호" maxlength="8" inputmode="numeric"
+      <input type="password" id="loginPin" placeholder="4자리 숫자" maxlength="8" inputmode="numeric"
         autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
     </label>
     <div class="form-error" id="loginErr" style="display:none"></div>
@@ -833,32 +859,6 @@
       <button class="draft-discard-btn" onclick="discardDraft()">새로 시작</button>
     </div>
   </div>
-  <!-- Header -->
-  <div class="header">
-    <div class="header-inner">
-      <div class="header-brand" onclick="goHome()" title="처음으로">
-        <img src="smc-logo.png" class="header-logo" alt="SMC" onerror="this.style.display='none'">
-        <div class="header-text">
-          <span class="header-sub">Samsung Medical Center · 재무관리파트</span>
-          <span class="header-title">교통비 정산서</span>
-        </div>
-      </div>
-      <div class="header-actions">
-        <span class="header-progress-text" id="headerProgressText"></span>
-        <span class="whoami" id="headerUserName"></span>
-        <button class="icon-btn" onclick="openAccount()">계정관리</button>
-        <button class="icon-btn" id="btnAdmin" onclick="openAdmin()" style="display:none">관리자</button>
-        <button class="icon-btn warn" onclick="doLogout()">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-            <polyline points="16 17 21 12 16 7"/>
-            <line x1="21" y1="12" x2="9" y2="12"/>
-          </svg>
-        </button>
-      </div>
-    </div>
-  </div>
-
   <!-- Step Trail -->
   <div class="wizard-bar">
     <div class="wizard-bar-inner">
@@ -1534,7 +1534,7 @@ let activeSearchField = null
    API
 ══════════════════════════════════════════ */
 async function api(path, opts = {}) {
-  const token = sessionStorage.getItem(TOKEN_KEY)
+  const token = localStorage.getItem(TOKEN_KEY)
   const headers = { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) }
   const res = await fetch(path, { ...opts, headers: { ...headers, ...opts.headers } })
   return res.json()
@@ -1552,7 +1552,7 @@ async function doLogin() {
   if (!inputName || !pin) { showErr(err, '성명과 PIN을 입력하세요.'); return }
   const data = await api('/api/login', { method: 'POST', body: JSON.stringify({ name: inputName, pin }) })
   if (!data.ok) { showErr(err, data.error || '로그인 실패'); return }
-  sessionStorage.setItem(TOKEN_KEY, data.token)
+  localStorage.setItem(TOKEN_KEY, data.token)
   currentUser = data.account
   showErr(err, '')
   if (data.account.pin_is_default) {
@@ -1616,7 +1616,7 @@ async function doChangePin() {
   if (newPin !== confirm) { showErr(err, 'PIN이 일치하지 않습니다.'); return }
   const data = await api('/api/initial-pin', { method: 'POST', body: JSON.stringify({ new_pin: newPin }) })
   if (!data.ok) { showErr(err, data.error || '변경 실패'); return }
-  sessionStorage.setItem(TOKEN_KEY, data.token)
+  localStorage.setItem(TOKEN_KEY, data.token)
   currentUser = data.account
   document.getElementById('changePinScreen').style.display = 'none'
   if (!currentUser.car?.plate) {
@@ -1628,9 +1628,10 @@ async function doChangePin() {
 
 function doLogout() {
   currentUser = null
-  sessionStorage.removeItem(TOKEN_KEY)
+  localStorage.removeItem(TOKEN_KEY)
   trips = []; tripIdSeq = 0; tripMode = null; hasToll = null; totalTollAmount = 0
   document.getElementById('btnAdmin').style.display = 'none'
+  document.getElementById('headerActions').style.display = 'none'
   document.getElementById('mainApp').style.display = 'none'
   document.getElementById('changePinScreen').style.display = 'none'
   document.getElementById('loginScreen').style.display = 'flex'
@@ -1641,10 +1642,10 @@ function doLogout() {
 }
 
 async function autoLogin() {
-  const token = sessionStorage.getItem(TOKEN_KEY)
+  const token = localStorage.getItem(TOKEN_KEY)
   if (!token) return
   const data = await api('/api/me')
-  if (!data.ok) { sessionStorage.removeItem(TOKEN_KEY); return }
+  if (!data.ok) { localStorage.removeItem(TOKEN_KEY); return }
   currentUser = data.account
   if (data.account.pin_is_default) {
     document.getElementById('loginScreen').style.display = 'none'
@@ -1660,6 +1661,7 @@ async function autoLogin() {
 function startApp() {
   document.getElementById('loginScreen').style.display = 'none'
   document.getElementById('mainApp').style.display = 'block'
+  document.getElementById('headerActions').style.display = ''
   document.getElementById('headerUserName').textContent = currentUser.name
   document.getElementById('btnAdmin').style.display = currentUser.role === 'admin' ? '' : 'none'
   setDefaultDate()
