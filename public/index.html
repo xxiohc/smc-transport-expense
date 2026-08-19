@@ -106,13 +106,15 @@
     .header-inner {
       max-width: 1280px; margin: 0 auto;
       display: flex; align-items: center; justify-content: space-between;
-      height: 80px; padding: 0 28px;
+      height: 80px; padding: 0 24px;
     }
     .header-brand { display: flex; align-items: center; gap: 16px; cursor: pointer; }
     .header-logo { width: 140px; height: 40px; object-fit: contain; flex-shrink: 0; }
     .header-text { display: flex; flex-direction: column; }
-    .header-sub { font-size: 10px; font-weight: 400; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; line-height: 1; }
-    .header-title { font-size: 22px; font-weight: 700; color: var(--ink); letter-spacing: -0.03em; line-height: 1; }
+    .header-sub { font-size: 10px; font-weight: 400; letter-spacing: 0.04em; text-transform: uppercase; color: #8b95a1; margin-bottom: 4px; line-height: 1; }
+    .header-title-row { display: flex; align-items: center; gap: 8px; }
+    .header-title { font-size: 22px; font-weight: 700; color: #191f28; letter-spacing: -0.03em; line-height: 1; }
+    .header-copy { font-size: 11px; color: #c9cdd2; line-height: 1; }
     .header-actions { display: flex; align-items: center; gap: 8px; }
     .whoami { font-size: 13px; color: var(--muted); margin: 0 4px; white-space: nowrap; }
     .icon-btn {
@@ -498,9 +500,10 @@
 
       /* 헤더 compact */
       .header-inner { height: 52px; padding: 0 12px; }
-      .header-logo { width: 76px; height: 22px; }
+      .header-logo { width: 84px; height: 24px; }
       .header-sub { display: none; }
-      .header-title { font-size: 13px; white-space: nowrap; }
+      .header-copy { display: none; }
+      .header-title { font-size: 14px; white-space: nowrap; }
       .header-brand { gap: 8px; min-width: 0; overflow: hidden; }
       .header-progress-text { display: none; }
       .whoami { display: none; }
@@ -752,7 +755,10 @@
       <img src="smc-logo.png" class="header-logo" alt="SMC" onerror="this.style.display='none'">
       <div class="header-text">
         <span class="header-sub">Samsung Medical Center · 재무관리파트</span>
-        <span class="header-title">교통비 정산서</span>
+        <div class="header-title-row">
+          <span class="header-title">교통비 정산서</span>
+          <span class="header-copy">© jiseokchoi</span>
+        </div>
       </div>
     </div>
     <div class="header-actions" id="headerActions" style="display:none">
